@@ -43,19 +43,24 @@
 
   d3.csv("data.csv", (data) => {
     s.data = data;
-    s.countries = getUniqueValues(getCountries(data))
-    s.selected_country = "NLD"
+    // console.log(data)
+    s.countries = getUniqueValues(getCountries(data), "code")
+    console.log(s.countries)
+    s.selected_country = s.countries[0].code
+    // console.log(s.selected_country.code)
     updateSelectionOptions()
     updateChart()
   })
 
+
   const filterOnCountry = (d) => d.filter((ob => ob["countryterritoryCode"] === s.selected_country))
   const formatData = (d) => d.map((d) => ({date: d3.timeParse("%d/%m/%Y")(d.dateRep), value: d.cases}))
-  const getCountries = (d) => d.map((d) => (d["countryterritoryCode"]))
-  const getUniqueValues = (d) => [...new Set(d)]
+  const getCountries = (d) => d.map((d) => ({"code": d["countryterritoryCode"], "name": d["countriesAndTerritories"]}))
+  const getUniqueValues = (d, value) => [...new Map( d.map( (d) => [d[value], d])).values()]
 
   const optionChanged = (v) => {
     s.selected_country = v
+    console.log(v)
     updateChart()
   }
 
@@ -66,7 +71,7 @@
         .enter()
         .append("option")
 
-    options.text((a) => a).attr("value", (a) => a)
+    options.text((a) => a.name).attr("value", (a) => a.code)
 
   }
 
@@ -75,6 +80,8 @@
 
     d = filterOnCountry(d)
     d = formatData(d)
+
+    svg.selectAll("*").remove();
 
     // Add X axis --> it is a date format
     var x = d3.scaleTime()
@@ -110,7 +117,6 @@
               return y(d.value)
             })
         )
-
   }
 
 </script>
