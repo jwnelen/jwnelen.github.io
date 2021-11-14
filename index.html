@@ -18,6 +18,12 @@
 <body>
 <h1>Cases NLD 20200</h1>
 <label for="countries"></label><select id="countries" onchange="optionChanged(this.value)"></select>
+<div>
+    <input type="checkbox" id="weighted" name="cumulative per 100000 persons"
+           checked onchange="weightedChanged(this.checked)">
+    <label for="weighted">cumulative per 100000 persons</label>
+</div>
+
 <div id="my_dataviz"></div>
 
 <script>
@@ -25,8 +31,16 @@
   const s = {
     countries: [],
     selected_country: "NLD",
-    data: []
+    data: [],
+    weighted: true
   }
+
+  const CODE = "countryterritoryCode"
+  const NAME = "countriesAndTerritories"
+  const dateFormat = "%d/%m/%Y"
+  const fileName = "data.csv"
+  const CASES = "cases"
+  const WEIGHTED_CASES = "Cumulative_number_for_14_days_of_COVID-19_cases_per_100000";
 
   var margin = {top: 10, right: 30, bottom: 30, left: 60},
       width = 460 - margin.left - margin.right,
@@ -41,26 +55,31 @@
       .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
 
-  d3.csv("data.csv", (data) => {
+  d3.csv(fileName, (data) => {
     s.data = data;
-    // console.log(data)
-    s.countries = getUniqueValues(getCountries(data), "code")
-    console.log(s.countries)
+    const key = "code"
+    s.countries = getUniqueValues(getCountries(data), key)
+    // just selecting the first country
     s.selected_country = s.countries[0].code
-    // console.log(s.selected_country.code)
+
+    console.log(data)
+
     updateSelectionOptions()
     updateChart()
   })
 
-
-  const filterOnCountry = (d) => d.filter((ob => ob["countryterritoryCode"] === s.selected_country))
-  const formatData = (d) => d.map((d) => ({date: d3.timeParse("%d/%m/%Y")(d.dateRep), value: d.cases}))
-  const getCountries = (d) => d.map((d) => ({"code": d["countryterritoryCode"], "name": d["countriesAndTerritories"]}))
-  const getUniqueValues = (d, value) => [...new Map( d.map( (d) => [d[value], d])).values()]
+  const filterOnCountry = (d) => d.filter((ob => ob[CODE] === s.selected_country))
+  const formatData = (d) => d.map((d) => ({date: d3.timeParse(dateFormat)(d.dateRep), value: d[s.weighted ? WEIGHTED_CASES : CASES]}))
+  const getCountries = (d) => d.map((d) => ({"code": d[CODE], "name": d[NAME]}))
+  const getUniqueValues = (d, value) => [...new Map(d.map((d) => [d[value], d])).values()]
 
   const optionChanged = (v) => {
     s.selected_country = v
-    console.log(v)
+    updateChart()
+  }
+
+  const weightedChanged = (v) => {
+    s.weighted = v
     updateChart()
   }
 
@@ -75,13 +94,15 @@
 
   }
 
+  const removeData = () => svg.selectAll("*").remove();
+
   function updateChart() {
     let d = s.data
 
     d = filterOnCountry(d)
     d = formatData(d)
 
-    svg.selectAll("*").remove();
+    removeData();
 
     // Add X axis --> it is a date format
     var x = d3.scaleTime()
