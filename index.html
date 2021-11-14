@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <title>First Data Visualisation</title>
+</head>
+<style>
+    svg rect {
+        fill: orange;
+    }
+
+    svg text {
+        fill: black;
+        font: 10px sans-serif;
+        text-anchor: end;
+    }
+</style>
+<body>
+<h1>Cases NLD 20200</h1>
+<label for="countries"></label><select id="countries" onchange="optionChanged(this.value)"></select>
+<div id="my_dataviz"></div>
+
+<script>
+
+  const s = {
+    countries: [],
+    selected_country: "NLD",
+    data: []
+  }
+
+  var margin = {top: 10, right: 30, bottom: 30, left: 60},
+      width = 460 - margin.left - margin.right,
+      height = 400 - margin.top - margin.bottom;
+
+  // append the svg object to the body of the page
+  var svg = d3.select("#my_dataviz")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+  d3.csv("data.csv", (data) => {
+    s.data = data;
+    s.countries = getUniqueValues(getCountries(data))
+    s.selected_country = "NLD"
+    updateSelectionOptions()
+    updateChart()
+  })
+
+  const filterOnCountry = (d) => d.filter((ob => ob["countryterritoryCode"] === s.selected_country))
+  const formatData = (d) => d.map((d) => ({date: d3.timeParse("%d/%m/%Y")(d.dateRep), value: d.cases}))
+  const getCountries = (d) => d.map((d) => (d["countryterritoryCode"]))
+  const getUniqueValues = (d) => [...new Set(d)]
+
+  const optionChanged = (v) => {
+    s.selected_country = v
+    updateChart()
+  }
+
+  function updateSelectionOptions() {
+    var options = d3.select("#countries")
+        .selectAll("option")
+        .data(s.countries)
+        .enter()
+        .append("option")
+
+    options.text((a) => a).attr("value", (a) => a)
+
+  }
+
+  function updateChart() {
+    let d = s.data
+
+    d = filterOnCountry(d)
+    d = formatData(d)
+
+    // Add X axis --> it is a date format
+    var x = d3.scaleTime()
+        .domain(d3.extent(d, function (d) {
+          return d.date;
+        }))
+        .range([0, width]);
+
+    svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+    // Add Y axis
+    var y = d3.scaleLinear()
+        .domain([0, d3.max(d, function (d) {
+          return +d.value;
+        })])
+        .range([height, 0]);
+
+    svg.append("g")
+        .call(d3.axisLeft(y));
+
+    // Add the line
+    svg.append("path")
+        .data([d])
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("d", d3.line()
+            .x(function (d) {
+              return x(d.date)
+            })
+            .y(function (d) {
+              return y(d.value)
+            })
+        )
+
+  }
+
+</script>
+</body>
+</html>
