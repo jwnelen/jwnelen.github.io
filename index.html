@@ -1,20 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <script src="https://d3js.org/d3.v4.min.js"></script>
         <title>First Data Visualisation</title>
+        <link rel="stylesheet" href="css/styles.css"/>
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
     </head>
-    <style>
-        svg rect {
-            fill: orange;
-        }
-
-        svg text {
-            fill: black;
-            font: 10px sans-serif;
-            text-anchor: end;
-        }
-    </style>
     <body>
         <h1>Cases NLD 20200</h1>
         <label for="countries"></label><select id="countries" onchange="optionChanged(this.value)"></select>
@@ -25,7 +16,7 @@
         </div>
         `
         <div id="my_dataviz"></div>
+        <script src="js/script.js"></script>
 
     </body>
-    <script src="script.js"></script>
 </html>

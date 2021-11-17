@@ -1,0 +1,18 @@
+html {
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    margin: 0 !important;
+    background-color: #f0f0f0 !important;
+}
+
+svg rect {
+    fill: orange;
+}
+
+svg text {
+    fill: black;
+    font: 10px sans-serif;
+    text-anchor: end;
+}

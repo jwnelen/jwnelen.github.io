@@ -12,10 +12,12 @@ const dateFormat = "%d/%m/%Y"
 const fileName = "data.csv"
 const CASES = "cases"
 const WEIGHTED_CASES = "Cumulative_number_for_14_days_of_COVID-19_cases_per_100000";
+const WIDTH_PLOT = 800;
+const HEIGHT_PLOT = 400;
 
 let margin = {top: 10, right: 30, bottom: 30, left: 60},
-    width = 460 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+    width = WIDTH_PLOT - margin.left - margin.right,
+    height = HEIGHT_PLOT - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
 let svg = d3.select("#my_dataviz")
@@ -26,7 +28,7 @@ let svg = d3.select("#my_dataviz")
     .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
-d3.csv(fileName, (data) => {
+d3.csv("/data/" + fileName, (data) => {
   s.data = data;
   const key = "code"
   s.countries = getUniqueValues(getCountries(data), key)
