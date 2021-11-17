@@ -1,145 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <title>First Data Visualisation</title>
-</head>
-<style>
-    svg rect {
-        fill: orange;
-    }
+    <head>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <title>First Data Visualisation</title>
+    </head>
+    <style>
+        svg rect {
+            fill: orange;
+        }
 
-    svg text {
-        fill: black;
-        font: 10px sans-serif;
-        text-anchor: end;
-    }
-</style>
-<body>
-<h1>Cases NLD 20200</h1>
-<label for="countries"></label><select id="countries" onchange="optionChanged(this.value)"></select>
-<div>
-    <input type="checkbox" id="weighted" name="cumulative per 100000 persons"
-           checked onchange="weightedChanged(this.checked)">
-    <label for="weighted">cumulative per 100000 persons</label>
-</div>
+        svg text {
+            fill: black;
+            font: 10px sans-serif;
+            text-anchor: end;
+        }
+    </style>
+    <body>
+        <h1>Cases NLD 20200</h1>
+        <label for="countries"></label><select id="countries" onchange="optionChanged(this.value)"></select>
+        <div>
+            <input type="checkbox" id="weighted" name="cumulative per 100000 persons"
+                   checked onchange="weightedChanged(this.checked)">
+            <label for="weighted">cumulative per 100000 persons</label>
+        </div>
+        `
+        <div id="my_dataviz"></div>
 
-<div id="my_dataviz"></div>
-
-<script>
-
-  const s = {
-    countries: [],
-    selected_country: "NLD",
-    data: [],
-    weighted: true
-  }
-
-  const CODE = "countryterritoryCode"
-  const NAME = "countriesAndTerritories"
-  const dateFormat = "%d/%m/%Y"
-  const fileName = "data.csv"
-  const CASES = "cases"
-  const WEIGHTED_CASES = "Cumulative_number_for_14_days_of_COVID-19_cases_per_100000";
-
-  var margin = {top: 10, right: 30, bottom: 30, left: 60},
-      width = 460 - margin.left - margin.right,
-      height = 400 - margin.top - margin.bottom;
-
-  // append the svg object to the body of the page
-  var svg = d3.select("#my_dataviz")
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
-
-  d3.csv(fileName, (data) => {
-    s.data = data;
-    const key = "code"
-    s.countries = getUniqueValues(getCountries(data), key)
-    // just selecting the first country
-    s.selected_country = s.countries[0].code
-
-    console.log(data)
-
-    updateSelectionOptions()
-    updateChart()
-  })
-
-  const filterOnCountry = (d) => d.filter((ob => ob[CODE] === s.selected_country))
-  const formatData = (d) => d.map((d) => ({date: d3.timeParse(dateFormat)(d.dateRep), value: d[s.weighted ? WEIGHTED_CASES : CASES]}))
-  const getCountries = (d) => d.map((d) => ({"code": d[CODE], "name": d[NAME]}))
-  const getUniqueValues = (d, value) => [...new Map(d.map((d) => [d[value], d])).values()]
-
-  const optionChanged = (v) => {
-    s.selected_country = v
-    updateChart()
-  }
-
-  const weightedChanged = (v) => {
-    s.weighted = v
-    updateChart()
-  }
-
-  function updateSelectionOptions() {
-    var options = d3.select("#countries")
-        .selectAll("option")
-        .data(s.countries)
-        .enter()
-        .append("option")
-
-    options.text((a) => a.name).attr("value", (a) => a.code)
-
-  }
-
-  const removeData = () => svg.selectAll("*").remove();
-
-  function updateChart() {
-    let d = s.data
-
-    d = filterOnCountry(d)
-    d = formatData(d)
-
-    removeData();
-
-    // Add X axis --> it is a date format
-    var x = d3.scaleTime()
-        .domain(d3.extent(d, function (d) {
-          return d.date;
-        }))
-        .range([0, width]);
-
-    svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
-
-    // Add Y axis
-    var y = d3.scaleLinear()
-        .domain([0, d3.max(d, function (d) {
-          return +d.value;
-        })])
-        .range([height, 0]);
-
-    svg.append("g")
-        .call(d3.axisLeft(y));
-
-    // Add the line
-    svg.append("path")
-        .data([d])
-        .attr("fill", "none")
-        .attr("stroke", "steelblue")
-        .attr("d", d3.line()
-            .x(function (d) {
-              return x(d.date)
-            })
-            .y(function (d) {
-              return y(d.value)
-            })
-        )
-  }
-
-</script>
-</body>
+    </body>
+    <script src="script.js"></script>
 </html>
