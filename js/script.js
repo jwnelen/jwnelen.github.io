@@ -1,122 +1,101 @@
+var width = 1600;
+var height = 1200;
 
-const s = {
-  countries: [],
-  selected_country: "NLD",
-  data: [],
-  weighted: true
-}
+var svg = d3.select("#map_nl")
+  .append("svg")
+  .attr("width",width)  
+  .attr("height",height);
 
-const CODE = "countryterritoryCode"
-const NAME = "countriesAndTerritories"
-const dateFormat = "%d/%m/%Y"
-const fileName = "data.csv"
-const CASES = "cases"
-const WEIGHTED_CASES = "Cumulative_number_for_14_days_of_COVID-19_cases_per_100000";
-const WIDTH_PLOT = 800;
-const HEIGHT_PLOT = 400;
+var projection = d3.geoMercator();
+var path = d3.geoPath().projection(projection);
 
-let margin = {top: 10, right: 30, bottom: 30, left: 60},
-    width = WIDTH_PLOT - margin.left - margin.right,
-    height = HEIGHT_PLOT - margin.top - margin.bottom;
+var promises = []
+var co2Data = d3.csv("data/totale_co2_2019.csv")
+var mapData = d3.json("data/nl.json")
 
-// append the svg object to the body of the page
-let svg = d3.select("#my_dataviz")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")");
+promises.push(mapData)
+promises.push(co2Data)
 
-d3.csv("/data/" + fileName, (data) => {
-  s.data = data;
-  const key = "code"
-  s.countries = getUniqueValues(getCountries(data), key)
-  // just selecting the first country
-  s.selected_country = s.countries[0].code
+  // create a tooltip
+var Tooltip = d3.select("#map_nl")
+  .append("div")
+  .style("opacity", 0)
+  .attr("class", "tooltip")
+  .style("background-color", "white")
+  .style("border", "solid")
+  .style("border-width", "2px")
+  .style("border-radius", "5px")
+  .style("padding", "5px")
+  .style("position","absolute")
 
-  console.log(data)
+Promise.all(promises).then(promises => {
+  var mapData = promises[0];
+  var co2Data = promises[1];
 
-  updateSelectionOptions()
-  updateChart()
-})
-
-const filterOnCountry = (d) => d.filter((ob => ob[CODE] === s.selected_country))
-const formatData = (d) => d.map((d) => ({date: d3.timeParse(dateFormat)(d.dateRep), value: d[s.weighted ? WEIGHTED_CASES : CASES]}))
-const getCountries = (d) => d.map((d) => ({"code": d[CODE], "name": d[NAME]}))
-const getUniqueValues = (d, value) => [...new Map(d.map((d) => [d[value], d])).values()]
-const removeData = () => svg.selectAll("*").remove();
-
-const optionChanged = (v) => {
-  s.selected_country = v
-  updateChart()
-}
-
-const weightedChanged = (v) => {
-  s.weighted = v
-  updateChart()
-}
-
-function updateSelectionOptions() {
-  let options = d3.select("#countries")
-      .selectAll("option")
-      .data(s.countries)
-      .enter()
-      .append("option")
-
-  options.text((a) => a.name).attr("value", (a) => a.code)
-
-}
-
-function updateChart() {
-  let d = s.data
-
-  d = filterOnCountry(d)
-  d = formatData(d)
-
-  removeData();
-
-  // Add X axis --> it is a date format
-  let x = d3.scaleTime()
-      .domain(d3.extent(d, function (d) {
-        return d.date;
-      }))
-      .range([0, width]);
-
-  svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
-
-  // Add Y axis
-  let y = d3.scaleLinear()
-      .domain([0, d3.max(d, function (d) {
-        return +d.value;
-      })])
-      .range([height, 0]);
-
-  svg.append("g")
-      .call(d3.axisLeft(y));
-
-  let line = d3.line()
-      .x((d) => x(d.date))
-      .y((d) => y(d.value))
-
-  let path = svg.append("path")
-      .data([d])
-      .attr("fill", "none")
-      .attr("stroke", "steelblue")
-      .attr("class", "line")
-      .attr("d", line)
-
-  let totalLength = path.node().getTotalLength();
-
-  path
-      .attr("stroke-dasharray", totalLength + " " + totalLength)
-      .attr("stroke-dashoffset", totalLength)
+  var colorScaleCO2Data = d3.scaleLinear().domain([-1,12126900]).range(["#e5f5f9","#2ca25f"]);
+  projection.fitSize([width,height],mapData)
+  var municipalities = mapData
+  
+  let mouseOver = function(d) {
+    Tooltip
+      .style("opacity", 1)
+    d3.select(this)
+      .style("stroke", "black")
+      .style("opacity", 1)
+    d3.selectAll(".Municipality")
       .transition()
-      .duration(2000)
-      .attr("stroke-dashoffset", 0);
+      .duration(200)
+      .style("opacity", .5)
+    d3.select(this)
+      .transition()
+      .duration(100)
+      .style("opacity", 1)
+      .style("stroke", "black")
+  }
 
+  var mouseMove = function(d) {
+    Tooltip
+      .html("Say hi to the peeps of " + d.target.attributes.municipality_name.value)
+      .style("left", (d.clientX - 30 + "px"))
+      .style("top", (d.clientY - 50 + "px"))
+  }
 
-}
-
+  let mouseLeave = function(d) {
+    Tooltip
+      .style("opacity", 0)
+    d3.select(this)
+      .style("stroke", "black")
+      .style("opacity", 0.8)
+    d3.selectAll(".Municipality")
+      .transition()
+      .duration(200)
+      .style("opacity", .8)
+    d3.select(this)
+      .transition()
+      .duration(100)
+      .style("stroke", "transparent")
+  }
+  
+  const paths = svg.selectAll("path").data(municipalities.features)
+  .join('path')
+  .attr("d",function(d){
+    return path(d);
+  })
+  .attr("fill",function(d){
+    var areaName = d.properties.areaName;
+    var x = co2Data.find(element => element.Gemeenten === areaName)
+    if(typeof(x) === "undefined"){
+      return "grey";
+    }
+    else{
+      return colorScaleCO2Data(x.CO2);
+    }
+  })
+  .attr("stroke","black")
+  .attr("class",function(d){return "Municipality"})
+  .attr("municipality_name",function(d){return d.properties.areaName})
+  .attr("opacity",0.8)
+  .on("mouseover", mouseOver)
+  .on("mouseleave", mouseLeave)
+  .on("mousemove", mouseMove)
+})

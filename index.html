@@ -4,19 +4,12 @@
         <title>First Data Visualisation</title>
         <link rel="stylesheet" href="css/styles.css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
-        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script src="https://d3js.org/d3.v7.min.js"></script>
     </head>
     <body>
-        <h1>Cases NLD 20200</h1>
-        <label for="countries"></label><select id="countries" onchange="optionChanged(this.value)"></select>
-        <div>
-            <input type="checkbox" id="weighted" name="cumulative per 100000 persons"
-                   checked onchange="weightedChanged(this.checked)">
-            <label for="weighted">cumulative per 100000 persons</label>
-        </div>
-        `
+        <h1>How green is my municipality?</h1>
         <div id="my_dataviz"></div>
+        <div id ="map_nl"></div>
         <script src="js/script.js"></script>
-
     </body>
 </html>
