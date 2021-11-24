@@ -5,11 +5,19 @@
         <link rel="stylesheet" href="css/styles.css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
         <script src="https://d3js.org/d3.v7.min.js"></script>
+        <script src="https://unpkg.com/d3-simple-slider"></script>
     </head>
     <body>
         <h1>How green is my municipality?</h1>
-        <div id="my_dataviz"></div>
-        <div id ="map_nl"></div>
+<!--        <div id="my_dataviz"></div>-->
+<!--        <div id ="map_nl"></div>-->
+        <div>
+            <div id="slider-simple">
+                <p id="value-simple"></p>
+                <p id="municipalities">Below threshold: </p>
+<!--                <input type="range" min="1" max="100" value="50" class="slider" id="myRange">-->
+            </div>
+        </div>
         <script src="js/script.js"></script>
     </body>
 </html>
