@@ -6,7 +6,6 @@ const svg = d3.select("#map_nl")
     .attr("width", width)
     .attr("height", height);
 
-let threshold = 0;
 
 let projection = d3.geoMercator();
 let path = d3.geoPath().projection(projection);
@@ -16,26 +15,21 @@ let loader = new DataLoader([
 	{name: "co2Data", filename: "data/totale_co2_2019.csv"},
   {name: "income", filename: "data/income-municipality.csv"}]);
 
-const getMunicipalitiesBelowThreshold = (muns) => {
-  return muns.filter((mun) => mun.income < threshold)
+const getMunicipalitiesBelowThreshold = (muns, val) => {
+  return muns.filter((mun) => mun.income < val)
 }
 
-const createThresholdSelector = (incomes, min, max) => {
+const createThresholdSelector = (incomes, min, max, onChange) => {
   let sliderSimple = d3
       .sliderBottom()
       .min(min)
       .max(max)
-      .width(500)
+      .width(400)
       .tickFormat(d3.format(",.2r"))
       .ticks(5)
       .default((min + max) / 2)
       .on('onchange', val => {
-        threshold = val
-
-        d3.select('p#value-simple').text(d3.format(",.2r")(threshold));
-        const muns = getMunicipalitiesBelowThreshold(incomes, threshold)
-        d3.select('p#municipalities').text("below threshold: " + muns.map(m => m.municipality).length);
-
+        onChange(val)
       });
 
   let gSimple = d3
@@ -63,10 +57,22 @@ loader.getData(res => {
   const incomeValues = incomes.map(mun => parseInt(mun.income)).filter(x => x)
   const min = Math.min(...incomeValues)
   const max = Math.max(...incomeValues)
-  threshold = (min + max) / 2
-  createThresholdSelector(incomes, min, max)
-
+  let threshold = (min + max) / 2
   projection.fitSize([width, height], mapData)
+
+  const fill = (d, incomes, val) => {
+    let areaName = d.properties.areaName;
+    const munNames = getMunicipalitiesBelowThreshold(incomes, val).map(mun => mun.municipality)
+    const allMunNames = incomes.map(mun => mun.municipality)
+
+    if (munNames.includes(areaName)) {
+      return "red" // below
+    } else if (allMunNames.includes(areaName)) {
+      return "green" // above
+    } else {
+        return "grey" // not found
+      }
+    }
 
   const paths = svg.selectAll("path").data(mapData.features)
       .join('path')
@@ -81,18 +87,14 @@ loader.getData(res => {
         return d.properties.areaName
       })
       .attr("opacity", 0.8)
-      .attr("fill", function (d) {
-        let areaName = d.properties.areaName;
-        console.log(areaName);
-        const munNames = getMunicipalitiesBelowThreshold(incomes).map(mun => mun.municipality)
+      .attr("fill", (d) => fill(d, incomes, threshold))
 
-        if (munNames.includes(areaName)) {
-          return "red"
-        } else {
-          return "grey"
-        }
-      })
+  createThresholdSelector(incomes, min, max, (newVal) => {
+    paths.attr("fill", (d) => fill(d, incomes, newVal))
+  })
+
 })
+
   // .on("mouseover", mouseOver)
   // .on("mouseleave", mouseLeave)
   // .on("mousemove", mouseMove)
