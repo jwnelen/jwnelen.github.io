@@ -2,34 +2,30 @@ var width = 1600;
 var height = 1200;
 
 var svg = d3.select("#map_nl")
-  .append("svg")
-  .attr("width",width)  
-  .attr("height",height);
+	.append("svg")
+	.attr("width", width)
+	.attr("height", height);
 
 var projection = d3.geoMercator();
 var path = d3.geoPath().projection(projection);
 
-var promises = []
-// var co2Data = d3.csv("data/totale_co2_2019.csv")
-// var mapData = d3.json("data/nl.json")
 let incomeJSON = d3.csv("data/income-municipality.csv")
 
-promises.push(incomeJSON)
+let loader = new DataLoader([
+	{name: "mapData", filename: "data/nl.json"},
+	{name: "co2Data", filename: "data/totale_co2_2019.csv"}]);
 
-// promises.push(mapData)
-// promises.push(co2Data)
-
-  // create a tooltip
+// create a tooltip
 var Tooltip = d3.select("#map_nl")
-  .append("div")
-  .style("opacity", 0)
-  .attr("class", "tooltip")
-  .style("background-color", "white")
-  .style("border", "solid")
-  .style("border-width", "2px")
-  .style("border-radius", "5px")
-  .style("padding", "5px")
-  .style("position","absolute")
+	.append("div")
+	.style("opacity", 0)
+	.attr("class", "tooltip")
+	.style("background-color", "white")
+	.style("border", "solid")
+	.style("border-width", "2px")
+	.style("border-radius", "5px")
+	.style("padding", "5px")
+	.style("position", "absolute");
 
 const getMunicipalitiesBelowThreshold = (muns, max) => {
   return muns.filter( (mun) => mun.income < max)
@@ -67,6 +63,9 @@ const createThresholdSelector = (incomes, min, max) => {
 Promise.all(promises).then(promises => {
   console.log(promises)
   const incomeData = promises[0].map( mun => ({"municipality": mun["Gemeenten"], "income": mun["Gemiddeld inkomen per huishouden|2018"]}));
+loader.getData(res => {
+	var mapData = res["mapData"];
+	var co2Data = res["co2Data"];
 
   const incomes = incomeData.map( mun => parseInt(mun.income)).filter(x => x)
   const min = Math.min(...incomes)
