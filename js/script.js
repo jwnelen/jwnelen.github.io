@@ -1,5 +1,5 @@
-const width = 1600;
-const height = 1200;
+const width = 800;
+const height = 800;
 
 const svg = d3.select("#map_nl")
     .append("svg")
@@ -26,7 +26,7 @@ const createThresholdSelector = (incomes, min, max, onChange) => {
       .max(max)
       .width(400)
       .tickFormat(d3.format(",.2r"))
-      .ticks(5)
+      .ticks(6)
       .default((min + max) / 2)
       .on('onchange', val => {
         onChange(val)
@@ -42,22 +42,26 @@ const createThresholdSelector = (incomes, min, max, onChange) => {
 
   gSimple.call(sliderSimple);
 
+  // default values displayed
   d3.select('p#value-simple').text(sliderSimple.value());
-
+  const munNames = getMunicipalitiesBelowThreshold(incomes, sliderSimple.value()).map(mun => mun.municipality)
+  d3.select('p#municipalities').text("below threshold: " + munNames.map( m => m.municipality).length);
 }
 
 loader.getData(res => {
-  let mapData = res["mapData"];
-  let incomes = res["income"];
-
+  const mapData = res["mapData"];
+  const incomes = res["income"];
   loader.changeKeys(incomes, [
       {from: 'Gemiddeld inkomen per huishouden|2018', to: "income"},
       {from: "Gemeenten", to: "municipality"}])
 
-  const incomeValues = incomes.map(mun => parseInt(mun.income)).filter(x => x)
+  const mapDataMunicipalities = mapData.features.map(d => d.properties.areaName).sort();
+  const incomesMunicipalities = incomes.map(d => d.municipality).sort();
+
+  const incomeValues = incomes.map(municipality => parseInt(municipality.income)).filter(x => x)
   const min = Math.min(...incomeValues)
   const max = Math.max(...incomeValues)
-  let threshold = (min + max) / 2
+  let middleValue = (min + max) / 2
   projection.fitSize([width, height], mapData)
 
   const fill = (d, incomes, val) => {
@@ -66,11 +70,11 @@ loader.getData(res => {
     const allMunNames = incomes.map(mun => mun.municipality)
 
     if (munNames.includes(areaName)) {
-      return "red" // below
+      return "white" // below
     } else if (allMunNames.includes(areaName)) {
       return "green" // above
     } else {
-        return "grey" // not found
+        return "lightgrey" // not found
       }
     }
 
@@ -87,56 +91,17 @@ loader.getData(res => {
         return d.properties.areaName
       })
       .attr("opacity", 0.8)
-      .attr("fill", (d) => fill(d, incomes, threshold))
+      .attr("fill", (d) => fill(d, incomes, middleValue))
+      // .attr("mouseover", (d) => mouseOver(d))
+      // .attr("mouseleave", (d) => mouseLeave(d))
+      // .attr("mousemove", (d) => mouseMove(d))
+
 
   createThresholdSelector(incomes, min, max, (newVal) => {
     paths.attr("fill", (d) => fill(d, incomes, newVal))
+    const munNames = getMunicipalitiesBelowThreshold(incomes, newVal).map(mun => mun.municipality)
+    d3.select('p#value-simple').text(d3.format(",.2r")(newVal)); // display value
+    d3.select('p#municipalities').text("below threshold: " + munNames.length);
   })
 
 })
-
-  // .on("mouseover", mouseOver)
-  // .on("mouseleave", mouseLeave)
-  // .on("mousemove", mouseMove)
-
-
-  // let mouseOver = function(d) {
-  //   Tooltip
-  //     .style("opacity", 1)
-  //   d3.select(this)
-  //     .style("stroke", "black")
-  //     .style("opacity", 1)
-  //   d3.selectAll(".Municipality")
-  //     .transition()
-  //     .duration(200)
-  //     .style("opacity", .5)
-  //   d3.select(this)
-  //     .transition()
-  //     .duration(100)
-  //     .style("opacity", 1)
-  //     .style("stroke", "black")
-  // }
-  //
-  // let mouseMove = function(d) {
-  //   Tooltip
-  //     .html("Say hi to the peeps of " + d.target.attributes.municipality_name.value)
-  //     .style("left", (d.clientX - 30 + "px"))
-  //     .style("top", (d.clientY - 50 + "px"))
-  // }
-  //
-  // let mouseLeave = function(d) {
-  //   Tooltip
-  //     .style("opacity", 0)
-  //   d3.select(this)
-  //     .style("stroke", "black")
-  //     .style("opacity", 0.8)
-  //   d3.selectAll(".Municipality")
-  //     .transition()
-  //     .duration(200)
-  //     .style("opacity", .8)
-  //   d3.select(this)
-  //     .transition()
-  //     .duration(100)
-  //     .style("stroke", "transparent")
-  // }
-  //
