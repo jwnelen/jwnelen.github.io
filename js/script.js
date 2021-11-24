@@ -9,12 +9,13 @@ var svg = d3.select("#map_nl")
 var projection = d3.geoMercator();
 var path = d3.geoPath().projection(projection);
 
-var promises = []
-var co2Data = d3.csv("data/totale_co2_2019.csv")
-var mapData = d3.json("data/nl.json")
+let loader = new DataLoader([{name: "mapData", filename: "data/nl.json"}, {name: "co2Data", filename: "data/totale_co2_2019.csv"}]);
+// var promises = [];
+// var co2Data = d3.csv("data/totale_co2_2019.csv");
+// var mapData = d3.json("data/nl.json");
 
-promises.push(mapData)
-promises.push(co2Data)
+// promises.push(mapData);
+// promises.push(co2Data);
 
   // create a tooltip
 var Tooltip = d3.select("#map_nl")
@@ -26,19 +27,19 @@ var Tooltip = d3.select("#map_nl")
   .style("border-width", "2px")
   .style("border-radius", "5px")
   .style("padding", "5px")
-  .style("position","absolute")
+  .style("position","absolute");
 
-Promise.all(promises).then(promises => {
-  var mapData = promises[0];
-  var co2Data = promises[1];
+loader.getData(res => {
+  var mapData = res["mapData"];
+  var co2Data = res["co2Data"];
 
   var colorScaleCO2Data = d3.scaleLinear().domain([-1,12126900]).range(["#e5f5f9","#2ca25f"]);
-  projection.fitSize([width,height],mapData)
-  var municipalities = mapData
+  projection.fitSize([width,height],mapData);
+  var municipalities = mapData;
   
   let mouseOver = function(d) {
     Tooltip
-      .style("opacity", 1)
+      .style("opacity", 1);
     d3.select(this)
       .style("stroke", "black")
       .style("opacity", 1)
@@ -97,5 +98,6 @@ Promise.all(promises).then(promises => {
   .attr("opacity",0.8)
   .on("mouseover", mouseOver)
   .on("mouseleave", mouseLeave)
-  .on("mousemove", mouseMove)
-})
+  .on("mousemove", mouseMove);
+});
+
