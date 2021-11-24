@@ -11,7 +11,8 @@ var path = d3.geoPath().projection(projection);
 
 let loader = new DataLoader([
 	{name: "mapData", filename: "data/nl.json"},
-	{name: "co2Data", filename: "data/totale_co2_2019.csv"}]);
+	{name: "co2Data", filename: "data/totale_co2_2019.csv"},
+	{name: "renewData", filename: "data/Gemeente_hernieuwbare_energie.csv"}]);
 
 // create a tooltip
 var Tooltip = d3.select("#map_nl")
@@ -27,7 +28,7 @@ var Tooltip = d3.select("#map_nl")
 
 loader.getData(res => {
 	var mapData = res["mapData"];
-	var co2Data = res["co2Data"];
+	var co2Data = loader.parseNumbers(res["co2Data"], ["CO2"]);
 
 	var colorScaleCO2Data = d3.scaleLinear().domain([-1, 12126900]).range(["#e5f5f9", "#2ca25f"]);
 	projection.fitSize([width, height], mapData);
@@ -98,5 +99,20 @@ loader.getData(res => {
 		.on("mouseover", mouseOver)
 		.on("mouseleave", mouseLeave)
 		.on("mousemove", mouseMove);
+
+	let renewData = loader.parseNumbers(res["renewData"], ["energy", "electricity", "warmth", "transport"]);
+	let quantile = loader.getPercentiles(renewData, "energy", 10);
+	console.log(quantile);
+	let joined = loader.joinData(renewData, co2Data, "Gemeenten");
+	let quartiles = new Array(quantile.length-1);
+	for (let i = 0; i < quantile.length-1; i++) {
+		quartiles[i] = joined.filter(d => {
+			return d.energy >= quantile[i] && d.energy < quantile[i+1];
+		} );
+		console.log(loader.getAverage(quartiles[i], "CO2"));
+	}
+
+	console.log(quartiles);
+
 });
 
