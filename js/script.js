@@ -1,34 +1,23 @@
-var width = 1600;
-var height = 1200;
+const width = 1600;
+const height = 1200;
 
-var svg = d3.select("#map_nl")
-	.append("svg")
-	.attr("width", width)
-	.attr("height", height);
+const svg = d3.select("#map_nl")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
 
-var projection = d3.geoMercator();
-var path = d3.geoPath().projection(projection);
+let threshold = 0;
 
-let incomeJSON = d3.csv("data/income-municipality.csv")
+let projection = d3.geoMercator();
+let path = d3.geoPath().projection(projection);
 
 let loader = new DataLoader([
 	{name: "mapData", filename: "data/nl.json"},
-	{name: "co2Data", filename: "data/totale_co2_2019.csv"}]);
+	{name: "co2Data", filename: "data/totale_co2_2019.csv"},
+  {name: "income", filename: "data/income-municipality.csv"}]);
 
-// create a tooltip
-var Tooltip = d3.select("#map_nl")
-	.append("div")
-	.style("opacity", 0)
-	.attr("class", "tooltip")
-	.style("background-color", "white")
-	.style("border", "solid")
-	.style("border-width", "2px")
-	.style("border-radius", "5px")
-	.style("padding", "5px")
-	.style("position", "absolute");
-
-const getMunicipalitiesBelowThreshold = (muns, max) => {
-  return muns.filter( (mun) => mun.income < max)
+const getMunicipalitiesBelowThreshold = (muns) => {
+  return muns.filter((mun) => mun.income < threshold)
 }
 
 const createThresholdSelector = (incomes, min, max) => {
@@ -41,9 +30,12 @@ const createThresholdSelector = (incomes, min, max) => {
       .ticks(5)
       .default((min + max) / 2)
       .on('onchange', val => {
-        d3.select('p#value-simple').text(d3.format(",.2r")(val));
-        const muns = getMunicipalitiesBelowThreshold(incomes, val)
-        d3.select('p#municipalities').text("below threshold: " + muns.map( m => m.municipality));
+        threshold = val
+
+        d3.select('p#value-simple').text(d3.format(",.2r")(threshold));
+        const muns = getMunicipalitiesBelowThreshold(incomes, threshold)
+        d3.select('p#municipalities').text("below threshold: " + muns.map(m => m.municipality).length);
+
       });
 
   let gSimple = d3
@@ -60,29 +52,52 @@ const createThresholdSelector = (incomes, min, max) => {
 
 }
 
-Promise.all(promises).then(promises => {
-  console.log(promises)
-  const incomeData = promises[0].map( mun => ({"municipality": mun["Gemeenten"], "income": mun["Gemiddeld inkomen per huishouden|2018"]}));
 loader.getData(res => {
-	var mapData = res["mapData"];
-	var co2Data = res["co2Data"];
+  let mapData = res["mapData"];
+  let incomes = res["income"];
 
-  const incomes = incomeData.map( mun => parseInt(mun.income)).filter(x => x)
-  const min = Math.min(...incomes)
-  const max = Math.max(...incomes)
+  loader.changeKeys(incomes, [
+      {from: 'Gemiddeld inkomen per huishouden|2018', to: "income"},
+      {from: "Gemeenten", to: "municipality"}])
 
-  createThresholdSelector(incomeData, min, max)
+  const incomeValues = incomes.map(mun => parseInt(mun.income)).filter(x => x)
+  const min = Math.min(...incomeValues)
+  const max = Math.max(...incomeValues)
+  threshold = (min + max) / 2
+  createThresholdSelector(incomes, min, max)
+
+  projection.fitSize([width, height], mapData)
+
+  const paths = svg.selectAll("path").data(mapData.features)
+      .join('path')
+      .attr("d", function (d) {
+        return path(d);
+      })
+      .attr("stroke", "black")
+      .attr("class", function (d) {
+        return "Municipality"
+      })
+      .attr("municipality_name", function (d) {
+        return d.properties.areaName
+      })
+      .attr("opacity", 0.8)
+      .attr("fill", function (d) {
+        let areaName = d.properties.areaName;
+        console.log(areaName);
+        const munNames = getMunicipalitiesBelowThreshold(incomes).map(mun => mun.municipality)
+
+        if (munNames.includes(areaName)) {
+          return "red"
+        } else {
+          return "grey"
+        }
+      })
+})
+  // .on("mouseover", mouseOver)
+  // .on("mouseleave", mouseLeave)
+  // .on("mousemove", mouseMove)
 
 
-
-
-  // var mapData = promises[0];
-  // // var co2Data = promises[1];
-  //
-  // var colorScaleCO2Data = d3.scaleLinear().domain([-1,12126900]).range(["#e5f5f9","#2ca25f"]);
-  // projection.fitSize([width,height],mapData)
-  // var municipalities = mapData
-  //
   // let mouseOver = function(d) {
   //   Tooltip
   //     .style("opacity", 1)
@@ -100,7 +115,7 @@ loader.getData(res => {
   //     .style("stroke", "black")
   // }
   //
-  // var mouseMove = function(d) {
+  // let mouseMove = function(d) {
   //   Tooltip
   //     .html("Say hi to the peeps of " + d.target.attributes.municipality_name.value)
   //     .style("left", (d.clientX - 30 + "px"))
@@ -123,16 +138,3 @@ loader.getData(res => {
   //     .style("stroke", "transparent")
   // }
   //
-  // const paths = svg.selectAll("path").data(municipalities.features)
-  // .join('path')
-  // .attr("d",function(d){
-  //   return path(d);
-  // })
-  // .attr("stroke","black")
-  // .attr("class",function(d){return "Municipality"})
-  // .attr("municipality_name",function(d){return d.properties.areaName})
-  // .attr("opacity",0.8)
-  // .on("mouseover", mouseOver)
-  // // .on("mouseleave", mouseLeave)
-  // .on("mousemove", mouseMove)
-})

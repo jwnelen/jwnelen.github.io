@@ -11,6 +11,10 @@ svg rect {
     fill: orange;
 }
 
+.flex {
+    display: flex;
+}
+
 svg text {
     fill: black;
     font: 10px sans-serif;
