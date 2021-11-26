@@ -1,7 +1,6 @@
-
 let loader = new DataLoader([
-	{name: "mapData", filename: "data/nl.json"},
-	{name: "co2Data", filename: "data/totale_co2_2019.csv"},
+  {name: "mapData", filename: "data/nl.json"},
+  {name: "co2Data", filename: "data/totale_co2_2019.csv"},
   {name: "income", filename: "data/income-municipality.csv"}]);
 
 const getMunicipalitiesBelowIncomeThreshold = (muns, val) => {
@@ -34,11 +33,11 @@ const createThresholdSelector = (incomes, min, max, onChange) => {
   // default values displayed
   d3.select('p#value-simple').text(sliderSimple.value());
   const munNames = getMunicipalitiesBelowIncomeThreshold(incomes, sliderSimple.value()).map(mun => mun.municipality)
-  d3.select('p#municipalities').text("below threshold: " + munNames.map( m => m.municipality).length);
+  d3.select('p#municipalities').text("below threshold: " + munNames.map(m => m.municipality).length);
 }
 
 const getCO2FromMunicipalities = (co2, municipalities) => {
-  return co2.filter( d => municipalities.includes(d.municipality))
+  return co2.filter(d => municipalities.includes(d.municipality))
 }
 
 loader.getData(res => {
@@ -47,8 +46,8 @@ loader.getData(res => {
   const co2Data = res["co2Data"]
 
   loader.changeKeys(incomes, [
-      {from: 'Gemiddeld inkomen per huishouden|2018', to: "income"},
-      {from: "Gemeenten", to: "municipality"}])
+    {from: 'Gemiddeld inkomen per huishouden|2018', to: "income"},
+    {from: "Gemeenten", to: "municipality"}])
 
   loader.changeKeys(co2Data, [
     {from: "Gemeenten", to: "municipality"}])

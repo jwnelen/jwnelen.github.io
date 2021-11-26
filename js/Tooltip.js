@@ -2,14 +2,7 @@ class ToolTip {
   constructor() {
     this.Tooltip = d3.select("#map_nl")
         .append("div")
-        .style("opacity", 1)
         .attr("class", "tooltip")
-        .style("background-color", "white")
-        .style("border", "solid")
-        .style("border-width", "2px")
-        .style("border-radius", "5px")
-        .style("padding", "5px")
-        .style("position", "absolute");
   }
 
   mouseOver = (d) => {
@@ -30,7 +23,7 @@ class ToolTip {
   }
   mouseMove = (d) => {
     this.Tooltip
-        .html("Say hi to the peeps of " + d.target.attributes.municipality_name.value)
+        .html("" + d.target.attributes.municipality_name.value)
         .style("left", (d.clientX - 30 + "px"))
         .style("top", (d.clientY - 50 + "px"))
   }

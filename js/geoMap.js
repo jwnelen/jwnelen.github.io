@@ -43,7 +43,7 @@ class GeoMap {
 
     projection.fitSize([this.width, this.height], this.mapData)
 
-    const paths = svg.selectAll("path").data(this.mapData.features)
+    svg.selectAll("path").data(this.mapData.features)
         .join('path')
         .attr("d", function (d) {
           return path(d);
