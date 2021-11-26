@@ -26,7 +26,6 @@ svg text {
 }
 
 .tooltip {
-    opacity: 1;
     position: absolute;
     padding: 10px;
     border-radius:10px;
