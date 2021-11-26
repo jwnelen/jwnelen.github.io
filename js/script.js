@@ -53,7 +53,6 @@ loader.getData(res => {
   loader.changeKeys(co2Data, [
     {from: "Gemeenten", to: "municipality"}])
 
-
   const incomeValues = incomes.map(municipality => parseInt(municipality.income)).filter(x => x)
   const min = Math.min(...incomeValues)
   const max = Math.max(...incomeValues)
@@ -63,14 +62,14 @@ loader.getData(res => {
 
   const filteredMunNames = getMunicipalitiesBelowIncomeThreshold(incomes, middleValue).map(mun => mun.municipality)
   let filteredCO2 = getCO2FromMunicipalities(co2Data, filteredMunNames)
-  const barchart = new barChart(filteredCO2)
+  const barChart = new BarChart(filteredCO2)
 
   const updateOnNewSelection = (newVal) => {
     const munNames = getMunicipalitiesBelowIncomeThreshold(incomes, newVal).map(mun => mun.municipality)
     let filteredCO2 = getCO2FromMunicipalities(co2Data, munNames)
 
     map.update(newVal)
-    barchart.update(filteredCO2)
+    barChart.update(filteredCO2)
 
     d3.select('p#value-simple').text(d3.format(",.2r")(newVal)); // display value
     d3.select('p#municipalities').text("below threshold: " + munNames.length);

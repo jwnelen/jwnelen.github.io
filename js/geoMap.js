@@ -7,6 +7,7 @@ class GeoMap {
     this.width = 800;
     this.height = 800;
 
+    this.toolTip = new ToolTip()
     this.draw()
   }
 
@@ -56,7 +57,9 @@ class GeoMap {
         })
         .attr("opacity", 0.8)
         .attr("fill", (d) => this.fill(d, this.incomes, this.middleValue))
-
+        .on("mouseover", (d) => this.toolTip.mouseOver(d))
+        .on("mouseleave", (d) => this.toolTip.mouseLeave(d))
+        .on("mousemove", (d) => this.toolTip.mouseMove(d));
   }
 
 }

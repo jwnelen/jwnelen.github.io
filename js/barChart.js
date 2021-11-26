@@ -1,4 +1,4 @@
-class barChart {
+class BarChart {
   constructor(co2data) {
     this.margin = {top: 30, right: 30, bottom: 70, left: 60}
     this.widthBar = 460 - this.margin.left - this.margin.right
