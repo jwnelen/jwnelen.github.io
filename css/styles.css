@@ -20,6 +20,18 @@ svg text {
     text-anchor: end;
 }
 
+.selected {
+    fill: #2450ff
+}
+
+.not-selected {
+    fill: #56728d
+}
+
+.unknown {
+    fill: #eeeeee;
+}
+
 .tooltip {
     position: absolute;
     padding: 10px;

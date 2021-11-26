@@ -57,7 +57,7 @@ class BarChart {
           .attr("y", d => y(d.CO2))
           .attr("width", x.bandwidth())
           .attr("height", d => this.heightBar - y(d.CO2))
-          .attr("fill", "#69b3a2")
+          .attr("class", "selected")
 
   }
 }

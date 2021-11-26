@@ -22,11 +22,11 @@ class GeoMap {
     const allMunNames = incomes.map(mun => mun.municipality)
 
     if (munNames.includes(areaName)) {
-      return "white" // below
+      return "selected" // below
     } else if (allMunNames.includes(areaName)) {
-      return "green" // above
+      return "not-selected" // above
     } else {
-      return "lightgrey" // not found
+      return "unknown" // not found
     }
   }
 
@@ -49,14 +49,12 @@ class GeoMap {
           return path(d);
         })
         .attr("stroke", "black")
-        .attr("class", function (d) {
-          return "Municipality"
-        })
+        .attr("class", "Municipality")
         .attr("municipality_name", function (d) {
           return d.properties.areaName
         })
         .attr("opacity", 0.8)
-        .attr("fill", (d) => this.fill(d, this.incomes, this.middleValue))
+        .attr("class", (d) => this.fill(d, this.incomes, this.middleValue))
         .on("mouseover", (d) => this.toolTip.mouseOver(d))
         .on("mouseleave", (d) => this.toolTip.mouseLeave(d))
         .on("mousemove", (d) => this.toolTip.mouseMove(d));
