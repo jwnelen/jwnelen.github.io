@@ -3,6 +3,7 @@ class ToolTip {
     this.Tooltip = d3.select("#map_nl")
         .append("div")
         .attr("class", "tooltip")
+        .style("opacity", 0)
   }
 
   mouseOver = (d) => {

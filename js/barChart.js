@@ -51,11 +51,13 @@ class BarChart {
     // Bars
     svgBarChart.selectAll("mybar")
         .data(data)
-        .join("rect")
-        .attr("x", d => x(d.municipality))
-        .attr("y", d => y(d.CO2))
-        .attr("width", x.bandwidth())
-        .attr("height", d => this.heightBar - y(d.CO2))
-        .attr("fill", "#69b3a2")
+        .enter()
+        .append("rect")
+          .attr("x", d => x(d.municipality))
+          .attr("y", d => y(d.CO2))
+          .attr("width", x.bandwidth())
+          .attr("height", d => this.heightBar - y(d.CO2))
+          .attr("fill", "#69b3a2")
+
   }
 }

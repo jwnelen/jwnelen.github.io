@@ -7,10 +7,6 @@ body {
     background-color: #ffffff !important;
 }
 
-svg rect {
-    fill: orange;
-}
-
 .flex {
     display: flex;
 }
@@ -21,14 +17,13 @@ svg rect {
 
 svg text {
     fill: black;
-    font: 10px sans-serif;
     text-anchor: end;
 }
 
 .tooltip {
     position: absolute;
     padding: 10px;
-    border-radius:10px;
+    border-radius: 10px;
     background:#000;
     color: #fff;
     text-align:center;
