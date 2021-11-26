@@ -1,13 +1,3 @@
-const width = 800;
-const height = 800;
-
-const svg = d3.select("#map_nl")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-let projection = d3.geoMercator();
-let path = d3.geoPath().projection(projection);
 
 let loader = new DataLoader([
 	{name: "mapData", filename: "data/nl.json"},
@@ -54,65 +44,33 @@ const getCO2FromMunicipalities = (co2, municipalities) => {
 loader.getData(res => {
   const mapData = res["mapData"];
   const incomes = res["income"];
-  const co2 = res["co2Data"]
+  const co2Data = res["co2Data"]
 
   loader.changeKeys(incomes, [
       {from: 'Gemiddeld inkomen per huishouden|2018', to: "income"},
       {from: "Gemeenten", to: "municipality"}])
 
-  loader.changeKeys(co2, [
+  loader.changeKeys(co2Data, [
     {from: "Gemeenten", to: "municipality"}])
 
-  const mapDataMunicipalities = mapData.features.map(d => d.properties.areaName).sort();
-  const incomesMunicipalities = incomes.map(d => d.municipality).sort();
 
   const incomeValues = incomes.map(municipality => parseInt(municipality.income)).filter(x => x)
   const min = Math.min(...incomeValues)
   const max = Math.max(...incomeValues)
   let middleValue = (min + max) / 2
-  projection.fitSize([width, height], mapData)
+
+  const map = new GeoMap({mapData, incomes, middleValue})
 
   const filteredMunNames = getMunicipalitiesBelowIncomeThreshold(incomes, middleValue).map(mun => mun.municipality)
-  let filteredCO2 = getCO2FromMunicipalities(co2, filteredMunNames)
-  createBarChart(filteredCO2)
-
-  const fill = (d, incomes, val) => {
-    let areaName = d.properties.areaName;
-    const munNames = getMunicipalitiesBelowIncomeThreshold(incomes, val).map(mun => mun.municipality)
-    const allMunNames = incomes.map(mun => mun.municipality)
-
-    if (munNames.includes(areaName)) {
-      return "white" // below
-    } else if (allMunNames.includes(areaName)) {
-      return "green" // above
-    } else {
-        return "lightgrey" // not found
-      }
-    }
-
-  const paths = svg.selectAll("path").data(mapData.features)
-      .join('path')
-      .attr("d", function (d) {
-        return path(d);
-      })
-      .attr("stroke", "black")
-      .attr("class", function (d) {
-        return "Municipality"
-      })
-      .attr("municipality_name", function (d) {
-        return d.properties.areaName
-      })
-      .attr("opacity", 0.8)
-      .attr("fill", (d) => fill(d, incomes, middleValue))
-      // .attr("mouseover", (d) => mouseOver(d))
-      // .attr("mouseleave", (d) => mouseLeave(d))
-      // .attr("mousemove", (d) => mouseMove(d))
+  let filteredCO2 = getCO2FromMunicipalities(co2Data, filteredMunNames)
+  const barchart = new barChart(filteredCO2)
 
   const updateOnNewSelection = (newVal) => {
-    paths.attr("fill", (d) => fill(d, incomes, newVal))
     const munNames = getMunicipalitiesBelowIncomeThreshold(incomes, newVal).map(mun => mun.municipality)
-    let filteredCO2 = getCO2FromMunicipalities(co2, munNames)
-    createBarChart(filteredCO2)
+    let filteredCO2 = getCO2FromMunicipalities(co2Data, munNames)
+
+    map.update(newVal)
+    barchart.update(filteredCO2)
 
     d3.select('p#value-simple').text(d3.format(",.2r")(newVal)); // display value
     d3.select('p#municipalities').text("below threshold: " + munNames.length);
