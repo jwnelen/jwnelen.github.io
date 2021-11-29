@@ -20,7 +20,7 @@ loader.getData(res => {
   const max = Math.max(...incomeValues)
   let middleValue = (min + max) / 2
 
-  const filteredMunNames = getMunicipalitiesBelowIncomeThreshold(incomes, middleValue).map(mun => mun.municipality)
+  const filteredMunNames = getBelowThreshold(incomes, "income", middleValue).map(mun => mun.municipality)
   let filteredCO2 = getCO2FromMunicipalities(co2Data, filteredMunNames)
 
   // Constructing all elements
@@ -29,7 +29,7 @@ loader.getData(res => {
   const barChart = new BarChart(filteredCO2)
 
   const update = (newVal) => {
-    const munNames = getMunicipalitiesBelowIncomeThreshold(incomes, newVal).map(mun => mun.municipality)
+    const munNames = getBelowThreshold(incomes, "income", newVal).map(mun => mun.municipality)
     let filteredCO2 = getCO2FromMunicipalities(co2Data, munNames)
 
     map.update(newVal)

@@ -1,5 +1,5 @@
-const getMunicipalitiesBelowIncomeThreshold = (muns, val) => {
-  return muns.filter((mun) => mun.income < val)
+const getBelowThreshold = (l, key, thres) => {
+  return l.filter((mun) => mun[key] < thres)
 }
 
 const getCO2FromMunicipalities = (co2, municipalities) => {

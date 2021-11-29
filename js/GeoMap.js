@@ -18,7 +18,7 @@ class GeoMap {
 
   fill(d, incomes, val) {
     let areaName = d.properties.areaName;
-    const munNames = getMunicipalitiesBelowIncomeThreshold(incomes, val).map(mun => mun.municipality)
+    const munNames = getBelowThreshold(incomes, "income", val).map(mun => mun.municipality)
     const allMunNames = incomes.map(mun => mun.municipality)
 
     if (munNames.includes(areaName)) {
