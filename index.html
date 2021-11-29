@@ -5,12 +5,24 @@
         <link rel="stylesheet" href="css/styles.css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
         <script src="https://d3js.org/d3.v7.min.js"></script>
+        <script src="https://unpkg.com/d3-simple-slider"></script>
     </head>
     <body>
-        <h1>How green is my municipality?</h1>
-        <div id="my_dataviz"></div>
-        <div id ="map_nl"></div>
+        <h1 style="text-align: center">How green is my municipality?</h1>
+        <div class="flex">
+            <div id="map_nl"></div>
+            <div id="slider">
+                <p id="value-simple"></p>
+                <p id="municipalities">Below threshold: </p>
+            </div>
+            <div id="barChart"></div>
+        </div>
+        <script src="js/Utils.js"></script>
         <script src="js/DataLoader.js"></script>
+        <script src="js/Tooltip.js"></script>
+        <script src="js/Slider.js"></script>
+        <script src="js/GeoMap.js"></script>
+        <script src="js/BarChart.js"></script>
         <script src="js/script.js"></script>
     </body>
 </html>

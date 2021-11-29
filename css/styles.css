@@ -7,12 +7,36 @@ body {
     background-color: #ffffff !important;
 }
 
-svg rect {
-    fill: orange;
+.flex {
+    display: flex;
+}
+
+.axis {
+    font-size: 8px
 }
 
 svg text {
     fill: black;
-    font: 10px sans-serif;
     text-anchor: end;
+}
+
+.selected {
+    fill: #2450ff
+}
+
+.not-selected {
+    fill: #56728d
+}
+
+.unknown {
+    fill: #eeeeee;
+}
+
+.tooltip {
+    position: absolute;
+    padding: 10px;
+    border-radius: 10px;
+    background:#000;
+    color: #fff;
+    text-align:center;
 }

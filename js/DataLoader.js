@@ -3,7 +3,7 @@ class DataLoader {
 		this.files = files;
 	}
 
-	getData(succes) {
+	getData(success) {
 		let promises = this.files.map(x => {
 			let suffix = x.filename.split(".");
 			suffix = suffix[suffix.length-1];
@@ -18,7 +18,7 @@ class DataLoader {
 				res[this.files[i].name] = v;
 			});
 			this.data = res;
-			succes(res);
+			success(res);
 		});
 	}
 
@@ -33,7 +33,6 @@ class DataLoader {
 		let range = Array.from({length: num}, (v, i) => i);
 		let quantile = d3.scaleQuantile().domain(data.map(x => x[attr]))
 			.range(range);
-		let thresholds = quantile.quantiles();
-		return thresholds;
+		return quantile.quantiles();
 	}
 }
