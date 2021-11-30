@@ -1,118 +1,47 @@
-var width = 1600;
-var height = 1200;
-
-var svg = d3.select("#map_nl")
-	.append("svg")
-	.attr("width", width)
-	.attr("height", height);
-
-var projection = d3.geoMercator();
-var path = d3.geoPath().projection(projection);
-
 let loader = new DataLoader([
-	{name: "mapData", filename: "data/nl.json"},
-	{name: "co2Data", filename: "data/totale_co2_2019.csv"},
-	{name: "renewData", filename: "data/Gemeente_hernieuwbare_energie.csv"}]);
-
-// create a tooltip
-var Tooltip = d3.select("#map_nl")
-	.append("div")
-	.style("opacity", 0)
-	.attr("class", "tooltip")
-	.style("background-color", "white")
-	.style("border", "solid")
-	.style("border-width", "2px")
-	.style("border-radius", "5px")
-	.style("padding", "5px")
-	.style("position", "absolute");
+  {name: "mapData", filename: "data/nl.json"},
+  {name: "co2Data", filename: "data/totale_co2_2019.csv"},
+  {name: "income", filename: "data/income-municipality.csv"},
+  {name: "renewData", filename: "data/Gemeente_hernieuwbare_energie.csv"}]);
 
 loader.getData(res => {
-	var mapData = res["mapData"];
-	var co2Data = loader.parseNumbers(res["co2Data"], ["CO2"]);
+  const mapData = res["mapData"];
+  const incomes = res["income"];
+  const co2Data = parseNumbers(res["co2Data"], ["CO2"]);
+  const renewData = parseNumbers(res["renewData"], ["energy", "electricity", "warmth", "transport"]);
 
-	var colorScaleCO2Data = d3.scaleLinear().domain([-1, 12126900]).range(["#e5f5f9", "#2ca25f"]);
-	projection.fitSize([width, height], mapData);
-	var municipalities = mapData;
 
-	let mouseOver = function (d) {
-		Tooltip
-			.style("opacity", 1);
-		d3.select(this)
-			.style("stroke", "black")
-			.style("opacity", 1)
-		d3.selectAll(".Municipality")
-			.transition()
-			.duration(200)
-			.style("opacity", .5)
-		d3.select(this)
-			.transition()
-			.duration(100)
-			.style("opacity", 1)
-			.style("stroke", "black")
-	}
+  changeKeys(incomes, [
+    {from: 'Gemiddeld inkomen per huishouden|2018', to: "income"},
+    {from: "Gemeenten", to: "municipality"}])
+  changeKeys(co2Data, [
+    {from: "Gemeenten", to: "municipality"}]);
+  changeKeys(renewData, [
+    {from: "Gemeenten", to: "municipality"}])
 
-	var mouseMove = function (d) {
-		Tooltip
-			.html("Say hi to the peeps of " + d.target.attributes.municipality_name.value)
-			.style("left", (d.clientX - 30 + "px"))
-			.style("top", (d.clientY - 50 + "px"))
-	}
+  const incomeValues = incomes.map(municipality => parseInt(municipality.income)).filter(x => x)
+  const min = Math.min(...incomeValues)
+  const max = Math.max(...incomeValues)
+  let middleValue = (min + max) / 2
 
-	let mouseLeave = function (d) {
-		Tooltip
-			.style("opacity", 0)
-		d3.select(this)
-			.style("stroke", "black")
-			.style("opacity", 0.8)
-		d3.selectAll(".Municipality")
-			.transition()
-			.duration(200)
-			.style("opacity", .8)
-		d3.select(this)
-			.transition()
-			.duration(100)
-			.style("stroke", "transparent")
-	}
+  const filteredMunNames = getBelowThreshold(incomes, "income", middleValue).map(mun => mun.municipality)
+  let filteredCO2 = getCO2FromMunicipalities(co2Data, filteredMunNames);
+  let percentiles = calculateRenewableVSCO2(renewData, co2Data);
 
-	const paths = svg.selectAll("path").data(municipalities.features)
-		.join('path')
-		.attr("d", function (d) {
-			return path(d);
-		})
-		.attr("fill", function (d) {
-			var areaName = d.properties.areaName;
-			var x = co2Data.find(element => element.Gemeenten === areaName)
-			if (typeof (x) === "undefined") {
-				return "grey";
-			} else {
-				return colorScaleCO2Data(x.CO2);
-			}
-		})
-		.attr("stroke", "black")
-		.attr("class", function (d) {
-			return "Municipality"
-		})
-		.attr("municipality_name", function (d) {
-			return d.properties.areaName
-		})
-		.attr("opacity", 0.8)
-		.on("mouseover", mouseOver)
-		.on("mouseleave", mouseLeave)
-		.on("mousemove", mouseMove);
+  // Constructing all elements
+  const slider = new Slider(min, max, (v) => update(v));
+  const map = new GeoMap({mapData, incomes, middleValue});
+  const barChart = new BarChart("bar-chart", filteredCO2, "municipality", "CO2");
+  const percentileChart = new BarChart("percentile-chart", percentiles, "percentile", "avg");
 
-	let renewData = loader.parseNumbers(res["renewData"], ["energy", "electricity", "warmth", "transport"]);
-	let quantile = loader.getPercentiles(renewData, "energy", 10);
-	console.log(quantile);
-	let joined = loader.joinData(renewData, co2Data, "Gemeenten");
-	let quartiles = new Array(quantile.length-1);
-	for (let i = 0; i < quantile.length-1; i++) {
-		quartiles[i] = joined.filter(d => {
-			return d.energy >= quantile[i] && d.energy < quantile[i+1];
-		} );
-		console.log(loader.getAverage(quartiles[i], "CO2"));
-	}
+  const update = (newVal) => {
+    const munNames = getBelowThreshold(incomes, "income", newVal).map(mun => mun.municipality)
+    let filteredCO2 = getCO2FromMunicipalities(co2Data, munNames)
 
-	console.log(quartiles);
+    map.update(newVal)
+    barChart.update(filteredCO2)
 
-});
-
+    d3.select('p#value-simple').text(d3.format(",.2r")(newVal)); // display value
+    d3.select('p#municipalities').text("below threshold: " + munNames.length);
+  }
+})
