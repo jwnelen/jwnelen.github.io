@@ -31,8 +31,8 @@ loader.getData(res => {
   // Constructing all elements
   const slider = new Slider(min, max, (v) => update(v));
   const map = new GeoMap({mapData, incomes, middleValue});
-  const barChart = new BarChart("bar-chart", filteredCO2, "municipality", "CO2");
-  const percentileChart = new BarChart("percentile-chart", percentiles, "percentile", "avg");
+  const barChart = new BarChart("barchart", filteredCO2, "municipality", "CO2");
+  const percentileChart = new BarChart("percentilechart", percentiles, "percentile", "avg");
 
   const update = (newVal) => {
     const munNames = getBelowThreshold(incomes, "income", newVal).map(mun => mun.municipality)
