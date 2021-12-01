@@ -1,4 +1,4 @@
-"Gemeenten";"CO2-uitstoot Gebouwde Omgeving (aardgas, elektr. en stadswarmte woningen)|2019";"CO2-uitstoot Verkeer en vervoer incl. auto(snel)wegen, excl. elektr. railverkeer (scope 1)|2019";"CO2-uitstoot Industrie, Energie, Afval en Water (aardgas en elektr.)|2019";"CO2-uitstoot Landbouw, bosbouw en visserij, SBI A (aardgas, elektr.)|2019";"Totaal bekende CO2-uitstoot (aardgas, elektr., stadswarmte woningen, voertuigbrandstoffen)|2019"
+"Gemeenten";"CO2-uitstoot Gebouwde Omgeving (aardgas elektr. en stadswarmte woningen)|2019";"CO2-uitstoot Verkeer en vervoer incl. auto(snel)wegen excl. elektr. railverkeer (scope 1)|2019";"CO2-uitstoot Industrie Energie Afval en Water (aardgas en elektr.)|2019";"CO2-uitstoot Landbouw bosbouw en visserij SBI A (aardgas elektr.)|2019";"Totaal bekende CO2-uitstoot (aardgas elektr. stadswarmte woningen voertuigbrandstoffen)|2019"
 "Aa en Hunze";72808;69765;-1;4748;155500
 "Aalsmeer";-1;34722;14171;48393;210600
 "Aalten";60873;36926;14392;7175;119400
@@ -15,7 +15,7 @@
 "Amersfoort";362613;295450;25134;1148;684300
 "Amstelveen";228047;111446;8142;24254;371900
 "Amsterdam";2657362;1138694;450069;-1;4369600
-"Apeldoorn";470560;439626;161437;5940;1077600
+"Apeldoorn";470560;439626;161437;5940;107760
 "Arnhem";430983;370100;55177;1576;857800
 "Assen";177841;113234;-1;1287;306300
 "Asten";44798;76635;13468;107241;242100

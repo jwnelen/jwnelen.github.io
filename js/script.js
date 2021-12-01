@@ -1,5 +1,6 @@
 let loader = new DataLoader([
   {name: "mapData", filename: "data/nl.json"},
+  {name: "co2PerSector", filename: "data/CO2-uitstoot-sectoren.csv"},
   {name: "co2Data", filename: "data/totale_co2_2019.csv"},
   {name: "income", filename: "data/income-municipality.csv"},
   {name: "renewData", filename: "data/Gemeente_hernieuwbare_energie.csv"}]);
@@ -7,6 +8,9 @@ let loader = new DataLoader([
 loader.getData(res => {
   const mapData = res["mapData"];
   const incomes = res["income"];
+  const co2PerSector = res["co2PerSector"];
+
+  console.log(co2PerSector)
   const co2Data = parseNumbers(res["co2Data"], ["CO2"]);
   const renewData = parseNumbers(res["renewData"], ["energy", "electricity", "warmth", "transport"]);
 
