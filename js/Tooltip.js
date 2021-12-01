@@ -42,6 +42,6 @@ class ToolTip {
     d3.select(path)
         .transition()
         .duration(100)
-        .style("stroke", "transparent")
+        .style("stroke", "black")
   }
 }
