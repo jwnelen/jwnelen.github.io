@@ -8,7 +8,6 @@ class DataLoader {
 			let commas = data.split("\n")[0].split(",").length;
 			let semicolons = data.split("\n")[0].split(";").length;
 			let separator = commas > semicolons ? "," : ";";
-			data = data.replace(/[r|rn]/g, "n")
 			let module = $.csv;
 			let objects = $.csv.toObjects(data, {separator: separator});
 			return objects;
