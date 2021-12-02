@@ -23,6 +23,15 @@ const calculateRenewableVSCO2 = (renewData, co2Data) => {
   return res;
 }
 
+const calculateCO2PerInhabitant = (co2Data, inhabitantData) =>{
+  for(co2DataPoint of co2Data.filter(entry => entry["municipality"] != "Gemeente onbekend")){
+    let thisMunicip = co2DataPoint.municipality
+    let thisInhab = inhabitantData.filter(entry => entry["municipality"] == thisMunicip)[0].inhabitants
+    co2DataPoint.CO2_per_inhabitant = co2DataPoint.CO2/thisInhab
+  }
+  return co2Data
+}
+
 const calculateCO2PerPoliticalParty = (electionData, co2Data) => {
   let unique_party_list = electionData.filter(entry =>  entry["municipality"] == "Nederland").map(entry => entry["party_name"])
   let party_avg_co2_value = []
@@ -48,7 +57,7 @@ const calculateCO2PerPoliticalParty = (electionData, co2Data) => {
     let weighted_co2_value = 0
     for (entry of votes_party_list){
       entry.percentage = entry.votes/total_votes
-      let co2_value = co2Data.filter(x => x['municipality'] == entry['municipality'])[0].CO2
+      let co2_value = co2Data.filter(x => x['municipality'] == entry['municipality'])[0].CO2_per_inhabitant
       if (co2_value.length == 0){
         console.log(entry)
       }

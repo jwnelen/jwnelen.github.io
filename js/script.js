@@ -4,7 +4,8 @@ let loader = new DataLoader([
   {name: "co2Data", filename: "data/totale_co2_2019.csv"},
   {name: "income", filename: "data/income-municipality.csv"},
   {name: "renewData", filename: "data/Gemeente_hernieuwbare_energie.csv"},
-  {name: "electionData", filename:"data/vote_data_per_municip.csv"}]);
+  {name: "electionData", filename:"data/vote_data_per_municip.csv"},
+  {name: "inhabitantData", filename:"data/inwoneraantallen_2019.csv"}]);
 
 loader.getData(res => {
   const mapData = res["mapData"];
@@ -14,10 +15,15 @@ loader.getData(res => {
   const electionData = parseNumbers(res["electionData"],["Votes"])
   const co2Data = parseNumbers(res["co2Data"], ["CO2"]);
   const renewData = parseNumbers(res["renewData"], ["energy", "electricity", "warmth", "transport"]);
+  const inhabitantData = parseNumbers(res["inhabitantData"],["Inwoneraantal"])
 
   changeKeys(electionData, [
     {from:"Municipality name", to: "municipality"},
     {from:"Votes", to: "votes"}
+  ])
+  changeKeys(inhabitantData,[
+    {from:"Gemeente", to:"municipality"},
+    {from:"Inwoneraantal",to:"inhabitants"}
   ])
   changeKeys(incomes, [
     {from: 'Gemiddeld inkomen per huishouden|2018', to: "income"},
@@ -32,6 +38,8 @@ loader.getData(res => {
   const min = Math.min(...incomeValues)
   const max = Math.max(...incomeValues)
   let middleValue = (min + max) / 2
+
+  console.log(calculateCO2PerInhabitant(co2Data,inhabitantData))
 
   const filteredMunNames = getBelowThreshold(incomes, "income", middleValue).map(mun => mun.municipality)
   let filteredCO2 = getCO2FromMunicipalities(co2Data, filteredMunNames);
