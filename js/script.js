@@ -27,7 +27,6 @@ loader.getData(res => {
   changeKeys(renewData, [
     {from: "Gemeenten", to: "municipality"}])
 
-  console.log(calculateCO2PerPoliticalParty(electionData,co2Data))
 
   const incomeValues = incomes.map(municipality => parseInt(municipality.income)).filter(x => x)
   const min = Math.min(...incomeValues)
@@ -37,12 +36,15 @@ loader.getData(res => {
   const filteredMunNames = getBelowThreshold(incomes, "income", middleValue).map(mun => mun.municipality)
   let filteredCO2 = getCO2FromMunicipalities(co2Data, filteredMunNames);
   let percentiles = calculateRenewableVSCO2(renewData, co2Data);
+  let co2Party = calculateCO2PerPoliticalParty(electionData,co2Data)
 
   // Constructing all elements
   const slider = new Slider(min, max, (v) => update(v));
   const map = new GeoMap({mapData, incomes, middleValue});
   const barChart = new BarChart("barchart", filteredCO2, "municipality", "CO2");
   const percentileChart = new BarChart("percentilechart", percentiles, "percentile", "avg");
+  const partyCO2Chart = new BarChart("partyCO2Chart",co2Party,"party_name","CO2");
+
 
   const update = (newVal) => {
     const munNames = getBelowThreshold(incomes, "income", newVal).map(mun => mun.municipality)

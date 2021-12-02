@@ -26,30 +26,34 @@ const calculateRenewableVSCO2 = (renewData, co2Data) => {
 const calculateCO2PerPoliticalParty = (electionData, co2Data) => {
   let unique_party_list = electionData.filter(entry =>  entry["municipality"] == "Nederland").map(entry => entry["party_name"])
   let party_avg_co2_value = []
+  // we only calc over municipalities for which we have CO2 values
   let municipalities_with_co2Data = co2Data.filter(entry => entry["CO2"] > 0).map(entry => entry["municipality"])
   let electionDataCorr = electionData.filter(entry => municipalities_with_co2Data.includes(entry["municipality"] ))
-  console.log(electionDataCorr)
+
   for (let i = 0; i < unique_party_list.length; i++){
+    // for any party: we need to find where there voters come from
     let party = unique_party_list[i]
     let votes_party_list = electionDataCorr.filter(entry =>  entry["party_name"] == party).map(entry => isNaN(entry.votes) ? {...entry, "votes": 0}: entry)
-                      
+    
+    // just a check for undefined shit: could be removed
     for(let j = 0; j < votes_party_list.length; j++){
       if (typeof votes_party_list[j].percentage == undefined){
         console.log(votes_party_list[j].percentage)
         console.log("undefined shit " +votes_party_list[j].party_name)
       }
     }
+
+    // for any party: to find the percentage of votes coming from some municipality
     let total_votes = electionDataCorr.filter(entry =>  entry['party_name'] == party).reduce((acc,curr) => {return acc + curr['votes']},0);
-    let percentage_votes_per_party_list = votes_party_list.filter(entry => entry["municipality"] != "Nederland")
     let weighted_co2_value = 0
-    for (entry of percentage_votes_per_party_list){
+    for (entry of votes_party_list){
       entry.percentage = entry.votes/total_votes
-      let co2_value = co2Data.filter(x => x['municipality'] == entry['municipality'])
+      let co2_value = co2Data.filter(x => x['municipality'] == entry['municipality'])[0].CO2
       if (co2_value.length == 0){
         console.log(entry)
       }
       else{
-        weighted_co2_value = co2Data.filter(x => x['municipality'] == entry['municipality'])[0].CO2 * entry.percentage
+        weighted_co2_value += co2_value * entry.percentage
       }
     }
     party_avg_co2_value.push({'party_name': party, 'CO2': weighted_co2_value})
