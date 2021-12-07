@@ -45,3 +45,13 @@ function joinData(d1, d2, key, sameData = false) {
 		});
 	}
 }
+
+function changeNames(data, key, names) {
+	data.forEach(d => {
+		names.forEach(n => {
+			let isFrom = d[key] === n.from;
+			d[key] = d[key] === n.from? n.to : d[key];
+			if(isFrom) console.log(d);
+		});
+	})
+}

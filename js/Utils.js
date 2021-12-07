@@ -68,4 +68,17 @@ const calculateCO2PerPoliticalParty = (electionData, co2Data) => {
     party_avg_co2_value.push({'party_name': party, 'CO2': weighted_co2_value})
   }
   return party_avg_co2_value
-}
+};
+
+const mergeGeoPaths = function (data, key1, key2, target) {
+	let features = data.features;
+	let v1 = features.find(f => f.properties.areaName === key1);
+	let v2 = features.find(f => f.properties.areaName === key2);
+	let res = JSON.parse(JSON.stringify(v1));
+	res.properties.areaName = target;
+	//Een erg gebeunde manier van paths mergen, kan vast beter
+	res.geometry.coordinates[0] = res.geometry.coordinates[0].concat(v2.geometry.coordinates[0]);
+	features.splice(features.indexOf(v1),1);
+	features.splice(features.indexOf(v2),1);
+	features.push(res);
+};

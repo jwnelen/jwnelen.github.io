@@ -9,6 +9,7 @@ let loader = new DataLoader([
 
 loader.getData(res => {
   const mapData = res["mapData"];
+  mergeGeoPaths(mapData, "Molenwaard", "Giessenlanden", "Molenlanden");
   const incomes = res["income"];
   const co2PerSector = res["co2PerSector"];
   
@@ -32,6 +33,10 @@ loader.getData(res => {
     {from: "Gemeenten", to: "municipality"}]);
   changeKeys(renewData, [
     {from: "Gemeenten", to: "municipality"}])
+
+  Object.values(res)
+      .filter(dataset => Array.isArray(dataset)&&"municipality" in dataset[0])
+      .forEach(dataset => changeNames(dataset, "municipality", [{from: "Nuenen, Gerwen en Nederwetten", to: "Nuenen c.a."}]));
 
 
   const incomeValues = incomes.map(municipality => parseInt(municipality.income)).filter(x => x)
