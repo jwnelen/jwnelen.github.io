@@ -70,14 +70,4 @@ var opts = {
 
     // High resolution support
     highDpiSupport: true
-
 };
-
-var target = document.getElementById("demo")
-var gauge = new Gauge(target).setOptions(opts);
-document.getElementById("preview-textfield").className = "preview-textfield";
-gauge.setTextField(document.getElementById("preview-textfield"));
-gauge.maxValue = 6;
-gauge.setMinValue(0); 
-gauge.set(0);
-gauge.animationSpeed = 32

@@ -36,7 +36,7 @@ class CO2View extends View {
 			return "grey";
 		}
 		else{
-			let colorScaleCO2Data = d3.scaleLinear().domain([min, max]).range(["#e5f5f9","#2ca25f"]);
+			let colorScaleCO2Data = d3.scaleSqrt().domain([min, max]).range(["#e5f5f9","#2ca25f"]);
 			return colorScaleCO2Data(x.CO2);
 		}
 	}
