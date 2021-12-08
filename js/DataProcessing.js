@@ -13,6 +13,7 @@ function parseNumbers(data, keys) {
 	return data;
 }
 
+
 function getPercentiles(data, attr, num = 10) {
 	let range = Array.from({length: num}, (v, i) => i);
 	let quantile = d3.scaleQuantile().domain(data.map(x => x[attr]))

@@ -20,7 +20,7 @@ class BarChart {
     let data = this.data.filter(d => d[this.keyY] > 0);
 
     const svgBarChart = d3.select("#"+this.id)
-        .append("svg").attr("id", "barchartsvg")
+        .append("svg").attr("id", this.id+"svg")
         .attr("width", this.widthBar + this.margin.left + this.margin.right)
         .attr("height", this.heightBar + this.margin.top + this.margin.bottom)
         .append("g")
@@ -42,7 +42,6 @@ class BarChart {
 
 
     const max = Math.max(...data.map( (d) => d[this.keyY]))
-    console.log(max)
     // Add Y axis
     let y = d3.scaleLinear()
         .domain([0, max])
