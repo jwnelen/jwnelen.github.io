@@ -16,6 +16,7 @@ class CO2View extends View {
 
 		const map = new GeoMap("map_nl", this.mapData,  this, (mun) => {
 			this.barChart.update(getCO2DivisionSector(this.co2PerSector, mun));
+			$(".mun-name").html(mun);
 		});
 		this.isInitialized = true;
 	}
