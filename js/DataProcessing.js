@@ -13,13 +13,6 @@ function parseNumbers(data, keys) {
 	return data;
 }
 
-function parseText(data, keys) {
-	data.forEach(d => keys.forEach(k => {
-		d[k]
-	}));
-	return data;
-}
-
 
 function getPercentiles(data, attr, num = 10) {
 	let range = Array.from({length: num}, (v, i) => i);

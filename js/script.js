@@ -17,7 +17,7 @@ loader.getData(res => {
   const co2Data = parseNumbers(res["co2Data"], ["CO2"]);
   const renewData = parseNumbers(res["renewData"], ["energy", "electricity", "warmth", "transport"]);
   const inhabitantData = parseNumbers(res["inhabitantData"],["Inwoneraantal"])
-  const uniquePartyList = parseText(res['uniquePartyList'],['party_name'])
+  const uniquePartyList = res['uniquePartyList']
 
 
   changeKeys(electionData, [
