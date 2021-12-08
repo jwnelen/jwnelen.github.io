@@ -5,7 +5,8 @@ let loader = new DataLoader([
   {name: "income", filename: "data/income-municipality.csv"},
   {name: "renewData", filename: "data/Gemeente_hernieuwbare_energie.csv"},
   {name: "electionData", filename:"data/vote_data_per_municip.csv"},
-  {name: "inhabitantData", filename:"data/inwoneraantallen_2019.csv"}]);
+  {name: "inhabitantData", filename:"data/inwoneraantallen_2019.csv"},
+  {name: "uniquePartyList", filename:"data/unique_party_list.csv"}]);
 
 loader.getData(res => {
   const mapData = res["mapData"];
@@ -17,6 +18,8 @@ loader.getData(res => {
   const co2Data = parseNumbers(res["co2Data"], ["CO2"]);
   const renewData = parseNumbers(res["renewData"], ["energy", "electricity", "warmth", "transport"]);
   const inhabitantData = parseNumbers(res["inhabitantData"],["Inwoneraantal"])
+  const uniquePartyList = res['uniquePartyList']
+
 
   changeKeys(electionData, [
     {from:"Municipality name", to: "municipality"},
@@ -43,13 +46,13 @@ loader.getData(res => {
   const min = Math.min(...incomeValues)
   const max = Math.max(...incomeValues)
   let middleValue = (min + max) / 2
-
-  console.log(calculateCO2PerInhabitant(co2Data,inhabitantData))
+  
+  calculateCO2PerInhabitant(co2Data,inhabitantData)
 
   const filteredMunNames = getBelowThreshold(incomes, "income", middleValue).map(mun => mun.municipality)
   let filteredCO2 = getCO2FromMunicipalities(co2Data, filteredMunNames);
   let percentiles = calculateRenewableVSCO2(renewData, co2Data);
-  let co2Party = calculateCO2PerPoliticalParty(electionData,co2Data)
+  let co2Party = calculateCO2PerPoliticalParty(uniquePartyList,electionData,co2Data)
 
   // Constructing all elements
   const slider = new Slider(min, max, (v) => update(v));
@@ -63,9 +66,13 @@ loader.getData(res => {
     const munNames = getBelowThreshold(incomes, "income", newVal).map(mun => mun.municipality)
     let filteredCO2 = getCO2FromMunicipalities(co2Data, munNames)
 
+    let filteredElectionData= electionData.filter(entry => munNames.includes(entry["municipality"]))
+    let co2Party = calculateCO2PerPoliticalParty(uniquePartyList,filteredElectionData,co2Data)
+
     map.update(newVal)
     barChart.update(filteredCO2)
-
+    partyCO2Chart.update(co2Party)
+    
     d3.select('p#value-simple').text(d3.format(",.2r")(newVal)); // display value
     d3.select('p#municipalities').text("below threshold: " + munNames.length);
   }
