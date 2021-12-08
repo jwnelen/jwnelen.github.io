@@ -30,6 +30,10 @@ function getMax(data, attr) {
 	return data.reduce((max, x) => x[attr] > max? x[attr] : max, 0);
 }
 
+function getMin(data, attr) {
+	return data.reduce((min, x) => x[attr] < min? x[attr] : min, Infinity)
+}
+
 function joinData(d1, d2, key, sameData = false) {
 	if(sameData) {
 		return d1.map((v, i) => Object.assign({}, v, d2[i]))
@@ -54,4 +58,8 @@ function changeNames(data, key, names) {
 			d[key] = d[key] === n.from? n.to : d[key];
 		});
 	})
+}
+
+function deepCopy(obj) {
+	return JSON.parse(JSON.stringify(obj));
 }

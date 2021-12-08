@@ -42,3 +42,41 @@ svg text {
     color: #fff;
     text-align:center;
 }
+
+.navigate {
+    display: flex;
+}
+
+.navigate hr {
+    width: 40px;
+    height: 2px;
+    background-color: #2450ff;
+    position: absolute;
+    margin: 0;
+}
+
+.navigate .dot {
+    width: 20px;
+    height: 20px;
+    background-color: #2450ff;
+    border-radius: 50%;
+    z-index: 10;
+    cursor: pointer;
+}
+
+.navigate .nav-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 130px;
+    margin-right: 20px
+}
+
+.view-container {
+    display: none;
+    flex-grow: 1;
+}
+
+#CO2-container {
+    display: flex;
+}
