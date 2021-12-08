@@ -4,8 +4,8 @@ class GeoMap {
     this.incomes = incomes
     this.middleValue = middleValue
 
-    this.width = 800;
-    this.height = 800;
+    this.width = document.getElementById("map_nl").clientWidth;
+    this.height = document.getElementById("map_nl").clientHeight;
 
     this.toolTip = new ToolTip()
     this.draw()
@@ -32,6 +32,7 @@ class GeoMap {
 
   draw() {
     d3.select("#mapsvg").remove();
+    const self = this;
 
     const svg = d3.select("#map_nl")
         .append("svg").attr("id", "mapsvg")
@@ -55,9 +56,15 @@ class GeoMap {
         })
         .attr("opacity", 0.8)
         .attr("class", (d) => this.fill(d, this.incomes, this.middleValue))
-        .on("mouseover", (d) => this.toolTip.mouseOver(d))
-        .on("mouseleave", (d) => this.toolTip.mouseLeave(d))
-        .on("mousemove", (d) => this.toolTip.mouseMove(d));
+        .on("mouseover", function(d){
+          self.toolTip.mouseOver(d, this)
+        })
+        .on("mouseleave",  function(d){
+          self.toolTip.mouseLeave(d, this)
+        })
+        .on("mousemove",  function(d){
+          self.toolTip.mouseMove(d, this)
+        });
   }
 
 }
