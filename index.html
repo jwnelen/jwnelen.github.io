@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>First Data Visualisation</title>
+        <title>How Green is my municipality?</title>
         <link rel="stylesheet" href="css/styles.css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -13,26 +13,76 @@
     </head>
     <body>
         <div class="d-flex h-100 flex-column">
-            <h1 style="text-align: center">How green is my municipality?</h1>
-            <div class="d-flex flex-grow-1">
-                <div class="w-50 d-flex flex-column h-100">
-                    <div id="slider">
-                        <p id="value-simple"></p>
-                        <p id="municipalities">Below threshold: </p>
+            <nav class="navbar navbar-light bg-light p-3">
+                <div class="container-fluid">
+                    <span class="navbar-brand mb-0 h1">How green is my municipality?</span>
+                    <div class="navigate">
+                        <hr id="nav-line">
+                        <div id="nav-CO2" class="nav-unit">
+                            <div class="dot" onclick="switchView('CO2')"></div>
+                            <span>CO2</span>
+                        </div>
+                        <div id="nav-renew" class="nav-unit">
+                            <div class="dot" onclick="switchView('renew')"></div>
+                            <span>Renewable Energy</span>
+                        </div>
+                        <div id="nav-political" class="nav-unit">
+                            <div class="dot" onclick="switchView('political')"></div>
+                            <span>Political parties</span>
+                        </div>
+                        <div id="nav-aggr" class="nav-unit mr-0">
+                            <div class="dot" onclick="switchView('aggr')"></div>
+                            <span>Aggregate</span>
+                        </div>
                     </div>
+                </div>
+            </nav>
+            <div id="CO2-container" class="view-container">
+                <div class="w-50 d-flex flex-column h-100 p-3">
+                    <h4 class="m-1">CO2 emissions per municipality</h4>
                     <div class="w-100 flex-grow-1" id="map_nl"></div>
                 </div>
-                <div class="w-50 d-flex flex-column align-items-stretch">
+                <div class="w-50 d-flex flex-column align-items-stretch p-3">
+                    <h4 class="m-1">CO2 emissions per sector in <span class="mun-name"></span></h4>
                     <div class="h-50" id="barchart"></div>
+                </div>
+            </div>
+            <div id="renew-container" class="view-container">
+                <div class="w-50 d-flex flex-column h-100 p-3">
+                    <div class="w-100 flex-grow-1" id="map_renew"></div>
+                </div>
+                <div class="w-50 d-flex flex-column align-items-stretch p-3">
                     <div class="h-50" id="percentilechart"></div>
-                    <div class="h-50" id="climateLabelChart"></div>
+                </div>
+            </div>
+            <div id="political-container" class="view-container">
+                <div class="w-50 d-flex flex-column h-100 p-3">
+                    <div class="w-100 flex-grow-1" id="map_political"></div>
+                </div>
+                <div class="w-50 d-flex flex-column align-items-stretch p-3">
+                    <div class="h-50" id="partyCO2Chart"></div>
+                </div>
+                <div class="h-50" id="climateLabelChart"></div>
                     <canvas id="demo">
                         <div id="preview-textfield"></div>
                     </canvas>
+            </div>
+            <div id="aggr-container" class="view-container">
+                <div class="w-50 d-flex flex-column h-100 p-3">
+                    <div class="w-100 flex-grow-1" id="map_aggr"></div>
+                </div>
+                <div class="w-50 d-flex flex-column align-items-stretch p-3">
+                    <div class="h-50" id="aggrChart"></div>
                 </div>
             </div>
         </div>
     </body>
+    <script src="js/View.js"></script>
+    <script src="js/CO2View.js"></script>
+    <script src="js/PoliticalView.js"></script>
+    <script src="js/RenewableView.js"></script>
+    <script src="js/AggregateView.js"></script>
+    <script src="js/HtmlOperations.js"></script>
     <script src="js/DataProcessing.js"></script>
     <script src="js/Utils.js"></script>
     <script src="js/DataLoader.js"></script>
