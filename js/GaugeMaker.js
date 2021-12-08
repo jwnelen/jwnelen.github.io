@@ -25,7 +25,7 @@ var opts = {
       {value:4, label:"B"},
       {value:5, label:"A"},
       ],
-      fractionDigits: 0
+      fractionDigits: 2
     },
 
     // static zones

@@ -19,7 +19,7 @@ class PoliticalView extends View {
 				let thisClimateLabel = this.averagePoliticalClimateLabel.filter(entry => entry['municipality'] == mun )[0].climate_label
 				gauge.set(thisClimateLabel)
 				$(".mun-name").html(mun);
-				$("#preview-textfield").html(thisClimateLabel.toFixed(2))
+				$("#preview-textfield").html(Number.parseFloat(thisClimateLabel).toFixed(2))
 			}
 			else{
 				$(".mun-name").html(mun+" is undefined unfortunately 😔")
@@ -32,8 +32,6 @@ class PoliticalView extends View {
 		this.isInitialized = true;
 		var target = document.getElementById("demo")
 		var gauge = new Gauge(target).setOptions(opts);
-		document.getElementById("preview-textfield").className = "preview-textfield";
-		gauge.setTextField(document.getElementById("preview-textfield"));
 		gauge.maxValue = 6;
 		gauge.setMinValue(0); 
 		gauge.set(0);
