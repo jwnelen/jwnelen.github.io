@@ -19,8 +19,7 @@ loader.getData(res => {
   const renewData = parseNumbers(res["renewData"], ["energy", "electricity", "warmth", "transport"]);
   const inhabitantData = parseNumbers(res["inhabitantData"],["Inwoneraantal"])
   const uniquePartyList = res['uniquePartyList']
-
-
+  
   changeKeys(electionData, [
     {from:"Municipality name", to: "municipality"},
     {from:"Votes", to: "votes"}
@@ -31,11 +30,21 @@ loader.getData(res => {
   ])
   changeKeys(incomes, [
     {from: 'Gemiddeld inkomen per huishouden|2018', to: "income"},
-    {from: "Gemeenten", to: "municipality"}])
+    {from: "Gemeenten", to: "municipality"}]);
   changeKeys(co2Data, [
     {from: "Gemeenten", to: "municipality"}]);
   changeKeys(renewData, [
-    {from: "Gemeenten", to: "municipality"}])
+    {from: "Gemeenten", to: "municipality"}]);
+  changeKeys(co2PerSector, [
+    {from: "Gemeenten", to: "municipality"},
+    {from: "Totaal bekende CO2-uitstoot (aardgas elektr. stadswarmte woningen voertuigbrandstoffen)|2019", to: "Total"},
+    {from: "CO2-uitstoot Verkeer en vervoer incl. auto(snel)wegen excl. elektr. railverkeer (scope 1)|2019", to: "Transport"},
+    {from: "CO2-uitstoot Landbouw bosbouw en visserij SBI A (aardgas elektr.)|2019", to: "Agriculture"},
+    {from: "CO2-uitstoot Gebouwde Omgeving (aardgas elektr. en stadswarmte woningen)|2019", to: "Built environment"},
+    {from: "CO2-uitstoot Industrie Energie Afval en Water (aardgas en elektr.)|2019", to: "Industry"},
+  ]);
+
+
 
   Object.values(res)
       .filter(dataset => Array.isArray(dataset)&&"municipality" in dataset[0])
@@ -56,8 +65,10 @@ loader.getData(res => {
 
   // Constructing all elements
   const slider = new Slider(min, max, (v) => update(v));
-  const map = new GeoMap({mapData, incomes, middleValue});
-  const barChart = new BarChart("barchart", filteredCO2, "municipality", "CO2");
+  const barChart = new BarChart("barchart", getCO2DivisionSector(co2PerSector, "Aa en Hunze"), "sector", "value");
+  const map = new GeoMap({mapData, incomes, middleValue}, function (mun) {
+    barChart.update(getCO2DivisionSector(co2PerSector, mun));
+  });
   const percentileChart = new BarChart("percentilechart", percentiles, "percentile", "avg");
   const partyCO2Chart = new BarChart("partyCO2Chart",co2Party,"party_name","CO2");
 
@@ -72,8 +83,10 @@ loader.getData(res => {
     map.update(newVal)
     barChart.update(filteredCO2)
     partyCO2Chart.update(co2Party)
-    
+
     d3.select('p#value-simple').text(d3.format(",.2r")(newVal)); // display value
     d3.select('p#municipalities').text("below threshold: " + munNames.length);
   }
+
+
 })

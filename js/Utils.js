@@ -80,3 +80,16 @@ const mergeGeoPaths = function (data, key1, key2, target) {
 	features.splice(features.indexOf(v2),1);
 	features.push(res);
 };
+
+const getCO2DivisionSector = function (data, mun) {
+  console.log(data);
+  let entry = data.find(d => d.municipality === mun);
+  delete entry.municipality;
+  entry = Object.keys(entry).map(k => {
+    return {
+      sector: k,
+      value: entry[k]
+    }
+  });
+  return entry;
+};

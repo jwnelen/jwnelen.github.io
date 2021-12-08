@@ -1,5 +1,5 @@
 class GeoMap {
-  constructor({mapData, incomes, middleValue}) {
+  constructor({mapData, incomes, middleValue}, onMove) {
     this.mapData = mapData
     this.incomes = incomes
     this.middleValue = middleValue
@@ -7,7 +7,7 @@ class GeoMap {
     this.width = document.getElementById("map_nl").clientWidth;
     this.height = document.getElementById("map_nl").clientHeight;
 
-    this.toolTip = new ToolTip()
+    this.toolTip = new ToolTip(onMove);
     this.draw()
   }
 

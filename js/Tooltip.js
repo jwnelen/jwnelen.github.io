@@ -1,9 +1,11 @@
 class ToolTip {
-  constructor() {
+  constructor(onMove) {
     this.Tooltip = d3.select("#map_nl")
         .append("div")
         .attr("class", "tooltip")
         .style("opacity", 0)
+    this.currentMunicipality = "Aa en Hunze";
+    this.onMove = onMove;
   }
 
   mouseOver = function (d, path) {
@@ -22,11 +24,13 @@ class ToolTip {
         .style("opacity", 1)
         .style("stroke", "black")
   }
-  mouseMove = function (d, path) {
+  mouseMove = function (d, path, chart) {
     this.Tooltip
         .html("" + d.target.attributes.municipality_name.value)
         .style("left", (d.clientX - 30 + "px"))
-        .style("top", (d.clientY - 50 + "px"))
+        .style("top", (d.clientY - 50 + "px"));
+    this.currentMunicipality = d.target.attributes.municipality_name.value;
+    this.onMove(this.currentMunicipality);
   }
 
   mouseLeave = function(d, path) {
