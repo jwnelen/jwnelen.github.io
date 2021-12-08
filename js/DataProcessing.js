@@ -52,7 +52,6 @@ function changeNames(data, key, names) {
 		names.forEach(n => {
 			let isFrom = d[key] === n.from;
 			d[key] = d[key] === n.from? n.to : d[key];
-			if(isFrom) console.log(d);
 		});
 	})
 }
