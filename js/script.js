@@ -52,7 +52,6 @@ loader.getData(res => {
 
   let averagePoliticalClimateLabel = calculateAveragePoliticalClimateLabel(electionData,climateLabels)
 
-  console.log(averagePoliticalClimateLabel)
 
   const filteredMunNames = getBelowThreshold(incomes, "income", middleValue).map(mun => mun.municipality)
   let filteredCO2 = getCO2FromMunicipalities(co2Data, filteredMunNames);
@@ -65,7 +64,7 @@ loader.getData(res => {
   const barChart = new BarChart("barchart", filteredCO2, "municipality", "CO2");
   const percentileChart = new BarChart("percentilechart", percentiles, "percentile", "avg");
   const partyCO2Chart = new BarChart("partyCO2Chart",co2Party,"party_name","CO2");
-  const climateLabelChart = new BarChart("climateLabelChart",averagePoliticalClimateLabel,"municipality","climate_label")
+  const climateLabelChart = new Histogram("climateLabelChart",averagePoliticalClimateLabel,"climate_label")
 
   const update = (newVal) => {
     const munNames = getBelowThreshold(incomes, "income", newVal).map(mun => mun.municipality)
