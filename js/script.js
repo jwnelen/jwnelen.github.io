@@ -6,7 +6,8 @@ let loader = new DataLoader([
   {name: "renewData", filename: "data/Gemeente_hernieuwbare_energie.csv"},
   {name: "electionData", filename:"data/vote_data_per_municip.csv"},
   {name: "inhabitantData", filename:"data/inwoneraantallen_2019.csv"},
-  {name: "uniquePartyList", filename:"data/unique_party_list.csv"}]);
+  {name: "uniquePartyList", filename:"data/unique_party_list.csv"},
+  {name: "climateLabels", filename:"data/climate_labels.csv"}]);
 
 loader.getData(res => {
   const mapData = res["mapData"];
@@ -19,7 +20,7 @@ loader.getData(res => {
   const renewData = parseNumbers(res["renewData"], ["energy", "electricity", "warmth", "transport"]);
   const inhabitantData = parseNumbers(res["inhabitantData"],["Inwoneraantal"])
   const uniquePartyList = res['uniquePartyList']
-
+  const climateLabels = res["climateLabels"]
 
   changeKeys(electionData, [
     {from:"Municipality name", to: "municipality"},
@@ -41,13 +42,17 @@ loader.getData(res => {
       .filter(dataset => Array.isArray(dataset)&&"municipality" in dataset[0])
       .forEach(dataset => changeNames(dataset, "municipality", [{from: "Nuenen, Gerwen en Nederwetten", to: "Nuenen c.a."}]));
 
-
   const incomeValues = incomes.map(municipality => parseInt(municipality.income)).filter(x => x)
   const min = Math.min(...incomeValues)
   const max = Math.max(...incomeValues)
   let middleValue = (min + max) / 2
   
   calculateCO2PerInhabitant(co2Data,inhabitantData)
+
+
+  let averagePoliticalClimateLabel = calculateAveragePoliticalClimateLabel(electionData,climateLabels)
+
+  console.log(averagePoliticalClimateLabel)
 
   const filteredMunNames = getBelowThreshold(incomes, "income", middleValue).map(mun => mun.municipality)
   let filteredCO2 = getCO2FromMunicipalities(co2Data, filteredMunNames);
@@ -60,7 +65,7 @@ loader.getData(res => {
   const barChart = new BarChart("barchart", filteredCO2, "municipality", "CO2");
   const percentileChart = new BarChart("percentilechart", percentiles, "percentile", "avg");
   const partyCO2Chart = new BarChart("partyCO2Chart",co2Party,"party_name","CO2");
-
+  const climateLabelChart = new BarChart("climateLabelChart",averagePoliticalClimateLabel,"municipality","climate_label")
 
   const update = (newVal) => {
     const munNames = getBelowThreshold(incomes, "income", newVal).map(mun => mun.municipality)
