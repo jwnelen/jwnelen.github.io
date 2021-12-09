@@ -16,11 +16,11 @@ class ScatterPlot {
   }
 
   draw() {
-    d3.select("#"+this.id+"svg").remove()
+    d3.select("#" + this.id + "svg").remove()
     const self = this;
 
     const svg = d3.select("#aggrChart")
-        .append("svg").attr("id", this.id+"svg")
+        .append("svg").attr("id", this.id + "svg")
         .attr("width", this.width + this.margin.left + this.margin.right)
         .attr("height", this.height + this.margin.top + this.margin.bottom)
         .append("g")
@@ -30,8 +30,8 @@ class ScatterPlot {
     //var xScale = d3.scaleLinear().domain([0, 100]).range([0, width]),
     //             yScale = d3.scaleLinear().domain([0, 200]).range([height, 0]);
 
-    const xs = this.data.map(d => d[this.keyX]).filter( (a) => a > 0)
-    const ys = this.data.map(d => d[this.keyY]).filter( (a) => a > 0)
+    const xs = this.data.map(d => d[this.keyX]).filter((a) => a > 0)
+    const ys = this.data.map(d => d[this.keyY]).filter((a) => a > 0)
     //Math.min(...this.data.map(d => d[this.keyX]).filter(d => d > 0))
 
     const minX = Math.min(...xs);
@@ -42,7 +42,7 @@ class ScatterPlot {
     // Add X axis
     const xScale = d3.scaleLinear()
         .domain([minX, maxX])
-        .range([ 0, this.width ]);
+        .range([0, this.width]);
 
     svg.append("g")
         .attr("transform", "translate(0," + this.height + ")")
@@ -56,12 +56,8 @@ class ScatterPlot {
     svg.append("g")
         .call(d3.axisLeft(yScale));
 
-    let tip = d3.select("body").append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0)
-
     // Add dots
-    svg.append('g')
+    const circles = svg.append('g')
         .selectAll("dot")
         .data(this.data)
         .enter()
@@ -69,15 +65,23 @@ class ScatterPlot {
         .attr("cx", d => xScale(d[self.keyX]))
         .attr("cy", d => yScale(d[self.keyY]))
         .attr("r", 3.5)
+        .attr('municipality_name', (d) => d['municipality'])
         .style("fill", "#69b3a2")
 
-    svg.selectAll("text")
-        .data(this.data)
-        .enter()
-        .append("text")
-        .attr("x", d => xScale(d[self.keyX]) + 10)
-        .attr("y",d => yScale(d[self.keyY]) + 1)
-        .text(function(d) {return d["municipality"]})
-        .attr("font-size", "10px")
+    let tip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0)
+
+    // Add events to circles
+    circles.on("mouseover", (d) => {
+      console.log(d)
+      tip.style("opacity", 1)
+          .html(d.target.attributes.municipality_name.value)
+          .style("left", (d.clientX - 30 + "px"))
+          .style("top", (d.clientY - 50 + "px"));
+    })
+        .on("mouseout", function (d) {
+          tip.style("opacity", 0)
+        })
   }
 }
