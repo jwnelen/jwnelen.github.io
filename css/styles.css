@@ -71,12 +71,22 @@ svg text {
 
 .navigate .nav-unit {
     display: flex;
+    position: relative; /* This is needed when child is absolute */
     flex-direction: column;
     align-items: center;
     width: 130px;
     margin-right: 20px
 }
 
+/* The navigation line */
+.navigate > *:not(:last-child):after{
+    content: "";
+    position: absolute;
+    left: 55%;
+    top: 18%;
+    width: 105%;
+    border-top: 0.3rem solid #2450ff;
+}
 .navigate .active {
     background-color: #ffca28;
 }
