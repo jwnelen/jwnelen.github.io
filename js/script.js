@@ -1,17 +1,9 @@
-var state = {
-  currView: "CO2",
+const state = {
+  currView: CO2,
   update: () => {}
 };
 
-let loader = new DataLoader([
-  {name: "mapData", filename: "data/nl.json"},
-  {name: "co2PerSector", filename: "data/CO2-uitstoot-sectoren.csv"},
-  {name: "co2Data", filename: "data/totale_co2_2019.csv"},
-  {name: "income", filename: "data/income-municipality.csv"},
-  {name: "renewData", filename: "data/Gemeente_hernieuwbare_energie.csv"},
-  {name: "electionData", filename:"data/vote_data_per_municip.csv"},
-  {name: "inhabitantData", filename:"data/inwoneraantallen_2019.csv"},
-  {name: "uniquePartyList", filename:"data/unique_party_list.csv"}]);
+let loader = new DataLoader(FILES);
 
 setNavigationLine();
 window.onresize = setNavigationLine;
@@ -26,18 +18,18 @@ loader.getData(res => {
   let aggregateView = new AggregateView(res);
 
   switch (state.currView) {
-    case "CO2": co2View.init(); break;
-    case "renew": renewableView.init(); break;
-    case "political": politicalView.init(); break;
-    case "aggr": aggregateView.init(); break;
+    case CO2: co2View.init(); break;
+    case RENEWABLE: renewableView.init(); break;
+    case POLITICAL: politicalView.init(); break;
+    case AGGREGATE: aggregateView.init(); break;
   }
 
   state.update = () => {
     switch (state.currView) {
-      case "CO2": co2View.update(); break;
-      case "renew": renewableView.update(); break;
-      case "political": politicalView.update(); break;
-      case "aggr": aggregateView.update(); break;
+      case CO2: co2View.update(); break;
+      case RENEWABLE: renewableView.update(); break;
+      case POLITICAL: politicalView.update(); break;
+      case AGGREGATE: aggregateView.update(); break;
     }
 
 
