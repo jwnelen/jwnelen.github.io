@@ -1,5 +1,5 @@
 const state = {
-  currView: CO2,
+  currView: AGGREGATE,
   update: () => {}
 };
 
@@ -15,13 +15,6 @@ loader.getData(res => {
   let politicalView = new PoliticalView(res);
   let aggregateView = new AggregateView(res);
 
-  switch (state.currView) {
-    case CO2: co2View.init(); break;
-    case RENEWABLE: renewableView.init(); break;
-    case POLITICAL: politicalView.init(); break;
-    case AGGREGATE: aggregateView.init(); break;
-  }
-
   state.update = () => {
     switch (state.currView) {
       case CO2: co2View.update(); break;
@@ -30,6 +23,8 @@ loader.getData(res => {
       case AGGREGATE: aggregateView.update(); break;
     }
   }
+
+  updateView(state.currView)
 
 });
 

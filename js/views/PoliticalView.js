@@ -7,7 +7,7 @@ class PoliticalView extends View {
 		this.climateLabels = data["climateLabels"];
 		this.mapData = data["mapData"];
 		this.averagePoliticalClimateLabel = calculateAveragePoliticalClimateLabel(this.electionData,this.climateLabels)
-		
+
 	}
 
 	init() {
@@ -31,7 +31,7 @@ class PoliticalView extends View {
 		var target = document.getElementById("demo")
 		var gauge = new Gauge(target).setOptions(opts);
 		gauge.maxValue = 6;
-		gauge.setMinValue(0); 
+		gauge.setMinValue(0);
 		gauge.set(0);
 		gauge.animationSpeed = 32
 
@@ -43,6 +43,7 @@ class PoliticalView extends View {
 	update() {
 		if(!this.isInitialized) {
 			this.init();
+			this.isInitialized = true;
 		}
 	}
 

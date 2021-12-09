@@ -21,19 +21,19 @@
                     <span class="navbar-brand mb-0 h1">How green is my municipality?</span>
                     <div class="navigate">
                         <div id="nav-CO2" class="nav-unit">
-                            <div class="dot active" onclick="switchView('CO2')"></div>
+                            <div class="dot active" onclick="updateView('CO2')"></div>
                             <span>CO2</span>
                         </div>
                         <div id="nav-renew" class="nav-unit">
-                            <div class="dot" onclick="switchView('renew')"></div>
+                            <div class="dot" onclick="updateView('renew')"></div>
                             <span>Renewable Energy</span>
                         </div>
                         <div id="nav-political" class="nav-unit">
-                            <div class="dot" onclick="switchView('political')"></div>
+                            <div class="dot" onclick="updateView('political')"></div>
                             <span>Political parties</span>
                         </div>
                         <div id="nav-aggr" class="nav-unit mr-0">
-                            <div class="dot" onclick="switchView('aggr')"></div>
+                            <div class="dot" onclick="updateView('aggr')"></div>
                             <span>Aggregate</span>
                         </div>
                     </div>
@@ -91,20 +91,21 @@
         </div>
     </body>
     <script src="js/Constants.js"></script>
-    <script src="js/View.js"></script>
-    <script src="js/CO2View.js"></script>
-    <script src="js/PoliticalView.js"></script>
-    <script src="js/RenewableView.js"></script>
-    <script src="js/AggregateView.js"></script>
+    <script src="js/views/View.js"></script>
+    <script src="js/views/CO2View.js"></script>
+    <script src="js/views/PoliticalView.js"></script>
+    <script src="js/views/RenewableView.js"></script>
+    <script src="js/views/AggregateView.js"></script>
     <script src="js/HtmlOperations.js"></script>
     <script src="js/DataProcessing.js"></script>
     <script src="js/Utils.js"></script>
     <script src="js/DataLoader.js"></script>
     <script src="js/Tooltip.js"></script>
     <script src="js/Slider.js"></script>
-    <script src="js/GeoMap.js"></script>
     <script src="js/StackedBarChart.js"></script>
-    <script src="js/BarChart.js"></script>
+    <script src="js/charts/GeoMap.js"></script>
+    <script src="js/charts/BarChart.js"></script>
+    <script src="js/charts/ScatterPlot.js"></script>
     <script src="js/Histogram.js"></script>
     <script src="js/script.js"></script>
     <script src="js/util/gauge.js"></script>

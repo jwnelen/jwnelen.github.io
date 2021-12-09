@@ -38,6 +38,7 @@ class CO2View extends View {
 	update() {
 		if (!this.isInitialized) {
 			this.init();
+			this.isInitialized = true;
 		}
 	}
 
