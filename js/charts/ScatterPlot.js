@@ -1,5 +1,5 @@
 class ScatterPlot {
-  constructor(id, data, keyX, keyY) {
+  constructor(id, data, additional_data=[], keyX, keyY) {
     this.margin = {top: 10, right: 30, bottom: 30, left: 60},
         this.width = 860 - this.margin.left - this.margin.right,
         this.height = 800 - this.margin.top - this.margin.bottom;
@@ -7,6 +7,7 @@ class ScatterPlot {
     this.data = data;
     this.keyX = keyX;
     this.keyY = keyY;
+    this.additional_data = additional_data
     this.draw();
   }
 
@@ -16,9 +17,9 @@ class ScatterPlot {
   }
 
   draw() {
-    d3.select("#" + this.id + "svg").remove()
     const self = this;
 
+    d3.select("#" + this.id + "svg").remove()
     const svg = d3.select("#aggrChart")
         .append("svg").attr("id", this.id + "svg")
         .attr("width", this.width + this.margin.left + this.margin.right)
@@ -27,12 +28,8 @@ class ScatterPlot {
         .attr("transform",
             "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-    //var xScale = d3.scaleLinear().domain([0, 100]).range([0, width]),
-    //             yScale = d3.scaleLinear().domain([0, 200]).range([height, 0]);
-
     const xs = this.data.map(d => d[this.keyX]).filter((a) => a > 0)
     const ys = this.data.map(d => d[this.keyY]).filter((a) => a > 0)
-    //Math.min(...this.data.map(d => d[this.keyX]).filter(d => d > 0))
 
     const minX = Math.min(...xs);
     const maxX = Math.max(...xs);
@@ -66,6 +63,7 @@ class ScatterPlot {
         .attr("cy", d => yScale(d[self.keyY]))
         .attr("r", 3.5)
         .attr('municipality_name', (d) => d['municipality'])
+        .attr('climate_label', (d) => ("mun"))
         .style("fill", "#69b3a2")
 
     let tip = d3.select("body").append("div")
@@ -76,7 +74,7 @@ class ScatterPlot {
     circles.on("mouseover", (d) => {
       console.log(d)
       tip.style("opacity", 1)
-          .html(d.target.attributes.municipality_name.value)
+          .html(`${d.target.attributes.municipality_name.value} - ${d.target.attributes.climate_label.value}`)
           .style("left", (d.clientX - 30 + "px"))
           .style("top", (d.clientY - 50 + "px"));
     })
