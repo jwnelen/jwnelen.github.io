@@ -4,7 +4,6 @@ class ToolTip {
         .append("div")
         .attr("class", "tooltip")
         .style("opacity", 0)
-    this.currentMunicipality = "Aa en Hunze";
     this.onMove = onMove;
   }
 
@@ -24,14 +23,13 @@ class ToolTip {
         .style("opacity", 1)
         .style("stroke", "black")
   }
-  mouseMove = function (d, path, chart) {
+  mouseMove = function (d, path) {
     this.Tooltip
         .html("" + d.target.attributes.municipality_name.value)
         .style("left", (d.clientX - 30 + "px"))
         .style("top", (d.clientY - 50 + "px"));
-    this.currentMunicipality = d.target.attributes.municipality_name.value;
-    this.onMove(this.currentMunicipality);
-  }
+    this.onMove(d.target.attributes.municipality_name.value);
+  };
 
   mouseLeave = function(d, path) {
     this.Tooltip

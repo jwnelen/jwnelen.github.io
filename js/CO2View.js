@@ -4,14 +4,9 @@ class CO2View extends View {
 		this.co2PerSector = data["co2PerSector"];
 		this.co2Data = data["co2Data"];
 		this.mapData = data["mapData"];
-		this.incomes = data["income"];
 	}
 
 	init() {
-		const incomeValues = this.incomes.map(municipality => parseInt(municipality.income)).filter(x => x)
-		const min = Math.min(...incomeValues);
-		const max = Math.max(...incomeValues);
-		let middleValue = (min + max) / 2;
 		this.barChart = new BarChart("barchart", getCO2DivisionSector(this.co2PerSector, "Aa en Hunze"), "sector", "value");
 
 		const map = new GeoMap("map_nl", this.mapData,  this, (mun) => {

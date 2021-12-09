@@ -65,12 +65,23 @@ svg text {
     cursor: pointer;
 }
 
+.navigate .dot:hover {
+    background-color: #0069d9;
+}
+
 .navigate .nav-unit {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 130px;
     margin-right: 20px
+}
+
+.navigate .active {
+    background-color: #ffca28;
+}
+.navigate .active:hover {
+    background-color: #f9c428;
 }
 
 .view-container {
