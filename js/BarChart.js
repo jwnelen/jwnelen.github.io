@@ -1,5 +1,5 @@
 class BarChart {
-  constructor(id, data, keyX, keyY) {
+  constructor(id, data, keyX, keyY, filter0 = true) {
     this.margin = {top: 30, right: 30, bottom: 70, left: 60};
     this.widthBar = document.getElementById(id).clientWidth - this.margin.left - this.margin.right;
     this.heightBar = document.getElementById(id).clientHeight - this.margin.top - this.margin.bottom;
@@ -7,6 +7,7 @@ class BarChart {
     this.data = data;
     this.keyX = keyX;
     this.keyY = keyY;
+    this.filter0 = filter0;
     this.draw();
   }
 
@@ -16,8 +17,12 @@ class BarChart {
   }
 
   draw() {
-    d3.select("#"+this.id+"svg").remove()
-    let data = this.data.filter(d => d[this.keyY] > 0);
+    d3.select("#"+this.id+"svg").remove();
+    let data = this.data;
+    if(this.filter0) {
+      data = this.data.filter(d => d[this.keyY] > 0);
+    }
+
 
     const svgBarChart = d3.select("#"+this.id)
         .append("svg").attr("id", this.id+"svg")
@@ -38,6 +43,7 @@ class BarChart {
         .selectAll("text")
         .attr("transform", "translate(-10,0)rotate(-45)")
         .attr("class", "axis")
+        .style("font-size", "10px")
         .style("text-anchor", "end");
 
 
@@ -58,7 +64,7 @@ class BarChart {
           .attr("x", d => x(d[this.keyX]))
           .attr("y", d => y(d[this.keyY]))
           .attr("width", x.bandwidth())
-          .attr("height", d => this.heightBar - y(d[this.keyY]))
+          .attr("height", d => Math.max(this.heightBar - y(d[this.keyY]), 0))
           .attr("class", "selected")
 
   }

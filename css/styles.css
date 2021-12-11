@@ -102,3 +102,18 @@ svg text {
 #CO2-container {
     display: flex;
 }
+
+.map-container {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.includes-selection {
+    position: absolute;
+    top: 4rem;
+    left: 1.5rem;
+}

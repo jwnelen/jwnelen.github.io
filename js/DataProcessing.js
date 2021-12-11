@@ -1,6 +1,8 @@
 function changeKeys(data, keys) {
 	data.forEach(d => keys.forEach(k => {
-		d[k.to] = d[k.from];
+		if(k.to !== "") {
+			d[k.to] = d[k.from];
+		}
 		delete d[k.from];
 	}));
 	return data;
@@ -13,13 +15,24 @@ function parseNumbers(data, keys) {
 	return data;
 }
 
-
 function getPercentiles(data, attr, num = 10) {
 	let range = Array.from({length: num}, (v, i) => i);
 	let quantile = d3.scaleQuantile().domain(data.map(x => x[attr]))
 		.range(range);
 	let thresholds = [0, ...quantile.quantiles(), this.getMax(data, attr) + 1];
 	return thresholds;
+}
+
+function addPercentileClass(data, attr, num=10) {
+	let percentiles = getPercentiles(data, attr, num);
+	data.forEach(d => {
+		d[attr+"Class"] = -1;
+		for (let i = 0; i < percentiles.length - 1; i++) {
+			if(d[attr] >= percentiles[i]&& d[attr] < percentiles[i+1]) {
+				d[attr+"Class"] = i;
+			}
+		}
+	});
 }
 
 function getAverage(data, attr) {
