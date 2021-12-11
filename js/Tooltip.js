@@ -1,9 +1,10 @@
 class ToolTip {
-  constructor() {
+  constructor(onMove) {
     this.Tooltip = d3.select("#map_nl")
         .append("div")
         .attr("class", "tooltip")
         .style("opacity", 0)
+    this.onMove = onMove;
   }
 
   mouseOver = function (d, path) {
@@ -26,8 +27,9 @@ class ToolTip {
     this.Tooltip
         .html("" + d.target.attributes.municipality_name.value)
         .style("left", (d.clientX - 30 + "px"))
-        .style("top", (d.clientY - 50 + "px"))
-  }
+        .style("top", (d.clientY - 50 + "px"));
+    this.onMove(d.target.attributes.municipality_name.value);
+  };
 
   mouseLeave = function(d, path) {
     this.Tooltip

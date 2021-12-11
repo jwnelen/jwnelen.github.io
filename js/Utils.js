@@ -72,11 +72,31 @@ const mergeGeoPaths = function (data, key1, key2, target) {
 	let features = data.features;
 	let v1 = features.find(f => f.properties.areaName === key1);
 	let v2 = features.find(f => f.properties.areaName === key2);
-	let res = JSON.parse(JSON.stringify(v1));
+	let res = deepCopy(v1);
 	res.properties.areaName = target;
 	//Een erg gebeunde manier van paths mergen, kan vast beter
 	res.geometry.coordinates[0] = res.geometry.coordinates[0].concat(v2.geometry.coordinates[0]);
 	features.splice(features.indexOf(v1),1);
 	features.splice(features.indexOf(v2),1);
 	features.push(res);
+};
+
+const getCO2DivisionSector = function (data, mun) {
+  let entry = data.find(d => d.municipality === mun);
+  if (entry) {
+    entry = deepCopy(entry);
+    delete entry.municipality;
+    entry = Object.keys(entry).map(k => {
+      return {
+        sector: k,
+        value: entry[k]
+      }
+    });
+    return entry;
+  } else {
+    return [{
+      sector: "No data available",
+      value: "0"
+    }]
+  }
 };
