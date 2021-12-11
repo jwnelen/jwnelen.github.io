@@ -5,9 +5,6 @@ const state = {
 
 let loader = new DataLoader(FILES);
 
-setNavigationLine();
-window.onresize = setNavigationLine;
-
 loader.getData(res => {
 
   cleanupData(res);
