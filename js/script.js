@@ -41,7 +41,7 @@ function cleanupData(res) {
   const co2Data = parseNumbers(res["co2Data"], ["CO2"]);
   const renewData = parseNumbers(res["renewData"], ["energy", "electricity", "warmth", "transport"]);
   const inhabitantData = parseNumbers(res["inhabitantData"],["Inwoneraantal"])
-  const uniquePartyList = res['uniquePartyList']
+  const uniquePartyList = res['uniquePartyList'];
   changeKeys(electionData, [
     {from:"Municipality name", to: "municipality"},
     {from:"Votes", to: "votes"}
@@ -67,10 +67,16 @@ function cleanupData(res) {
   ]), ["Transport", "Agriculture", "Built environment", "Industry"]);
   Object.values(res)
       .filter(dataset => Array.isArray(dataset)&&"municipality" in dataset[0])
-      .forEach(dataset => changeNames(dataset, "municipality",
-          [{from: "Nuenen, Gerwen en Nederwetten", to: "Nuenen"},
-            {from: "Nuenen c.a.", to: "Nuenen"},
-            {from: "Bergen (L.)", to: "Bergen (L)"},
-            {from: "Bergen (NH.)", to: "Bergen (NH)"}]));
+      .forEach(dataset => {
+        let unknownMun = dataset.find(d => d.municipality === "Gemeente onbekend");
+        if(unknownMun) {
+          dataset.splice(dataset.indexOf(unknownMun));
+        }
+        changeNames(dataset, "municipality",
+            [{from: "Nuenen, Gerwen en Nederwetten", to: "Nuenen"},
+              {from: "Nuenen c.a.", to: "Nuenen"},
+              {from: "Bergen (L.)", to: "Bergen (L)"},
+              {from: "Bergen (NH.)", to: "Bergen (NH)"}])
+      });
   calculateCO2PerInhabitant(co2Data,inhabitantData);
 }

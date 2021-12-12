@@ -60,10 +60,18 @@ class GeoMap {
           self.onMove(d.target.attributes.municipality_name.value);
         })
         .on("click", function(d) {
-          svgs.attr("fill", self.fill);
-          d3.select(this).attr("fill", "red");
           self.onClick(d);
         });
+  }
+
+  colorPath(mun) {
+    let svgs = d3.select(`#${this.id}`).selectAll("path");
+    svgs.attr("fill", d => {
+      if(d.properties.areaName === mun) {
+        return "red";
+      }
+      return this.fill(d)
+    });
   }
 
 }

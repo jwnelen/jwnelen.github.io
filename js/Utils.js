@@ -104,3 +104,8 @@ const getCO2DivisionSector = function (data, mun) {
 const getMunFromEvent = function(d) {
   return d.target.attributes.municipality_name.value;
 };
+
+const getMun = function (data, mun) {
+  return data.find(d => d.municipality === mun);
+
+}
