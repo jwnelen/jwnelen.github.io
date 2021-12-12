@@ -16,6 +16,7 @@ class ScatterPlot {
     this.fill = (d) => caller.fill(d)
     this.highlight = (d) => caller.highlight(d)
     this.isSelected = (n) => caller.isSelected(n)
+    this.onClick = (d) => caller.onClick(d)
     this.draw();
   }
 
@@ -62,7 +63,7 @@ class ScatterPlot {
     svg.append("g")
         .call(d3.axisLeft(yScale));
 
-    let myColor = d3.scaleLinear().domain([minClimate,maxClimate])
+    let myColor = d3.scaleLinear().domain([minClimate, maxClimate])
         .range(["red", "green"])
 
     // Add dots
@@ -93,22 +94,22 @@ class ScatterPlot {
         .style("opacity", 0)
 
     // Add events to circles
-    circles.
-      on("mouseover", (d) => {
-      console.log(d)
+    circles.on("mouseover", (d) => {
       tip.style("opacity", 1)
           .html(`${d.target.attributes.municipality_name.value} - ${d.target.attributes.climate_label.value}`)
           .style("left", (d.clientX - 30 + "px"))
           .style("top", (d.clientY - 50 + "px"));
     })
-      .on("mouseout", function (d) {
-        tip.style("opacity", 0)
-      })
+        .on("mouseout", function (d) {
+          tip.style("opacity", 0)
+        })
+        .on("click", this.onClick)
+
 
     // Add X axis label:
     svg.append("text")
         .attr("text-anchor", "end")
-        .attr("x", this.width/2 + this.margin.left)
+        .attr("x", this.width / 2 + this.margin.left)
         .attr("y", this.height + this.margin.top + 20)
         .text(this.labelX);
 
@@ -117,7 +118,7 @@ class ScatterPlot {
         .attr("text-anchor", "end")
         .attr("transform", "rotate(-90)")
         .attr("y", -this.margin.left + 20)
-        .attr("x", -this.margin.top - this.height/2 + 20)
+        .attr("x", -this.margin.top - this.height / 2 + 20)
         .text(this.labelY)
   }
 }
