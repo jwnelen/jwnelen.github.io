@@ -88,6 +88,7 @@ class ScatterPlot {
         .style("stroke", "yellow")
         .style("stroke-width", (d) => this.isSelected(d.municipality) ? 3 : 0)
         .style('opacity', (d) => this.isSelected(d.municipality) ? 1 : 0.4)
+        .style('z-index', (d) => this.isSelected(d.municipality) ? 2 : 1)
 
     let tip = d3.select("body").append("div")
         .attr("class", "tooltip")
