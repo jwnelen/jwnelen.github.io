@@ -18,10 +18,12 @@ class GeoMap {
     this.height = document.getElementById(id).clientHeight;
 
     this.toolTip = new ToolTip();
+    this.onClick = onClick;
     this.draw()
   }
 
   update() {
+    console.log('drawing')
     this.draw()
   }
 
@@ -44,9 +46,9 @@ class GeoMap {
         .attr("d", function (d) {
           return path(d);
         })
-        .attr("fill", this.fill)
+        .attr("fill", (d) => this.fill(d))
         .attr("stroke","black")
-        .attr("class",function(d){return "Municipality"})
+        .attr("class", "Municipality")
         .attr("municipality_name",function(d){return d.properties.areaName})
         .attr("opacity",0.8)
         .on("mouseover", function(d){

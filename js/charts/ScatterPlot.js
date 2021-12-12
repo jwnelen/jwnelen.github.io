@@ -1,12 +1,14 @@
 class ScatterPlot {
-  constructor(id, data, additional_data = [], keyX, keyY) {
+  constructor(id, data, additional_data = [], keyX, labelX, keyY, labelY) {
     this.margin = {top: 10, right: 30, bottom: 30, left: 60},
         this.width = 860 - this.margin.left - this.margin.right,
-        this.height = 800 - this.margin.top - this.margin.bottom;
+        this.height = 860 - this.margin.top - this.margin.bottom;
     this.id = id;
     this.data = data;
     this.keyX = keyX;
     this.keyY = keyY;
+    this.labelX = labelX;
+    this.labelY = labelY;
     this.additional_data = additional_data
     this.draw();
   }
@@ -38,8 +40,7 @@ class ScatterPlot {
     const maxY = Math.max(...ys)
     const minClimate = Math.min(...climates_labels)
     const maxClimate = Math.max(...climates_labels)
-    console.log(minClimate)
-    console.log(maxClimate)
+
     // Add X axis
     const xScale = d3.scaleLinear()
         .domain([minX, maxX])
@@ -85,15 +86,31 @@ class ScatterPlot {
         .style("opacity", 0)
 
     // Add events to circles
-    circles.on("mouseover", (d) => {
+    circles.
+      on("mouseover", (d) => {
       console.log(d)
       tip.style("opacity", 1)
           .html(`${d.target.attributes.municipality_name.value} - ${d.target.attributes.climate_label.value}`)
           .style("left", (d.clientX - 30 + "px"))
           .style("top", (d.clientY - 50 + "px"));
     })
-        .on("mouseout", function (d) {
-          tip.style("opacity", 0)
-        })
+      .on("mouseout", function (d) {
+        tip.style("opacity", 0)
+      })
+
+    // Add X axis label:
+    svg.append("text")
+        .attr("text-anchor", "end")
+        .attr("x", this.width/2 + this.margin.left)
+        .attr("y", this.height + this.margin.top + 20)
+        .text(this.labelX);
+
+    // Y axis label:
+    svg.append("text")
+        .attr("text-anchor", "end")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -this.margin.left + 20)
+        .attr("x", -this.margin.top - this.height/2 + 20)
+        .text(this.labelY)
   }
 }
