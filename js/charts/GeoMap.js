@@ -10,7 +10,7 @@ class GeoMap {
   constructor(id, mapData, caller, onMove = () => {}, onClick = () => {}) {
     this.id = id;
     this.mapData = mapData;
-    this.fill = (d) =>{return caller.fill(d)};
+    this.fill = (d) => caller.fill(d)
     this.onMove = onMove;
     this.onClick = onClick;
 
@@ -23,7 +23,6 @@ class GeoMap {
   }
 
   update() {
-    console.log('drawing')
     this.draw()
   }
 

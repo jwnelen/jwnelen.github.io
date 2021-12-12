@@ -16,7 +16,8 @@ class AggregateView extends View {
   }
 
   init() {
-    const scatterPlot = new ScatterPlot("scatterAggregate", this.data, this.averagePoliticalClimateLabel,
+    const caller = this
+    this.scatterPlot = new ScatterPlot("scatterAggregate", this.data, caller, this.averagePoliticalClimateLabel,
         "CO2_per_inhabitant", "CO2 per inhabitant","energy", "Energy")
     this.map = new GeoMap('map_aggr', this.mapData, this, undefined , this.onClick)
   }
@@ -32,14 +33,17 @@ class AggregateView extends View {
   onClick = (d) => {
     const munName = this.getMunName(d)
     const muns = this.state.selectedMunicipalities
-    console.log('clicked', munName, muns);
     if (this.isSelected(munName)) {
       muns.splice(muns.indexOf(munName), 1)
     } else {
       this.state.selectedMunicipalities.push(munName)
     }
-    console.log(muns)
     this.map.update();
+    this.scatterPlot.update()
+  }
+
+  highlight = (d) => {
+    return this.state.selectedMunicipalities.includes(d.municipality) ? 3 : 0
   }
 
   fill(d) {

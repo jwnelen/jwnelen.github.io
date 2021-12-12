@@ -1,20 +1,25 @@
 class ScatterPlot {
-  constructor(id, data, additional_data = [], keyX, labelX, keyY, labelY) {
+  constructor(id, data, caller, additional_data = [], keyX, labelX, keyY, labelY) {
     this.margin = {top: 10, right: 30, bottom: 30, left: 60},
         this.width = 860 - this.margin.left - this.margin.right,
         this.height = 860 - this.margin.top - this.margin.bottom;
     this.id = id;
     this.data = data;
+    this.additional_data = additional_data
     this.keyX = keyX;
     this.keyY = keyY;
     this.labelX = labelX;
     this.labelY = labelY;
-    this.additional_data = additional_data
+
+    this.radius = 6;
+
+    this.fill = (d) => caller.fill(d)
+    this.highlight = (d) => caller.highlight(d)
+    this.isSelected = (n) => caller.isSelected(n)
     this.draw();
   }
 
-  update(newData) {
-    this.data = newData
+  update() {
     this.draw()
   }
 
@@ -33,7 +38,6 @@ class ScatterPlot {
     const xs = this.data.map(d => d[this.keyX]).filter((a) => a > 0)
     const ys = this.data.map(d => d[this.keyY]).filter((a) => a > 0)
     const climates_labels = this.additional_data.map(d => d['climate_label']).filter((a) => a > 0)
-    console.log(climates_labels)
     const minX = Math.min(...xs);
     const maxX = Math.max(...xs);
     const minY = Math.min(...ys)
@@ -69,7 +73,7 @@ class ScatterPlot {
         .append("circle")
         .attr("cx", d => xScale(d[self.keyX]))
         .attr("cy", d => yScale(d[self.keyY]))
-        .attr("r", 3.5)
+        .attr("r", this.radius)
         .attr('municipality_name', (d) => d['municipality'])
         .attr('climate_label', (d) => {
           const res = this.additional_data.filter((a) => a.municipality === d['municipality'])
@@ -80,6 +84,9 @@ class ScatterPlot {
           const l = res.length > 0 ? res[0].climate_label : 0
           return myColor(l)
         })
+        .style("stroke", "yellow")
+        .style("stroke-width", (d) => this.isSelected(d.municipality) ? 3 : 0)
+        .style('opacity', (d) => this.isSelected(d.municipality) ? 1 : 0.4)
 
     let tip = d3.select("body").append("div")
         .attr("class", "tooltip")
