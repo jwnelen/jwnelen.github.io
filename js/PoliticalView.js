@@ -28,14 +28,16 @@ class PoliticalView extends View {
 			}
 		});
 
-
-		this.isInitialized = true;
 		var target = document.getElementById("demo")
 		var gauge = new Gauge(target).setOptions(opts);
 		gauge.maxValue = 6;
 		gauge.setMinValue(0); 
 		gauge.set(0);
 		gauge.animationSpeed = 32
+
+		this.histogram = new Histogram("labelHist",this.averagePoliticalClimateLabel,'climate_label')
+
+		this.isInitialized = true;
 	}
 
 	update() {

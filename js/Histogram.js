@@ -1,7 +1,8 @@
 class Histogram {
     constructor(id, data, key) {
       this.margin = {top: 30, right: 30, bottom: 70, left: 60};
-      this.width= document.getElementById(id).clientWidth - this.margin.left - this.margin.right;
+      console.log(document.getElementById(id).clientWidth)
+      this.width = document.getElementById(id).clientWidth - this.margin.left - this.margin.right;
       this.height = document.getElementById(id).clientHeight - this.margin.top - this.margin.bottom;
       this.id = id;
       this.data = data;
@@ -17,8 +18,7 @@ class Histogram {
     draw() {
         let height = this.height
         d3.select("#"+this.id+"svg").remove()
-        let data = this.data.filter(d => d['climate_label'] > 0).map(d => d.climate_label)
-
+        let data = this.data.filter(d => d[this.key] > 0).map(d => d[this.key])
         const svgHist = d3.select("#"+this.id)
             .append("svg").attr("id", this.id+"svg")
             .attr("width", this.width + this.margin.left + this.margin.right)
@@ -56,8 +56,8 @@ class Histogram {
         .enter()
         .append("rect")
             .attr("x", 1)
-            .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-            .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
+            .attr("transform", function(d) {return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+            .attr("width", function(d) {return x(d.x1) - x(d.x0); })
             .attr("height", function(d) { return height - y(d.length); })
             .style("fill", "#69b3a2")
 
