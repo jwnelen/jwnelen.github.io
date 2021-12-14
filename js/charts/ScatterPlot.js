@@ -131,8 +131,10 @@ class ScatterPlot {
         .style("pointer-events", "all")
         .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')')
         .call(zoom);
-    // now the user can zoom and it will trigger the function called updateChar
 
+    $('#reset-zoom-button').click(() => this.draw())
+
+    // now the user can zoom and it will trigger the function called updateChar
     function updateScale(event) {
       let newX = event.transform.rescaleX(xScale);
       let newY = event.transform.rescaleY(yScale);
