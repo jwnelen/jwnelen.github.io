@@ -68,8 +68,19 @@ const calculateCO2PerPoliticalParty = (unique_party_list,electionData, co2Data) 
   return party_avg_co2_value
 };
 
+const reduceByKeyVal = (array,key,val) =>{
+  var res = []
+  var allKeys = Array.from(new Set(array.map(entry => entry[key]))).sort()
+  for(thisKey of allKeys){
+    let reducedValue = array.filter(entry => entry[key] == thisKey).reduce( (pv, cv) => {return pv + cv[val]}, 0)
+    res.push({[key]: thisKey, [val]: reducedValue})
+  }
+  return res
+}
+
 const calculateAveragePoliticalClimateLabel = (electionData, climateLabels) =>{
   var scores = {"A": 5, "B": 4, "C": 3, "D": 2, "E": 1, "F": 0}
+  var invScores = {5: "A", 4: "B", 3: "C", 2: "D", 1: "E", 0: "F"}
   let partiesWithLabel = climateLabels.map(entry => entry["party_name"])
   for(entry of climateLabels){
     entry['climate_score'] = scores[entry["climate_label"]]
@@ -82,15 +93,20 @@ const calculateAveragePoliticalClimateLabel = (electionData, climateLabels) =>{
     let thisMunicipality = municipalityList[i]
     let totalVotesInThisMunicipality = electionDataForRelevantParties.filter(entry =>  entry['municipality'] == thisMunicipality).reduce((acc,curr) => {return acc + curr['votes']},0)
     let votesForPartiesInThisMunicipality = electionDataForRelevantParties.filter(entry => entry['municipality'] == thisMunicipality)
+    let percentageList = []
     for (let j = 0; j < votesForPartiesInThisMunicipality.length; j++){
       let thisMunicipPartyEntry = votesForPartiesInThisMunicipality[j]
       let thisLabel = climateLabels.filter(entry => thisMunicipPartyEntry["party_name"] == entry["party_name"])[0].climate_score
+      let thisLabelLetter = invScores[thisLabel]
+
+      percentageList.push({"label": thisLabelLetter, "percentage": thisMunicipPartyEntry["votes"]/totalVotesInThisMunicipality })
       weightedClimateScore += thisLabel * thisMunicipPartyEntry["votes"]/totalVotesInThisMunicipality
     }
-    averageClimateLabel.push({"municipality": thisMunicipality, "climate_label": weightedClimateScore})
+    averageClimateLabel.push({"municipality": thisMunicipality, "climate_label": weightedClimateScore, "percentages_votes_per_label": reduceByKeyVal(percentageList,"label","percentage")})
   }
   return averageClimateLabel
 }
+
 
 const mergeGeoPaths = function (data, key1, key2, target) {
 	let features = data.features;

@@ -12,14 +12,14 @@ class PoliticalView extends View {
 
 	init() {
 		// Constructing all elements
-
 		const map = new GeoMap("map_political", this.mapData,  this, (mun) => {
 			let currentMunicipality = this.averagePoliticalClimateLabel.filter(entry => entry['municipality'] == mun )[0]
 			if (!(typeof currentMunicipality === "undefined")){
-				let thisClimateLabel = this.averagePoliticalClimateLabel.filter(entry => entry['municipality'] == mun )[0].climate_label
-				gauge.set(thisClimateLabel)
+				let currMunicipPoliticsData = this.averagePoliticalClimateLabel.filter(entry => entry['municipality'] == mun )[0]
+				this.barChart = new BarChart("votes-percentages-chart",currMunicipPoliticsData.percentages_votes_per_label,"label","percentage",false)
+				gauge.set(currMunicipPoliticsData.climate_label)
 				$(".mun-name").html(mun);
-				$("#preview-textfield").html(Number.parseFloat(thisClimateLabel).toFixed(2))
+				$("#preview-textfield").html(Number.parseFloat(currMunicipPoliticsData.climate_label).toFixed(2))
 			}
 			else{
 				$(".mun-name").html(mun+" is undefined unfortunately 😔")
@@ -35,7 +35,8 @@ class PoliticalView extends View {
 		gauge.set(0);
 		gauge.animationSpeed = 32
 
-		this.histogram = new Histogram("labelHist",this.averagePoliticalClimateLabel,'climate_label')
+
+		this.histogram = new Histogram("label-hist",this.averagePoliticalClimateLabel,'climate_label')
 
 		this.isInitialized = true;
 	}
