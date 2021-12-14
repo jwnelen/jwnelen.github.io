@@ -29,7 +29,7 @@ const addSelectionOptions = (res) => {
   }
 
   const munSelectionBox = '#mun-selection'
-  $(munSelectionBox).change((e) => newMunSelected(e))
+  $(munSelectionBox).change((e) => state.newMunSelected(e))
   munNames.map( name => $(munSelectionBox).append(option(name)))
   state.setNewMunicipality(munNames[0])
   state.update(munNames[0])

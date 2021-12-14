@@ -15,6 +15,6 @@ state.setNewMunicipality = (newMun) => {
   $('#mun-selection').val(newMun)
 }
 
-const newMunSelected = (event) => {
+state.newMunSelected = (event) => {
   state.setNewMunicipality(event.target.value)
 }
