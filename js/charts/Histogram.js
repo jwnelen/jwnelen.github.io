@@ -31,8 +31,6 @@ class Histogram {
         var x = d3.scaleLinear()
         .domain([d3.min(data, function(d){return d}), d3.max(data, function(d){return +d})])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
         .range([0, this.width]);
-
-        console.log(x(1.6))
         svgHist.append("g")
         .attr("transform", "translate(0," + this.height + ")")
         .call(d3.axisBottom(x));
@@ -66,7 +64,6 @@ class Histogram {
 
 
         if (!(this.verticalLineVal === null)){
-          console.log('we inthis')
           svgHist.append("svg:line")
           .attr("x1",x(this.verticalLineVal))
           .attr("x2",x(this.verticalLineVal))

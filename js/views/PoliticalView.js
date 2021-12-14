@@ -22,6 +22,9 @@ class PoliticalView extends View {
 				$(".mun-name").html(mun);
 				$("#preview-textfield").html(Number.parseFloat(currMunicipPoliticsData.climate_label).toFixed(2))
 				this.histogram.update(this.averagePoliticalClimateLabel,currMunicipPoliticsData.climate_label);
+
+				var climateLabelPercentile = percentileOfDataset(this.averagePoliticalClimateLabel,"climate_label",currMunicipPoliticsData.climate_label)
+				$("#label-percentile").html(Number.parseFloat(climateLabelPercentile*100).toFixed(1)+"%")
 			}
 			else{
 				$(".mun-name").html(mun+" is undefined unfortunately 😔")
@@ -39,7 +42,6 @@ class PoliticalView extends View {
 
 
 		this.histogram = new Histogram("label-hist",this.averagePoliticalClimateLabel,'climate_label')
-
 		this.isInitialized = true;
 	}
 

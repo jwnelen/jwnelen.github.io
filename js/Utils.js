@@ -149,3 +149,13 @@ const getMun = function (data, mun) {
   return data.find(d => d.municipality === mun);
 
 }
+
+const percentileOfDataset = function(dataset,key,value){
+  var worseDataPoints = 0
+  for (dataEntry of dataset){
+    if(dataEntry[key] <= value){
+      worseDataPoints += 1
+    }
+  }
+  return worseDataPoints/dataset.length
+}
