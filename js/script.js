@@ -3,6 +3,7 @@ const state = {
   update: () => {}
 };
 
+
 let loader = new DataLoader(FILES);
 
 loader.getData(res => {
@@ -41,7 +42,9 @@ function cleanupData(res) {
   const co2Data = parseNumbers(res["co2Data"], ["CO2"]);
   const renewData = parseNumbers(res["renewData"], ["energy", "electricity", "warmth", "transport"]);
   const inhabitantData = parseNumbers(res["inhabitantData"],["Inwoneraantal"])
-  const uniquePartyList = res['uniquePartyList'];
+  const uniquePartyList = res['uniquePartyList']
+  const climateLabels = res["climateLabels"]
+
   changeKeys(electionData, [
     {from:"Municipality name", to: "municipality"},
     {from:"Votes", to: "votes"}

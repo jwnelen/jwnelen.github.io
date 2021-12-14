@@ -80,5 +80,4 @@ class CO2View extends View {
 			return d3.interpolateBlues(colorScaleCO2Data(x.CO2));
 		}
 	}
-
 }

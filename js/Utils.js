@@ -68,6 +68,30 @@ const calculateCO2PerPoliticalParty = (unique_party_list,electionData, co2Data) 
   return party_avg_co2_value
 };
 
+const calculateAveragePoliticalClimateLabel = (electionData, climateLabels) =>{
+  var scores = {"A": 5, "B": 4, "C": 3, "D": 2, "E": 1, "F": 0}
+  let partiesWithLabel = climateLabels.map(entry => entry["party_name"])
+  for(entry of climateLabels){
+    entry['climate_score'] = scores[entry["climate_label"]]
+  }
+  let electionDataForRelevantParties = electionData.filter(entry => partiesWithLabel.includes(entry["party_name"]) && entry["municipality"] != "Nederland")
+  let municipalityList = [... new Set(electionDataForRelevantParties.map(entry => entry["municipality"]))]
+  let averageClimateLabel = []
+  for(let i = 0; i < municipalityList.length; i++){
+    let weightedClimateScore = 0
+    let thisMunicipality = municipalityList[i]
+    let totalVotesInThisMunicipality = electionDataForRelevantParties.filter(entry =>  entry['municipality'] == thisMunicipality).reduce((acc,curr) => {return acc + curr['votes']},0)
+    let votesForPartiesInThisMunicipality = electionDataForRelevantParties.filter(entry => entry['municipality'] == thisMunicipality)
+    for (let j = 0; j < votesForPartiesInThisMunicipality.length; j++){
+      let thisMunicipPartyEntry = votesForPartiesInThisMunicipality[j]
+      let thisLabel = climateLabels.filter(entry => thisMunicipPartyEntry["party_name"] == entry["party_name"])[0].climate_score
+      weightedClimateScore += thisLabel * thisMunicipPartyEntry["votes"]/totalVotesInThisMunicipality
+    }
+    averageClimateLabel.push({"municipality": thisMunicipality, "climate_label": weightedClimateScore})
+  }
+  return averageClimateLabel
+}
+
 const mergeGeoPaths = function (data, key1, key2, target) {
 	let features = data.features;
 	let v1 = features.find(f => f.properties.areaName === key1);

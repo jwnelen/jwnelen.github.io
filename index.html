@@ -71,7 +71,13 @@
                     <div class="w-100 flex-grow-1" id="map_political"></div>
                 </div>
                 <div class="w-50 d-flex flex-column align-items-stretch p-3">
-                    <div class="h-50" id="partyCO2Chart"></div>
+                    <h4>Climate label of <span class="mun-name"></span></h4>
+                    <div class="h-100" id="climateLabelChart">
+                        <canvas id="demo">
+                        </canvas>
+                        <h4>is <span id="preview-textfield"> </span> </h4>
+                        <div class="h-75" id="labelHist"></div>
+                    </div>
                 </div>
             </div>
             <div id="aggr-container" class="view-container">
@@ -99,5 +105,8 @@
     <script src="js/GeoMap.js"></script>
     <script src="js/StackedBarChart.js"></script>
     <script src="js/BarChart.js"></script>
+    <script src="js/Histogram.js"></script>
     <script src="js/script.js"></script>
+    <script src="js/util/gauge.js"></script>
+    <script src="js/GaugeMaker.js"></script>
 </html>
