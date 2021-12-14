@@ -1,8 +1,8 @@
 const state = {
   currView: CO2,
-  update: () => {}
+  selectedMunicipality: "",
+  update: () => {},
 };
-
 
 let loader = new DataLoader(FILES);
 
@@ -15,15 +15,22 @@ loader.getData(res => {
   let politicalView = new PoliticalView(res);
   let aggregateView = new AggregateView(res);
 
-  state.update = () => {
+  state.getCurrentView = () => {
     switch (state.currView) {
-      case CO2: co2View.update(); break;
-      case RENEWABLE: renewableView.update(); break;
-      case POLITICAL: politicalView.update(); break;
-      case AGGREGATE: aggregateView.update(); break;
+      case CO2: return co2View;
+      case RENEWABLE: return renewableView;
+      case POLITICAL: return politicalView;
+      case AGGREGATE: return aggregateView;
     }
   }
 
+  state.update = () => {
+    state.getCurrentView().update()
+  }
+
+  const munNames = res['co2Data'].map(x => x["municipality"])
+  munNames.map( name => $('#mun-selection').append(`<option value=${name}>${name}</option>`))
+  state.selectedMunicipality = munNames[0]
   updateView(state.currView)
 
 });
