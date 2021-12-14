@@ -1,7 +1,6 @@
 class Histogram {
     constructor(id, data, key) {
       this.margin = {top: 30, right: 30, bottom: 70, left: 60};
-      console.log(document.getElementById(id).clientWidth)
       this.width = document.getElementById(id).clientWidth - this.margin.left - this.margin.right;
       this.height = document.getElementById(id).clientHeight - this.margin.top - this.margin.bottom;
       this.id = id;

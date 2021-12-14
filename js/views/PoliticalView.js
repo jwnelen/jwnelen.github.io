@@ -16,7 +16,8 @@ class PoliticalView extends View {
 			let currentMunicipality = this.averagePoliticalClimateLabel.filter(entry => entry['municipality'] == mun )[0]
 			if (!(typeof currentMunicipality === "undefined")){
 				let currMunicipPoliticsData = this.averagePoliticalClimateLabel.filter(entry => entry['municipality'] == mun )[0]
-				this.barChart = new BarChart("votes-percentages-chart",currMunicipPoliticsData.percentages_votes_per_label,"label","percentage",false)
+				var colors = d3.scaleOrdinal().domain(["F","E","D","C","B","A"]).range(["#ff0000","#ff4200","#ffa300","#fafa00","#00d100","#008200"])
+				this.barChart = new BarChart("votes-percentages-chart",currMunicipPoliticsData.percentages_votes_per_label,"label","percentage",false,colors)
 				gauge.set(currMunicipPoliticsData.climate_label)
 				$(".mun-name").html(mun);
 				$("#preview-textfield").html(Number.parseFloat(currMunicipPoliticsData.climate_label).toFixed(2))
