@@ -21,6 +21,7 @@ class PoliticalView extends View {
 				gauge.set(currMunicipPoliticsData.climate_label)
 				$(".mun-name").html(mun);
 				$("#preview-textfield").html(Number.parseFloat(currMunicipPoliticsData.climate_label).toFixed(2))
+				this.histogram.update(this.averagePoliticalClimateLabel,currMunicipPoliticsData.climate_label);
 			}
 			else{
 				$(".mun-name").html(mun+" is undefined unfortunately 😔")
