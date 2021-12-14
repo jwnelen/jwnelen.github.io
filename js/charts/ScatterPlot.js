@@ -51,7 +51,7 @@ class ScatterPlot {
         .domain([minX, maxX])
         .range([0, this.width]);
 
-    svg.append("g")
+    const xAxis = svg.append("g")
         .attr("transform", "translate(0," + this.height + ")")
         .call(d3.axisBottom(xScale));
 
@@ -60,14 +60,25 @@ class ScatterPlot {
         .domain([minY, maxY])
         .range([this.height, 0]);
 
-    svg.append("g")
+    const yAxis = svg.append("g")
         .call(d3.axisLeft(yScale));
 
     let myColor = d3.scaleLinear().domain([minClimate, maxClimate])
         .range(["red", "green"])
 
+    let clip = svg.append('defs').append("SVG:clipPath")
+        .attr("id", "clip")
+        .append("SVG:rect")
+        .attr("width", this.width )
+        .attr("height", this.height )
+        .attr("x", 0)
+        .attr("y", 0);
+
+    const scatter = svg.append('g')
+        .attr("clip-path", "url(#clip)")
+
     // Add dots
-    const circles = svg.append('g')
+    scatter
         .selectAll("dot")
         .data(this.data)
         .enter()
@@ -95,7 +106,7 @@ class ScatterPlot {
         .style("opacity", 0)
 
     // Add events to circles
-    circles.on("mouseover", (d) => {
+    scatter.on("mouseover", (d) => {
       tip.style("opacity", 1)
           .html(`${d.target.attributes.municipality_name.value} - ${d.target.attributes.climate_label.value}`)
           .style("left", (d.clientX - 30 + "px"))
@@ -106,6 +117,34 @@ class ScatterPlot {
         })
         .on("click", this.onClick)
 
+    // Set the zoom and Pan features: how much you can zoom, on which part, and what to do when there is a zoom
+    let zoom = d3.zoom()
+        .scaleExtent([.5, 20])  // This control how much you can unzoom (x0.5) and zoom (x20)
+        .extent([[0, 0], [this.width, this.height]])
+        .on("zoom", (event) => updateScale(event));
+
+    // This add an invisible rect on top of the chart area. This rect can recover pointer events: necessary to understand when the user zoom
+    svg.append("rect")
+        .attr("width", this.width)
+        .attr("height", this.height)
+        .style("fill", "none")
+        .style("pointer-events", "all")
+        .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')')
+        .call(zoom);
+    // now the user can zoom and it will trigger the function called updateChar
+
+    function updateScale(event) {
+      let newX = event.transform.rescaleX(xScale);
+      let newY = event.transform.rescaleY(yScale);
+
+      xAxis.call(d3.axisBottom(newX))
+      yAxis.call(d3.axisLeft(newY))
+
+      scatter
+          .selectAll("circle")
+          .attr('cx', d => newX(d[self.keyX]))
+          .attr('cy', d => newY(d[self.keyY]))
+    }
 
     // Add X axis label:
     svg.append("text")
@@ -122,4 +161,7 @@ class ScatterPlot {
         .attr("x", -this.margin.top - this.height / 2 + 20)
         .text(this.labelY)
   }
+
+
+
 }
