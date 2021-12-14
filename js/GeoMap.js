@@ -1,13 +1,23 @@
 class GeoMap {
-  constructor(id, mapData, caller, onMove) {
+  /**
+   *
+   * @param id - id of the div that the map will be inserted to
+   * @param mapData - geodata of the map
+   * @param caller - The object that calls the function, needs to have fill method to define how the map will be colored
+   * @param onMove - Function to be called when the mouse moves over the map
+   * @param onClick- Function to be alled when the mouse clicks on a municipality
+   */
+  constructor(id, mapData, caller, onMove = () => {}, onClick = () => {}) {
     this.id = id;
     this.mapData = mapData;
     this.fill = (d) =>{return caller.fill(d)};
+    this.onMove = onMove;
+    this.onClick = onClick;
 
     this.width = document.getElementById(id).clientWidth;
     this.height = document.getElementById(id).clientHeight;
 
-    this.toolTip = new ToolTip(onMove);
+    this.toolTip = new ToolTip();
     this.draw()
   }
 
@@ -16,11 +26,11 @@ class GeoMap {
   }
 
   draw() {
-    d3.select(`#${this.id}svg`).remove();
+    $(`#${this.id}svg`).remove();
     const self = this;
 
     const svg = d3.select(`#${this.id}`)
-        .append("svg").attr("id", `#${this.id}svg`)
+        .append("svg").attr("id", `${this.id}svg`)
         .attr("width", this.width)
         .attr("height", this.height);
 
@@ -29,7 +39,7 @@ class GeoMap {
 
     projection.fitSize([this.width, this.height], this.mapData);
 
-    svg.selectAll("path").data(this.mapData.features)
+    let svgs = svg.selectAll("path").data(this.mapData.features)
         .join('path')
         .attr("d", function (d) {
           return path(d);
@@ -46,8 +56,22 @@ class GeoMap {
           self.toolTip.mouseLeave(d, this)
         })
         .on("mousemove",  function(d){
-          self.toolTip.mouseMove(d, this)
+          self.toolTip.mouseMove(d, this);
+          self.onMove(d.target.attributes.municipality_name.value);
+        })
+        .on("click", function(d) {
+          self.onClick(d);
         });
+  }
+
+  colorPath(mun) {
+    let svgs = d3.select(`#${this.id}`).selectAll("path");
+    svgs.attr("fill", d => {
+      if(d.properties.areaName === mun) {
+        return "red";
+      }
+      return this.fill(d)
+    });
   }
 
 }

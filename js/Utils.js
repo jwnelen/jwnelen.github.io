@@ -21,7 +21,7 @@ const calculateRenewableVSCO2 = (renewData, co2Data) => {
     }
   }
   return res;
-}
+};
 
 const calculateCO2PerInhabitant = (co2Data, inhabitantData) =>{
   for(co2DataPoint of co2Data.filter(entry => entry["municipality"] != "Gemeente onbekend")){
@@ -124,3 +124,12 @@ const getCO2DivisionSector = function (data, mun) {
     }]
   }
 };
+
+const getMunFromEvent = function(d) {
+  return d.target.attributes.municipality_name.value;
+};
+
+const getMun = function (data, mun) {
+  return data.find(d => d.municipality === mun);
+
+}
