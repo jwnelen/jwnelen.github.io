@@ -31,6 +31,7 @@ loader.getData(res => {
 
   state.setNewMunicipality = (newMun) => {
     state.selectedMunicipality = newMun;
+    $('#mun-selection').val(newMun)
     state.update(newMun)
   }
 
