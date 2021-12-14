@@ -102,3 +102,27 @@ svg text {
 #CO2-container {
     display: flex;
 }
+
+.map-container {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.includes-selection {
+    position: absolute;
+    top: 4rem;
+    left: 1.5rem;
+}
+
+.selected-stack {
+    stroke: #002752;
+    stroke-width: 2px;
+}
+
+.window-input-container label, .window-input-container input{
+    margin: 10px 15px;
+}

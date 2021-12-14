@@ -28,16 +28,6 @@ loader.getData(res => {
       case POLITICAL: politicalView.update(); break;
       case AGGREGATE: aggregateView.update(); break;
     }
-
-
-    // let filteredElectionData= electionData.filter(entry => munNames.includes(entry["municipality"]))
-    // let co2Party = calculateCO2PerPoliticalParty(uniquePartyList,filteredElectionData,co2Data)
-    //
-    // map.update(newVal);
-    // partyCO2Chart.update(co2Party);
-    //
-    // d3.select('p#value-simple').text(d3.format(",.2r")(newVal)); // display value
-    // d3.select('p#municipalities').text("below threshold: " + munNames.length);
   }
 
 });
@@ -47,12 +37,11 @@ function cleanupData(res) {
   mergeGeoPaths(mapData, "Molenwaard", "Giessenlanden", "Molenlanden");
   const incomes = res["income"];
   const co2PerSector = res["co2PerSector"];
-
   const electionData = parseNumbers(res["electionData"],["Votes"])
   const co2Data = parseNumbers(res["co2Data"], ["CO2"]);
   const renewData = parseNumbers(res["renewData"], ["energy", "electricity", "warmth", "transport"]);
   const inhabitantData = parseNumbers(res["inhabitantData"],["Inwoneraantal"])
-  const uniquePartyList = res['uniquePartyList']
+  const uniquePartyList = res['uniquePartyList'];
   changeKeys(electionData, [
     {from:"Municipality name", to: "municipality"},
     {from:"Votes", to: "votes"}
@@ -68,16 +57,26 @@ function cleanupData(res) {
     {from: "Gemeenten", to: "municipality"}]);
   changeKeys(renewData, [
     {from: "Gemeenten", to: "municipality"}]);
-  changeKeys(co2PerSector, [
+  parseNumbers(changeKeys(co2PerSector, [
     {from: "Gemeenten", to: "municipality"},
-    {from: "Totaal bekende CO2-uitstoot (aardgas elektr. stadswarmte woningen voertuigbrandstoffen)|2019", to: "Total"},
+    {from: "Totaal bekende CO2-uitstoot (aardgas elektr. stadswarmte woningen voertuigbrandstoffen)|2019", to: ""},
     {from: "CO2-uitstoot Verkeer en vervoer incl. auto(snel)wegen excl. elektr. railverkeer (scope 1)|2019", to: "Transport"},
     {from: "CO2-uitstoot Landbouw bosbouw en visserij SBI A (aardgas elektr.)|2019", to: "Agriculture"},
     {from: "CO2-uitstoot Gebouwde Omgeving (aardgas elektr. en stadswarmte woningen)|2019", to: "Built environment"},
     {from: "CO2-uitstoot Industrie Energie Afval en Water (aardgas en elektr.)|2019", to: "Industry"},
-  ]);
+  ]), ["Transport", "Agriculture", "Built environment", "Industry"]);
   Object.values(res)
       .filter(dataset => Array.isArray(dataset)&&"municipality" in dataset[0])
-      .forEach(dataset => changeNames(dataset, "municipality", [{from: "Nuenen, Gerwen en Nederwetten", to: "Nuenen c.a."}]));
+      .forEach(dataset => {
+        let unknownMun = dataset.find(d => d.municipality === "Gemeente onbekend");
+        if(unknownMun) {
+          dataset.splice(dataset.indexOf(unknownMun));
+        }
+        changeNames(dataset, "municipality",
+            [{from: "Nuenen, Gerwen en Nederwetten", to: "Nuenen"},
+              {from: "Nuenen c.a.", to: "Nuenen"},
+              {from: "Bergen (L.)", to: "Bergen (L)"},
+              {from: "Bergen (NH.)", to: "Bergen (NH)"}])
+      });
   calculateCO2PerInhabitant(co2Data,inhabitantData);
 }
