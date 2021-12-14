@@ -2,6 +2,7 @@ const state = {
   currView: CO2,
   selectedMunicipality: "",
   update: () => {},
+  setNewMunicipality: () => {}
 };
 
 let loader = new DataLoader(FILES);
@@ -24,12 +25,27 @@ loader.getData(res => {
     }
   }
 
-  state.update = () => {
-    state.getCurrentView().update()
+  state.update = (newMun = null) => {
+    state.getCurrentView().update(newMun)
+  }
+
+  state.setNewMunicipality = (newMun) => {
+    state.selectedMunicipality = newMun;
+    state.update(newMun)
   }
 
   const munNames = res['co2Data'].map(x => x["municipality"])
-  munNames.map( name => $('#mun-selection').append(`<option value=${name}>${name}</option>`))
+
+  const newMunSelected = (e) => {
+    state.setNewMunicipality(e.target.value)
+  }
+
+  const option = (name) => {
+    return `<option value=${name}>${name}</option>`
+  }
+
+  $('#mun-selection').change((e) => newMunSelected(e))
+  munNames.map( name => $('#mun-selection').append(option(name)))
   state.selectedMunicipality = munNames[0]
   updateView(state.currView)
 
