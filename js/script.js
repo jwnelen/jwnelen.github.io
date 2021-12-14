@@ -1,5 +1,5 @@
 const state = {
-  currView: AGGREGATE,
+  currView: CO2,
   update: () => {}
 };
 
