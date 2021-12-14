@@ -35,16 +35,17 @@ class CO2View extends View {
 		this.isInitialized = true;
 	}
 
-	update(new_mun) {
+	update() {
 		if (!this.isInitialized) {
 			this.init();
 			this.isInitialized = true;
 		} else {
-			this.highlightSelected(new_mun)
+			this.highlightSelected()
 		}
 	}
 
-	highlightSelected = (mun_name) => {
+	highlightSelected = () => {
+		const mun_name = state.selectedMunicipality;
 		let co2 = getMun(this.co2Data, mun_name).CO2;
 		this.barChart.update(getCO2DivisionSector(this.co2PerSector, mun_name));
 		this.stackedBarchart.update(this.co2PerSector, getMun(this.co2PerSector, mun_name));
