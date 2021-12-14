@@ -1,10 +1,3 @@
-const state = {
-  currView: CO2,
-  selectedMunicipality: "",
-  update: () => {},
-  setNewMunicipality: () => {}
-};
-
 let loader = new DataLoader(FILES);
 
 loader.getData(res => {
@@ -25,32 +18,22 @@ loader.getData(res => {
     }
   }
 
-  state.update = (newMun = null) => {
-    state.getCurrentView().update(newMun)
-  }
+  addSelectionOptions(res) //this will trigger an update
 
-  state.setNewMunicipality = (newMun) => {
-    state.selectedMunicipality = newMun;
-    $('#mun-selection').val(newMun)
-    state.update(newMun)
-  }
+});
 
+const addSelectionOptions = (res) => {
   const munNames = res['co2Data'].map(x => x["municipality"])
-
-  const newMunSelected = (e) => {
-    state.setNewMunicipality(e.target.value)
-  }
-
   const option = (name) => {
     return `<option value=${name}>${name}</option>`
   }
 
-  $('#mun-selection').change((e) => newMunSelected(e))
-  munNames.map( name => $('#mun-selection').append(option(name)))
-  state.selectedMunicipality = munNames[0]
-  updateView(state.currView)
-
-});
+  const munSelectionBox = '#mun-selection'
+  $(munSelectionBox).change((e) => newMunSelected(e))
+  munNames.map( name => $(munSelectionBox).append(option(name)))
+  state.setNewMunicipality(munNames[0])
+  state.update(munNames[0])
+}
 
 function cleanupData(res) {
   const mapData = res["mapData"];
