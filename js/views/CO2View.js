@@ -9,7 +9,7 @@ class CO2View extends View {
 	}
 
 	init() {
-		this.barChart = new BarChart("barchart", getCO2DivisionSector(this.co2PerSector, "Aa en Hunze"), "sector", "value", false);
+		this.barChart = new BarChart("barchart", getCO2PerSectorPerInhabitant(this.co2PerSector, "Aa en Hunze",this.inhabitantData), "sector", "value", false);
 		this.stackedBarchart = new StackedBarChart("co2stackedbar", this.co2PerSector,
 			"municipality",
 			["Transport", "Agriculture", "Built environment", "Industry"],
@@ -44,12 +44,14 @@ class CO2View extends View {
 
 	onMapClick = (d) => {
 		let mun = getMunFromEvent(d);
-		let co2 = getMun(this.co2Data, mun).CO2;
-		this.barChart.update(getCO2DivisionSector(this.co2PerSector, mun));
+		let co2SectorDataMun = getMun(this.co2PerSector, mun)
+		let co2Total = co2SectorDataMun.Transport + co2SectorDataMun.Industry + co2SectorDataMun.Agriculture + co2SectorDataMun['Built environment']
+		console.log(co2Total)
+		this.barChart.update(getCO2PerSectorPerInhabitant(this.co2PerSector, mun,this.inhabitantData));
 		this.stackedBarchart.update(this.co2PerSector, getMun(this.co2PerSector, mun));
 		this.map.colorPath(mun);
 		$(".mun-name").html(mun);
-		$(".co2-amount").html(`${new Intl.NumberFormat().format(co2)} tons`);
+		$(".co2-amount").html(`${new Intl.NumberFormat('en-IN').format(co2Total)} tons`);
 	}
 
 	setCO2MapData() {
@@ -59,11 +61,10 @@ class CO2View extends View {
 		this.co2MapData = this.co2Data.filter(d => d.municipality !== "Gemeente onbekend")
 			.map(d => {
 				let sectorData = this.co2PerSector.find(s => s.municipality === d.municipality);
-				let pop = this.inhabitantData.find(h => h.municipality === d.municipality).inhabitants;
 				let CO2 = checked.reduce((sum, c) => c.checked ? sum + sectorData[c.name] : sum, 0);
 				return {
 					municipality: d.municipality,
-					CO2: CO2 / pop
+					CO2: CO2
 				}
 			});
 	}
