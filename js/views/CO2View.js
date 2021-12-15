@@ -58,6 +58,7 @@ class CO2View extends View {
 		// This will in the end call back the update and then the highlight selected
 		state.setNewMunicipality(getMunFromEvent(d))
 		state.update()
+
 	}
 
 	setCO2MapData() {

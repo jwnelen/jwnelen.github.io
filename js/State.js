@@ -1,5 +1,5 @@
 const state = {
-  currView: RENEWABLE,
+  currView: CO2,
   selectedMunicipality: "",
   setNewMunicipality: () => {},
   update: () => {},

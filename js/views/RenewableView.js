@@ -6,7 +6,7 @@ class RenewableView extends View {
 	}
 
 	init() {
-		this.map = new GeoMap("map_renew", this.mapData, this, () => {}, () => {})
+		this.map = new GeoMap("map_renew", this.mapData, this, () => {}, (e) => this.onMunClicked(e))
 		const munSelected = this.renewable.filter( m => m["municipality"] === state.selectedMunicipality)[0]
 		console.log(munSelected)
 		// if(munSelected) {
@@ -35,6 +35,7 @@ class RenewableView extends View {
 	onMunClicked = (d) => {
 		const mun = getMunFromEvent(d)
 		state.setNewMunicipality(mun);
+		state.update()
 	}
 
 	update() {
