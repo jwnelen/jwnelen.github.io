@@ -103,4 +103,5 @@ function cleanupData(res) {
     m.properties.areaName = m.municipality;
   });
   calculateCO2PerInhabitant(co2Data,inhabitantData);
+  calculateCO2PerSectorPerInhabitant(co2PerSector,inhabitantData)
 }
