@@ -9,12 +9,12 @@ class RenewableView extends View {
 		this.map = new GeoMap("map_renew", this.mapData, this, () => {}, (e) => this.onMunClicked(e))
 		const munSelected = this.renewable.filter( m => m["municipality"] === state.selectedMunicipality)[0]
 		console.log(munSelected)
-		// if(munSelected) {
-		// 	delete munSelected["municipality"]
-		// 	const d = Object.entries(munSelected).map( ([lab, va], index) => ({"label": lab, "value": va}))
-		// 	console.log(d)
-		// 	this.barChart = new BarChart('barchartrenew', d, "label", "value")
-		// }
+		if(munSelected) {
+			delete munSelected["municipality"]
+			const d = Object.entries(munSelected).map( ([lab, va], index) => ({"label": lab, "value": va}))
+			console.log(d)
+			this.barChart = new BarChart('barchartrenew', d, "label", "value")
+		}
 	}
 
 	highlightSelected = () => {
@@ -22,14 +22,14 @@ class RenewableView extends View {
 		this.map.update()
 		this.map.colorPath(mun_name);
 
-		// const munSelected = this.renewable.filter( m => m["municipality"] === state.selectedMunicipality)[0]
+		const munSelected = this.renewable.filter( m => m["municipality"] === state.selectedMunicipality)[0]
 
-		// console.log(munSelected)
-		// if(munSelected) {
-		// 	delete munSelected["municipality"]
-		// 	const d = Object.entries(munSelected).map( ([lab, va], index) => ({"label": lab, "value": va}))
-		// 	this.barChart.update(d)
-		// }
+		console.log(munSelected)
+		if(munSelected) {
+			delete munSelected["municipality"]
+			const d = Object.entries(munSelected).map( ([lab, va], index) => ({"label": lab, "value": va}))
+			this.barChart.update(d)
+		}
 	}
 
 	onMunClicked = (d) => {
