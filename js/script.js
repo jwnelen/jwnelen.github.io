@@ -30,7 +30,23 @@ loader.getData(res => {
 
 function cleanupData(res) {
   const mapData = res["mapData"];
-  mergeGeoPaths(mapData, "Molenwaard", "Giessenlanden", "Molenlanden");
+  mergeGeoPaths(mapData, [{keys: ["Molenwaard", "Giessenlanden"], target: "Molenlanden"},
+    {keys: ["Spijkenisse", "Bernisse"], target: "Nissewaard"},
+    {keys: ["Bellingwedde", "Vlagtwedde"], target: "Westerwolde"},
+    {keys: ["Werkendam", "Woudrichem", "Aalburg"], target: "Altena"},
+    {keys: ["Appingedam", "Delfzijl", "Loppersum"], target: "Eemsdelta"},
+    {keys: ["Bussum", "Muiden", "Naarden"], target: "Gooise Meren"},
+    {keys: ["Leerdam", "Vianen", "Zederik"], target: "Vijfheerenlanden"},
+    {keys: ["Geldermalsen", "Neerijnen", "Lingewaal"], target: "West Betuwe"},
+    {keys: ["Schijndel", "Veghel", "Sint-Oedenrode"], target: "Meierijstad"},
+    {keys: ["Hoogezand-Sappemeer", "Slochteren", "Menterwolde"], target: "Midden-Groningen"},
+    {keys: ["Bedum", "Eemsmond", "De Marne", "Winsum"], target: "Het Hogeland"},
+    {keys: ["Grootegast", "Leek", "Marum", "Zuidhorn"], target: "Westerkwartier"},
+    {keys: ["Dongeradeel", "Ferwerderadiel", "Kollumerland en Nieuwkruisland"], target: "Noardeast-Fryslân"},
+    {keys: ["Binnenmaas", "Strijen", "Cromstrijen", "Korendijk", "Oud-Beijerland"], target: "Hoeksche Waard"},
+    {keys: ["Nederlek", "Ouderkerk", "Vlist", "Bergambacht", "Schoonhoven"], target: "Krimpenerwaard"},
+    {keys: ["Franekeradeel", "het Bildt", "Menameradiel", "Littenseradiel"], target: "Waadhoeke"},
+    {keys: ["Nuth", "Schinnen", "Onderbanken"], target: "Beekdaelen"}]);
   const incomes = res["income"];
   const co2PerSector = res["co2PerSector"];
   const electionData = parseNumbers(res["electionData"],["Votes"])
@@ -39,6 +55,10 @@ function cleanupData(res) {
   const inhabitantData = parseNumbers(res["inhabitantData"],["Inwoneraantal"])
   const uniquePartyList = res['uniquePartyList']
   const climateLabels = res["climateLabels"]
+
+  mapData.features.forEach(m => {
+    m.municipality = m.properties.areaName
+  });
 
   changeKeys(electionData, [
     {from:"Municipality name", to: "municipality"},
@@ -63,7 +83,7 @@ function cleanupData(res) {
     {from: "CO2-uitstoot Gebouwde Omgeving (aardgas elektr. en stadswarmte woningen)|2019", to: "Built environment"},
     {from: "CO2-uitstoot Industrie Energie Afval en Water (aardgas en elektr.)|2019", to: "Industry"},
   ]), ["Transport", "Agriculture", "Built environment", "Industry"]);
-  Object.values(res)
+  Object.values(res).concat([mapData.features])
       .filter(dataset => Array.isArray(dataset)&&"municipality" in dataset[0])
       .forEach(dataset => {
         let unknownMun = dataset.find(d => d.municipality === "Gemeente onbekend");
@@ -71,10 +91,29 @@ function cleanupData(res) {
           dataset.splice(dataset.indexOf(unknownMun));
         }
         changeNames(dataset, "municipality",
-            [{from: "Nuenen, Gerwen en Nederwetten", to: "Nuenen"},
-              {from: "Nuenen c.a.", to: "Nuenen"},
-              {from: "Bergen (L.)", to: "Bergen (L)"},
-              {from: "Bergen (NH.)", to: "Bergen (NH)"}])
+            [{from: /Nuenen/, to: "Nuenen"},
+              {from: /Bergen \(L[.,]\)/, to: "Bergen (L)"},
+              {from: /Bergen \(NH.\)/, to: "Bergen (NH)"},
+              {from: /Groesbeek/, to: "Berg en Dal"},
+              {from: /Gaasterlan-Sleat/, to: "De Fryske Marren"},
+              {from: /Sudwest-Fryslan/, to: "Súdwest-Fryslân"},
+              {from: /\'s-Gravenhage/, to: "Den Haag"}])
       });
+  mapData.features.forEach(m => {
+    m.properties.areaName = m.municipality;
+    let mun = m.municipality;
+    let match = co2Data.find(d => mun === d.municipality);
+    if(!match) {
+      console.log(mun);
+    }
+  });
+  console.log("*************888");
+  co2PerSector.forEach(co2 => {
+    let mun = co2.municipality;
+    let match = mapData.features.find(d => mun === d.municipality);
+    if(!match) {
+      console.log(mun);
+    }
+  });
   calculateCO2PerInhabitant(co2Data,inhabitantData);
 }

@@ -67,8 +67,8 @@ function joinData(d1, d2, key, sameData = false) {
 function changeNames(data, key, names) {
 	data.forEach(d => {
 		names.forEach(n => {
-			let isFrom = d[key] === n.from;
-			d[key] = d[key] === n.from? n.to : d[key];
+			let isFrom = d[key].match(n.from);
+			d[key] = isFrom? n.to : d[key];
 		});
 	})
 }
