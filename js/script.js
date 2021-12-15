@@ -101,19 +101,6 @@ function cleanupData(res) {
       });
   mapData.features.forEach(m => {
     m.properties.areaName = m.municipality;
-    let mun = m.municipality;
-    let match = co2Data.find(d => mun === d.municipality);
-    if(!match) {
-      console.log(mun);
-    }
-  });
-  console.log("*************888");
-  co2PerSector.forEach(co2 => {
-    let mun = co2.municipality;
-    let match = mapData.features.find(d => mun === d.municipality);
-    if(!match) {
-      console.log(mun);
-    }
   });
   calculateCO2PerInhabitant(co2Data,inhabitantData);
 }
