@@ -4,8 +4,6 @@ loader.getData(res => {
 
   cleanupData(res);
 
-  console.log(res)
-
   let co2View = new CO2View(res);
   let renewableView = new RenewableView(res);
   let politicalView = new PoliticalView(res);
