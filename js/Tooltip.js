@@ -19,12 +19,8 @@ class ToolTip {
         .style("stroke", "black")
         .style("opacity", 1)
     d3.selectAll(".municipality")
-        .transition()
-        .duration(200)
         .style("opacity", .5)
     d3.select(path)
-        .transition()
-        .duration(100)
         .style("opacity", 1)
         .style("stroke", "black")
   }
@@ -43,12 +39,8 @@ class ToolTip {
         .style("stroke", "black")
         .style("opacity", 0.8)
     d3.selectAll(".municipality")
-        .transition()
-        .duration(200)
         .style("opacity", .8)
     d3.select(path)
-        .transition()
-        .duration(100)
         .style("stroke", "black")
   }
 }
