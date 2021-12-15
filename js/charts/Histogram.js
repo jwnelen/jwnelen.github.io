@@ -1,17 +1,18 @@
 class Histogram {
-    constructor(id, data, key) {
+    constructor(id, data, key, verticalLineVal = null) {
       this.margin = {top: 30, right: 30, bottom: 70, left: 60};
-      console.log(document.getElementById(id).clientWidth)
       this.width = document.getElementById(id).clientWidth - this.margin.left - this.margin.right;
       this.height = document.getElementById(id).clientHeight - this.margin.top - this.margin.bottom;
       this.id = id;
       this.data = data;
       this.key = key;
+      this.verticalLineVal = verticalLineVal
       this.draw();
     }
 
-    update(newData) {
+    update(newData,verticalLineVal) {
         this.data = newData;
+        this.verticalLineVal = verticalLineVal
         this.draw()
         }
         
@@ -30,7 +31,6 @@ class Histogram {
         var x = d3.scaleLinear()
         .domain([d3.min(data, function(d){return d}), d3.max(data, function(d){return +d})])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
         .range([0, this.width]);
-
         svgHist.append("g")
         .attr("transform", "translate(0," + this.height + ")")
         .call(d3.axisBottom(x));
@@ -49,6 +49,7 @@ class Histogram {
 
         svgHist.append("g")
         .call(d3.axisLeft(y));
+
         
         // append the bar rectangles
         svgHist.selectAll("rect")
@@ -61,5 +62,17 @@ class Histogram {
             .attr("height", function(d) { return height - y(d.length); })
             .style("fill", "#69b3a2")
 
+
+        if (!(this.verticalLineVal === null)){
+          svgHist.append("svg:line")
+          .attr("x1",x(this.verticalLineVal))
+          .attr("x2",x(this.verticalLineVal))
+          .attr("y1",0)
+          .attr("y2",this.height)
+          .style("stroke-dasharray", "4")
+          .attr("stroke","grey")
+          .attr("stroke-width", 2)
+          .attr("fill", "black");
+        }
     }
 }

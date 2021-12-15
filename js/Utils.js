@@ -32,44 +32,31 @@ const calculateCO2PerInhabitant = (co2Data, inhabitantData) =>{
   return co2Data
 }
 
-const calculateCO2PerPoliticalParty = (unique_party_list,electionData, co2Data) => {
-  let party_avg_co2_value = []
-  // we only calc over municipalities for which we have CO2 values
-  let municipalities_with_co2Data = co2Data.filter(entry => entry["CO2"] > 0).map(entry => entry["municipality"])
-  let electionDataCorr = electionData.filter(entry => municipalities_with_co2Data.includes(entry["municipality"] ))
-
-  for (let i = 0; i < unique_party_list.length; i++){
-    // for any party: we need to find where there voters come from
-    let party = unique_party_list[i].party_name
-    let votes_party_list = electionDataCorr.filter(entry => entry["party_name"] == party).map(entry => isNaN(entry.votes) ? {...entry, "votes": 0}: entry)
-    // just a check for undefined shit: could be removed
-    for(let j = 0; j < votes_party_list.length; j++){
-      if (typeof votes_party_list[j].percentage == undefined){
-        console.log(votes_party_list[j].percentage)
-        console.log("undefined shit " +votes_party_list[j].party_name)
-      }
-    }
-
-    // for any party: to find the percentage of votes coming from some municipality
-    let total_votes = electionDataCorr.filter(entry =>  entry['party_name'] == party).reduce((acc,curr) => {return acc + curr['votes']},0);
-    let weighted_co2_value = 0
-    for (entry of votes_party_list){
-      entry.percentage = entry.votes/total_votes
-      let co2_value = co2Data.filter(x => x['municipality'] == entry['municipality'])[0].CO2_per_inhabitant
-      if (co2_value.length == 0){
-        console.log(entry)
-      }
-      else{
-        weighted_co2_value += co2_value * entry.percentage
-      }
-    }
-    party_avg_co2_value.push({'party_name': party, 'CO2': weighted_co2_value})
+const calculateCO2PerSectorPerInhabitant = (co2PerSector, inhabitantData) =>{
+  for(entry of co2PerSector){
+    var thisMun = entry.municipality
+    var thisInhab = inhabitantData.filter(d => d.municipality === thisMun)[0].inhabitants
+    entry['municipality'] = thisMun
+    entry['Transport'] = entry.Transport > 0 ? entry.Transport/thisInhab: 0
+    entry['Agriculture'] = entry.Agriculture > 0 ? entry.Agriculture/thisInhab : 0
+    entry['Built environment'] = entry['Built environment'] > 0 ? entry['Built environment']/thisInhab : 0
+    entry['Industry'] = entry.Industry > 0 ? entry['Industry']/thisInhab : 0
   }
-  return party_avg_co2_value
-};
+}
+
+const reduceByKeyVal = (array,key,val) =>{
+  var res = []
+  var allKeys = Array.from(new Set(array.map(entry => entry[key]))).sort()
+  for(thisKey of allKeys){
+    let reducedValue = array.filter(entry => entry[key] == thisKey).reduce( (pv, cv) => {return pv + cv[val]}, 0)
+    res.push({[key]: thisKey, [val]: reducedValue})
+  }
+  return res
+}
 
 const calculateAveragePoliticalClimateLabel = (electionData, climateLabels) =>{
   var scores = {"A": 5, "B": 4, "C": 3, "D": 2, "E": 1, "F": 0}
+  var invScores = {5: "A", 4: "B", 3: "C", 2: "D", 1: "E", 0: "F"}
   let partiesWithLabel = climateLabels.map(entry => entry["party_name"])
   for(entry of climateLabels){
     entry['climate_score'] = scores[entry["climate_label"]]
@@ -82,15 +69,20 @@ const calculateAveragePoliticalClimateLabel = (electionData, climateLabels) =>{
     let thisMunicipality = municipalityList[i]
     let totalVotesInThisMunicipality = electionDataForRelevantParties.filter(entry =>  entry['municipality'] == thisMunicipality).reduce((acc,curr) => {return acc + curr['votes']},0)
     let votesForPartiesInThisMunicipality = electionDataForRelevantParties.filter(entry => entry['municipality'] == thisMunicipality)
+    let percentageList = []
     for (let j = 0; j < votesForPartiesInThisMunicipality.length; j++){
       let thisMunicipPartyEntry = votesForPartiesInThisMunicipality[j]
       let thisLabel = climateLabels.filter(entry => thisMunicipPartyEntry["party_name"] == entry["party_name"])[0].climate_score
+      let thisLabelLetter = invScores[thisLabel]
+
+      percentageList.push({"label": thisLabelLetter, "percentage": thisMunicipPartyEntry["votes"]/totalVotesInThisMunicipality })
       weightedClimateScore += thisLabel * thisMunicipPartyEntry["votes"]/totalVotesInThisMunicipality
     }
-    averageClimateLabel.push({"municipality": thisMunicipality, "climate_label": weightedClimateScore})
+    averageClimateLabel.push({"municipality": thisMunicipality, "climate_label": weightedClimateScore, "percentages_votes_per_label": reduceByKeyVal(percentageList,"label","percentage")})
   }
   return averageClimateLabel
 }
+
 
 const mergeGeoPaths = function (data, key1, key2, target) {
 	let features = data.features;
@@ -105,7 +97,7 @@ const mergeGeoPaths = function (data, key1, key2, target) {
 	features.push(res);
 };
 
-const getCO2DivisionSector = function (data, mun) {
+const getCO2PerSectorPerInhabitant = function (data, mun) {
   let entry = data.find(d => d.municipality === mun);
   if (entry) {
     entry = deepCopy(entry);
@@ -113,7 +105,7 @@ const getCO2DivisionSector = function (data, mun) {
     entry = Object.keys(entry).map(k => {
       return {
         sector: k,
-        value: entry[k]
+        value: entry[k] > 0 ? entry[k]: 0
       }
     });
     return entry;
@@ -132,4 +124,14 @@ const getMunFromEvent = function(d) {
 const getMun = function (data, mun) {
   return data.find(d => d.municipality === mun);
 
+}
+
+const percentileOfDataset = function(dataset,key,value){
+  var worseDataPoints = 0
+  for (dataEntry of dataset){
+    if(dataEntry[key] <= value){
+      worseDataPoints += 1
+    }
+  }
+  return worseDataPoints/dataset.length
 }

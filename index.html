@@ -44,13 +44,13 @@
                 <div class=" map-container">
                     <div id="include-sector" class="includes-selection">
                     </div>
-                    <h4 class="m-1">CO2 emissions per municipality</h4>
+                    <h4 class="m-1">CO2 emissions per inhabitant per municipality</h4>
                     <div class="w-100 flex-grow-1" id="map_nl"></div>
                 </div>
                 <div class="w-50 d-flex flex-column align-items-stretch p-3">
-                    <h4 class="m-1">CO2 emissions per sector in <span class="mun-name"></span></h4>
+                    <h4 class="m-1">CO2 emissions per inhabitant sector in <span class="mun-name"></span></h4>
                     <div class="h-50" id="barchart"></div>
-                    <p class="mb-0">Total amount of CO2 emissions: <span class="co2-amount"></span></p>
+                    <p class="mb-0">Total amount of CO2 emissions per inhabitant: <span class="co2-amount"></span></p>
                     <div class="h-50" id="co2stackedbar"></div>
                     <div class="window-input-container">
                         <label for="co2stackedbar-window">Sliding window size:</label>
@@ -77,7 +77,10 @@
                         <canvas id="demo">
                         </canvas>
                         <h4>is <span id="preview-textfield"> </span> </h4>
-                        <div class="h-75" id="labelHist"></div>
+                        <div class="h-25" id="votes-percentages-chart"></div>
+                        <div class="h-25" id="label-hist">
+                        </div>
+                        <h4><span class="mun-name"></span> has a better (or as good as) average climate label than <span id="label-percentile">...</span> of Dutch municipalities!</h4>
                     </div>
                 </div>
             </div>
@@ -111,7 +114,7 @@
     <script src="js/charts/GeoMap.js"></script>
     <script src="js/charts/BarChart.js"></script>
     <script src="js/charts/ScatterPlot.js"></script>
-    <script src="js/Histogram.js"></script>
+    <script src="js/charts/Histogram.js"></script>
     <script src="js/script.js"></script>
     <script src="js/util/gauge.js"></script>
     <script src="js/GaugeMaker.js"></script>

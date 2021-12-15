@@ -109,7 +109,9 @@ class StackedBarChart {
 			.attr("y", d => y(d[1]))
 			.attr("municipality_name", d => d.data[this.keyX])
 			.attr("width", x.bandwidth())
-			.attr("height", d => Math.max(y(d[0]) - y(d[1]), 0))
+			.attr("height", d => {
+				return Math.max(y(d[0]) - y(d[1]), 0)
+			})
 			.on("click", this.onclick);
 	}
 

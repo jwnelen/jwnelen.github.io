@@ -77,4 +77,5 @@ function cleanupData(res) {
               {from: "Bergen (NH.)", to: "Bergen (NH)"}])
       });
   calculateCO2PerInhabitant(co2Data,inhabitantData);
+  calculateCO2PerSectorPerInhabitant(co2PerSector,inhabitantData)
 }
