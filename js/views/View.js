@@ -3,10 +3,6 @@ class View {
 		this.isInitialized = false;
 	}
 
-	newMunicipalityChosen = (new_mun) => {
-		console.log(new_mun)
-	}
-
 	htmlIncludesSelection(id, keys, onclick) {
 		let keyString = keys.map(k => {
 			return `<div>

@@ -10,7 +10,7 @@ function changeKeys(data, keys) {
 
 function parseNumbers(data, keys) {
 	data.forEach(d => keys.forEach(k => {
-		d[k] = parseFloat(d[k].replace(",", "."));
+		d[k] = d[k] === "?" ? 0 : parseFloat(d[k].replace(",", "."));
 	}));
 	return data;
 }
