@@ -25,17 +25,19 @@ loader.getData(res => {
 
 const addSelectionOptions = (res) => {
   const munNames = res['co2Data'].map(x => x["municipality"])
+
   const option = (name) => {
-    return `<option value=${name}>${name}</option>`
+    return `<option value='${name}'>${name}</option>`
   }
 
   const munSelectionBox = '#mun-selection'
   $(munSelectionBox).change((e) => {
+    console.log(e)
     state.newMunSelected(e)
     state.update()
   })
   munNames.map( name => $(munSelectionBox).append(option(name)))
-  state.setNewMunicipality(munNames[1])
+  state.setNewMunicipality(munNames[0])
   updateView(state.currView)
   state.update()
 }

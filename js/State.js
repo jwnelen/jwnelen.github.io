@@ -12,7 +12,9 @@ state.update = () => {
 
 state.setNewMunicipality = (newMun) => {
   state.selectedMunicipality = newMun;
+  console.log(newMun)
   $('#mun-selection').val(newMun)
+
 }
 
 state.newMunSelected = (event) => {
