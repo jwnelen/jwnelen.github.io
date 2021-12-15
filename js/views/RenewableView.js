@@ -47,6 +47,17 @@ class RenewableView extends View {
 	}
 
 	fill(d) {
-		return "grey"
+		const areaName = d.properties.areaName
+		const energy = this.renewable.filter(m => m["municipality"] === areaName)[0]?.energy
+		console.log(energy)
+
+		const maxEnergy = getMax(this.renewable, 'energy')
+		const minEnergy = getMin(this.renewable, 'energy')
+		if (energy) {
+			let colorScaleCO2Data = d3.scaleLinear().domain([minEnergy, 20])
+			return d3.interpolateBlues(colorScaleCO2Data(energy));
+		} else {
+			return 'grey'
+		}
 	}
 }
