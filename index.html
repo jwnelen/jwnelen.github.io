@@ -49,7 +49,13 @@
                 </div>
                 <div class="w-50 d-flex flex-column align-items-stretch p-3">
                     <h4 class="m-1">CO2 emissions per sector in <span class="mun-name"></span></h4>
-                    <div class="h-50" id="barchart"></div>
+                    <div class="d-flex" id="piechart-container">
+                        <div class="flex-grow-1" id="co2piechart"></div>
+                        <div class="legend" id="co2-legend">
+                            <div class="legend-item">
+                            </div>
+                        </div>
+                    </div>
                     <p class="mb-0">Total amount of CO2 emissions: <span class="co2-amount"></span></p>
                     <div class="h-50" id="co2stackedbar"></div>
                     <div class="window-input-container">
@@ -108,6 +114,8 @@
     <script src="js/Tooltip.js"></script>
     <script src="js/Slider.js"></script>
     <script src="js/StackedBarChart.js"></script>
+    <script src="js/charts/Legend.js"></script>
+    <script src="js/charts/PieChart.js"></script>
     <script src="js/charts/GeoMap.js"></script>
     <script src="js/charts/BarChart.js"></script>
     <script src="js/charts/ScatterPlot.js"></script>

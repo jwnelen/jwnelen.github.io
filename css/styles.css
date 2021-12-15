@@ -125,3 +125,25 @@ svg text {
 .window-input-container label, .window-input-container input{
     margin: 10px 15px;
 }
+
+.legend {
+    width: 30%;
+    padding: 15px 5px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+}
+.legend-dot {
+    border-radius: 50%;
+    width: 15px;
+    min-width: 15px;
+    height: 15px;
+    margin-right: 20px;
+    background-color: #0f6674;
+}
+
+#piechart-container{
+    height: 40%;
+}

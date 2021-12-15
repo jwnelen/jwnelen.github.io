@@ -1,5 +1,5 @@
 class StackedBarChart {
-	constructor(id, data, keyX, keyYs, onclick = () => {}) {
+	constructor(id, data, keyX, keyYs, onclick = () => {}, colorScheme = d3.schemeSet1) {
 		this.margin = {top: 30, right: 30, bottom: 70, left: 60};
 		this.widthBar = document.getElementById(id).clientWidth - this.margin.left - this.margin.right;
 		this.heightBar = document.getElementById(id).clientHeight - this.margin.top - this.margin.bottom;
@@ -10,6 +10,7 @@ class StackedBarChart {
 		this.windowSize = 20;
 		this.middlePoint = null;
 		this.onclick = onclick;
+		this.colorScheme = colorScheme;
 		let self = this;
 		$(`#${id}-window`).attr("max", data.length);
 		$(`#${id}-window`).val(data.length);
@@ -82,7 +83,7 @@ class StackedBarChart {
 		// color palette = one color per subgroup
 		let color = d3.scaleOrdinal()
 			.domain(this.keyYs)
-			.range(d3.schemeSet1);
+			.range(this.colorScheme);
 
 		//stack the data? --> stack per subgroup
 		let stackedData = d3.stack()
