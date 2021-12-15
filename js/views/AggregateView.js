@@ -28,6 +28,7 @@ class AggregateView extends View {
 
   onClick = (d) => {
     state.setNewMunicipality(this.getMunName(d))
+    state.update()
   }
 
   highlight = (d) => {

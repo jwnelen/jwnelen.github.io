@@ -1,17 +1,17 @@
 const state = {
-  currView: CO2,
+  currView: RENEWABLE,
   selectedMunicipality: "",
   setNewMunicipality: () => {},
-  update: () => {}
+  update: () => {},
+  getCurrentView: () => {}
 };
 
-state.update = (newMun = null) => {
-  state.getCurrentView().update(newMun)
+state.update = () => {
+  state.getCurrentView().update(state.selectedMunicipality)
 }
 
 state.setNewMunicipality = (newMun) => {
   state.selectedMunicipality = newMun;
-  state.update(newMun)
   $('#mun-selection').val(newMun)
 }
 

@@ -19,7 +19,6 @@ loader.getData(res => {
   }
 
   addSelectionOptions(res) //this will trigger an update
-
 });
 
 const addSelectionOptions = (res) => {
@@ -31,8 +30,9 @@ const addSelectionOptions = (res) => {
   const munSelectionBox = '#mun-selection'
   $(munSelectionBox).change((e) => state.newMunSelected(e))
   munNames.map( name => $(munSelectionBox).append(option(name)))
-  state.setNewMunicipality(munNames[0])
-  state.update(munNames[0])
+  state.setNewMunicipality(munNames[1])
+  updateView(state.currView)
+  state.update()
 }
 
 function cleanupData(res) {
