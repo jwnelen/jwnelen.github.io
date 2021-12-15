@@ -20,6 +20,8 @@
             <nav class="navbar navbar-light bg-light p-3">
                 <div class="container-fluid">
                     <span class="navbar-brand mb-0 h1">How green is my municipality?</span>
+                    <span class="">Main municipality selected <label for="mun-selection"></label><select
+                            id="mun-selection" class="ml-2 form-select" ></select></span>
                     <div class="navigate">
                         <div id="nav-CO2" class="nav-unit">
                             <div class="dot active" onclick="updateView('CO2')"></div>
@@ -60,11 +62,15 @@
                 </div>
             </div>
             <div id="renew-container" class="view-container">
-                <div class="w-50 d-flex flex-column h-100 p-3">
+                <div class=" map-container">
+                    <h4 class="m-1">Renewable energy per municipality</h4>
                     <div class="w-100 flex-grow-1" id="map_renew"></div>
                 </div>
                 <div class="w-50 d-flex flex-column align-items-stretch p-3">
-                    <div class="h-50" id="percentilechart"></div>
+                    <h4 class="m-1">Renewable energy per sector in <span class="mun-name"></span></h4>
+                    <div class="h-50" id="barchartrenew"></div>
+                    <p class="mb-0">Total amount of CO2 emissions: <span class="co2-amount"></span></p>
+                    <div class="h-50" id="co2stackedbarrenew"></div>
                 </div>
             </div>
             <div id="political-container" class="view-container">
@@ -99,6 +105,7 @@
         </div>
     </body>
     <script src="js/Constants.js"></script>
+    <script src="js/State.js"></script>
     <script src="js/views/View.js"></script>
     <script src="js/views/CO2View.js"></script>
     <script src="js/views/PoliticalView.js"></script>

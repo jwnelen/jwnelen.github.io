@@ -39,17 +39,26 @@ class CO2View extends View {
 		if (!this.isInitialized) {
 			this.init();
 			this.isInitialized = true;
+		} else {
+			this.highlightSelected()
 		}
 	}
 
-	onMapClick = (d) => {
-		let mun = getMunFromEvent(d);
-		let co2 = getMun(this.co2Data, mun).CO2;
-		this.barChart.update(getCO2DivisionSector(this.co2PerSector, mun));
-		this.stackedBarchart.update(this.co2PerSector, getMun(this.co2PerSector, mun));
-		this.map.colorPath(mun);
-		$(".mun-name").html(mun);
+	highlightSelected = () => {
+		const mun_name = state.selectedMunicipality;
+		let co2 = getMun(this.co2Data, mun_name).CO2;
+		this.barChart.update(getCO2DivisionSector(this.co2PerSector, mun_name));
+		this.stackedBarchart.update(this.co2PerSector, getMun(this.co2PerSector, mun_name));
+		this.map.colorPath(mun_name);
+		$(".mun-name").html(mun_name);
 		$(".co2-amount").html(`${new Intl.NumberFormat().format(co2)} tons`);
+	}
+
+	onMapClick = (d) => {
+		// This will in the end call back the update and then the highlight selected
+		state.setNewMunicipality(getMunFromEvent(d))
+		state.update()
+
 	}
 
 	setCO2MapData() {
