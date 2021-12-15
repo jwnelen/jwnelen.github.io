@@ -21,7 +21,7 @@ class RenewableView extends View {
 		const mun_name = state.selectedMunicipality;
 		this.map.update()
 		this.map.colorPath(mun_name);
-
+		$(".mun-name").html(mun_name);
 		const munSelected = this.renewable.filter( m => m["municipality"] === state.selectedMunicipality)[0]
 
 		console.log(munSelected)
