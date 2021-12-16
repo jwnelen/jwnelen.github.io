@@ -1,9 +1,3 @@
-const state = {
-  currView: CO2,
-  update: () => {}
-};
-
-
 let loader = new DataLoader(FILES);
 
 loader.getData(res => {
@@ -15,18 +9,36 @@ loader.getData(res => {
   let politicalView = new PoliticalView(res);
   let aggregateView = new AggregateView(res);
 
-  state.update = () => {
+  state.getCurrentView = () => {
     switch (state.currView) {
-      case CO2: co2View.update(); break;
-      case RENEWABLE: renewableView.update(); break;
-      case POLITICAL: politicalView.update(); break;
-      case AGGREGATE: aggregateView.update(); break;
+      case CO2: return co2View;
+      case RENEWABLE: return renewableView;
+      case POLITICAL: return politicalView;
+      case AGGREGATE: return aggregateView;
     }
   }
 
-  updateView(state.currView)
-
+  addSelectionOptions(res) //this will trigger an update
 });
+
+const addSelectionOptions = (res) => {
+  const munNames = res['co2Data'].map(x => x["municipality"])
+
+  const option = (name) => {
+    return `<option value='${name}'>${name}</option>`
+  }
+
+  const munSelectionBox = '#mun-selection'
+  $(munSelectionBox).change((e) => {
+    console.log(e)
+    state.newMunSelected(e)
+    state.update()
+  })
+  munNames.map( name => $(munSelectionBox).append(option(name)))
+  state.setNewMunicipality(munNames[0])
+  updateView(state.currView)
+  state.update()
+}
 
 function cleanupData(res) {
   const mapData = res["mapData"];
