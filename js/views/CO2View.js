@@ -45,19 +45,28 @@ class CO2View extends View {
 		if (!this.isInitialized) {
 			this.init();
 			this.isInitialized = true;
+		} else {
+			this.highlightSelected()
 		}
 	}
 
-	onMapClick = (d) => {
-		let mun = getMunFromEvent(d);
-		let co2 = getMun(this.co2Data, mun).CO2;
-		this.pieChart.update(getCO2PerSectorPerInhabitant(this.co2PerSector, mun));
-		let co2SectorDataMun = getMun(this.co2PerSector, mun);
-		let co2Total = co2SectorDataMun.Transport + co2SectorDataMun.Industry + co2SectorDataMun.Agriculture + co2SectorDataMun['Built environment'];
-		this.stackedBarchart.update(this.co2PerSector, getMun(this.co2PerSector, mun));
-		this.map.colorPath(mun);
-		$(".mun-name").html(mun);
+	highlightSelected = () => {
+		const mun_name = state.selectedMunicipality;
+		let co2 = getMun(this.co2Data, mun_name).CO2;
+		this.pieChart.update(getCO2PerSectorPerInhabitant(this.co2PerSector, mun_name));
+		let co2SectorDataMun = getMun(this.co2PerSector, mun_name)
+		let co2Total = co2SectorDataMun.Transport + co2SectorDataMun.Industry + co2SectorDataMun.Agriculture + co2SectorDataMun['Built environment']
+		this.stackedBarchart.update(this.co2PerSector, getMun(this.co2PerSector, mun_name));
+		this.map.colorPath(mun_name);
+		$(".mun-name").html(mun_name);
 		$(".co2-amount").html(`${new Intl.NumberFormat('en-IN').format(co2Total)} tons`);
+	}
+
+	onMapClick = (d) => {
+		// This will in the end call back the update and then the highlight selected
+		state.setNewMunicipality(getMunFromEvent(d))
+		state.update()
+
 	}
 
 	setCO2MapData() {

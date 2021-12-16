@@ -10,16 +10,18 @@ class Histogram {
       this.draw();
     }
 
-    update(newData,verticalLineVal) {
+    update(newData,verticalLineVal,selectedMun = null) {
         this.data = newData;
         this.verticalLineVal = verticalLineVal
+        this.selectedMun = null
         this.draw()
-        }
-        
+    }
+    
+
     draw() {
-        let height = this.height
         d3.select("#"+this.id+"svg").remove()
-        let data = this.data.filter(d => d[this.key] > 0).map(d => d[this.key])
+        let data = this.data.filter(d => d[this.key] > 0)
+
         const svgHist = d3.select("#"+this.id)
             .append("svg").attr("id", this.id+"svg")
             .attr("width", this.width + this.margin.left + this.margin.right)
@@ -27,41 +29,48 @@ class Histogram {
             .append("g")
             .attr("transform", `translate(${this.margin.left},${this.margin.top})`);
     
-        // X axis
+        var thisKey = this.key
         var x = d3.scaleLinear()
-        .domain([d3.min(data, function(d){return d}), d3.max(data, function(d){return +d})])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
+        .domain([d3.min(data, function(d){return d[thisKey]}), d3.max(data, function(d){return +d[thisKey]})])
         .range([0, this.width]);
+
         svgHist.append("g")
         .attr("transform", "translate(0," + this.height + ")")
         .call(d3.axisBottom(x));
-    
-          // set the parameters for the histogram
+
+        var nbins = data.length/4
+
         var histogram = d3.histogram()
-        .value(function(d) { return d })   // I need to give the vector of value
-        .domain(x.domain())  // then the domain of the graphic
-        .thresholds(x.ticks(70)); // then the numbers of bins
+        .value(function(d) { return d[thisKey] }) 
+        .domain(x.domain()) 
+        .thresholds(x.ticks(nbins));
         
         var bins = histogram(data)
-        // Add Y axis
-        var y = d3.scaleLinear()
-        .range([this.height, 0]);
-        y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
 
-        svgHist.append("g")
-        .call(d3.axisLeft(y));
+        var binContainer = svgHist.selectAll(".gBin").data(bins)
 
-        
-        // append the bar rectangles
-        svgHist.selectAll("rect")
-        .data(bins)
+        var binContainerEnter = binContainer.enter().append("g").attr("class","gBin").attr("transform", d => `translate(${x(d.x0)}, ${this.height})`)
+
+        binContainerEnter.selectAll("circle").data(d =>{
+          return d.map((data,i) =>{
+            return{
+              "index": i,
+              "name": data.municipality,
+              "value": data[thisKey],
+              "radius": (x(d.x1) - x(d.x0))/2
+            };
+          })
+        })
         .enter()
-        .append("rect")
-            .attr("x", 1)
-            .attr("transform", function(d) {return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-            .attr("width", function(d) {return x(d.x1) - x(d.x0); })
-            .attr("height", function(d) { return height - y(d.length); })
-            .style("fill", "#69b3a2")
-
+        .append("circle")
+        .attr("cx", 0)
+        .attr("cy", d => {return -d.index * 2 * d.radius - d.radius})
+        .style("fill",d => {return d.municipality === this.selectedMun ? "red" : "green"})
+        .attr("municipality",d => d.name)
+        .attr("r",d => d.radius)
+        console.log(this.selectedMun)
+        
+        binContainerEnter.merge(binContainer).attr("transform", d => `translate(${x(d.x0)}, ${this.height})`)
 
         if (!(this.verticalLineVal === null)){
           svgHist.append("svg:line")

@@ -12,6 +12,8 @@ class PoliticalView extends View {
 
 	init() {
 		// Constructing all elements
+		this.histogram = new Histogram("label-hist",this.averagePoliticalClimateLabel,'climate_label')
+		
 		const map = new GeoMap("map_political", this.mapData,  this, (mun) => {
 			let currentMunicipality = this.averagePoliticalClimateLabel.filter(entry => entry['municipality'] == mun )[0]
 			if (!(typeof currentMunicipality === "undefined")){
@@ -39,9 +41,6 @@ class PoliticalView extends View {
 		gauge.setMinValue(0);
 		gauge.set(0);
 		gauge.animationSpeed = 32
-
-
-		this.histogram = new Histogram("label-hist",this.averagePoliticalClimateLabel,'climate_label')
 		this.isInitialized = true;
 	}
 

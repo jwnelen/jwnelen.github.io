@@ -12,8 +12,8 @@ class BarChart {
     this.draw();
   }
 
-  update(newData) {
-    this.data = newData;
+  update(newData = null) {
+    this.data = newData ? newData : this.data;
     this.draw()
   }
 

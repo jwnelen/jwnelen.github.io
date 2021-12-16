@@ -16,5 +16,4 @@ class View {
 			document.getElementById(`include-${k}`).onchange = onclick;
 		})
 	}
-
 }
