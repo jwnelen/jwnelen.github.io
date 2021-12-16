@@ -4,6 +4,7 @@ loader.getData(res => {
 
   cleanupData(res);
 
+  let introView = new IntroView()
   let co2View = new CO2View(res);
   let renewableView = new RenewableView(res);
   let politicalView = new PoliticalView(res);
@@ -11,6 +12,7 @@ loader.getData(res => {
 
   state.getCurrentView = () => {
     switch (state.currView) {
+      case INTRO: return introView;
       case CO2: return co2View;
       case RENEWABLE: return renewableView;
       case POLITICAL: return politicalView;
