@@ -30,6 +30,8 @@ class PoliticalView extends View {
 	}
 
 	onMapClicked = (d) => {
+		console.log('updating to ', d)
+		console.log(d.target.attributes)
 		const mun = getMunFromEvent(d)
 		state.setNewMunicipality(mun);
 		state.update()
@@ -37,7 +39,8 @@ class PoliticalView extends View {
 
 	init() {
 		// Constructing all elements
-		this.histogram = new Histogram("label-hist",this.averagePoliticalClimateLabel,'climate_label')
+		this.histogram = new Histogram("label-hist",this.averagePoliticalClimateLabel,'climate_label',
+				null, (e) => this.onMapClicked(e))
 		this.map = new GeoMap("map_political", this.mapData,  this, () => {}, (e) => this.onMapClicked(e))
 
 		this.target = document.getElementById("demo")
