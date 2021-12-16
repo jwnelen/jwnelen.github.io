@@ -13,7 +13,7 @@ class Histogram {
     update(newData,verticalLineVal,selectedMun = null) {
         this.data = newData;
         this.verticalLineVal = verticalLineVal
-        this.selectedMun = null
+        this.selectedMun = selectedMun
         this.draw()
     }
     
@@ -65,7 +65,7 @@ class Histogram {
         .append("circle")
         .attr("cx", 0)
         .attr("cy", d => {return -d.index * 2 * d.radius - d.radius})
-        .style("fill",d => {return d.municipality === this.selectedMun ? "red" : "green"})
+        .style("fill",d => {return d.name === this.selectedMun ? "red" : "green"})
         .attr("municipality",d => d.name)
         .attr("r",d => d.radius)
         console.log(this.selectedMun)
