@@ -46,7 +46,7 @@ class CO2View extends View {
 
 	highlightSelected = () => {
 		const mun_name = state.selectedMunicipality;
-		let co2SectorDataMun = getMun(this.co2PerSector, mun)
+		let co2SectorDataMun = getMun(this.co2PerSector, mun_name)
 		let co2Total = co2SectorDataMun.Transport + co2SectorDataMun.Industry + co2SectorDataMun.Agriculture + co2SectorDataMun['Built environment']
 		this.barChart.update(getCO2PerSectorPerInhabitant(this.co2PerSector, mun_name, this.inhabitantData));
 		this.stackedBarchart.update(this.co2PerSector, getMun(this.co2PerSector, mun_name));
