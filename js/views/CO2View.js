@@ -7,7 +7,7 @@ class CO2View extends View {
 		this.inhabitantData = data["inhabitantData"];
 		this.co2MapData = data["co2Data"];
 		this.colorScheme = {
-			"Transport": "#377eb8", "Agriculture": "#4daf4a",
+			"Transport": "#49cfc0", "Agriculture": "#4daf4a",
 			"Built environment": "#f781bf", "Industry": "#ff7f00"
 		}
 	}
