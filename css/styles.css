@@ -102,15 +102,6 @@ svg text {
     display: flex;
 }
 
-.map-container {
-    width: 50%;
-    height: 100%;
-    display: flex;
-    position: relative;
-    flex-direction: column;
-    padding: 1rem;
-}
-
 .includes-selection {
     position: absolute;
     top: 14rem;
@@ -118,7 +109,7 @@ svg text {
 }
 
 .selected-stack {
-    stroke: #002752;
+    stroke: red;
     stroke-width: 2px;
 }
 

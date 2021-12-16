@@ -92,7 +92,6 @@ class Histogram {
       })
       .on("mousemove",  function(d){
         self.toolTip.mouseMove(d, this);
-        // self.onMove(d.target.attributes.municipality_name.value);
       })
 
 
