@@ -6,14 +6,20 @@ class CO2View extends View {
 		this.mapData = data["mapData"];
 		this.inhabitantData = data["inhabitantData"];
 		this.co2MapData = data["co2Data"];
+		this.colorScheme = {
+			"Transport": "#377eb8", "Agriculture": "#4daf4a",
+			"Built environment": "#f781bf", "Industry": "#ff7f00"
+		}
 	}
 
 	init() {
-		this.barChart = new BarChart("barchart", getCO2PerSectorPerInhabitant(this.co2PerSector, "Aa en Hunze",this.inhabitantData), "sector", "value", false);
+		this.legend = new Legend("co2-legend", this.colorScheme);
+		this.pieChart = new PieChart("co2piechart", getCO2PerSectorPerInhabitant(this.co2PerSector, "Aa en Hunze"), "sector", "value",
+			(d) => this.colorScheme[d.data.sector]);
 		this.stackedBarchart = new StackedBarChart("co2stackedbar", this.co2PerSector,
 			"municipality",
 			["Transport", "Agriculture", "Built environment", "Industry"],
-			this.onMapClick);
+			this.onMapClick, Object.values(this.colorScheme));
 		this.map = new GeoMap("map_nl", this.mapData, this, () => {
 		}, this.onMapClick);
 		this.map.toolTip.setToolTipText((d) => {
@@ -39,19 +45,28 @@ class CO2View extends View {
 		if (!this.isInitialized) {
 			this.init();
 			this.isInitialized = true;
+		} else {
+			this.highlightSelected()
 		}
 	}
 
-	onMapClick = (d) => {
-		let mun = getMunFromEvent(d);
-		let co2SectorDataMun = getMun(this.co2PerSector, mun)
+	highlightSelected = () => {
+		const mun_name = state.selectedMunicipality;
+		let co2 = getMun(this.co2Data, mun_name).CO2;
+		this.pieChart.update(getCO2PerSectorPerInhabitant(this.co2PerSector, mun_name));
+		let co2SectorDataMun = getMun(this.co2PerSector, mun_name)
 		let co2Total = co2SectorDataMun.Transport + co2SectorDataMun.Industry + co2SectorDataMun.Agriculture + co2SectorDataMun['Built environment']
-		console.log(co2Total)
-		this.barChart.update(getCO2PerSectorPerInhabitant(this.co2PerSector, mun,this.inhabitantData));
-		this.stackedBarchart.update(this.co2PerSector, getMun(this.co2PerSector, mun));
-		this.map.colorPath(mun);
-		$(".mun-name").html(mun);
+		this.stackedBarchart.update(this.co2PerSector, getMun(this.co2PerSector, mun_name));
+		this.map.colorPath(mun_name);
+		$(".mun-name").html(mun_name);
 		$(".co2-amount").html(`${new Intl.NumberFormat('en-IN').format(co2Total)} tons`);
+	}
+
+	onMapClick = (d) => {
+		// This will in the end call back the update and then the highlight selected
+		state.setNewMunicipality(getMunFromEvent(d))
+		state.update()
+
 	}
 
 	setCO2MapData() {

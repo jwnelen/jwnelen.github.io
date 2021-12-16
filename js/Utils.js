@@ -83,18 +83,30 @@ const calculateAveragePoliticalClimateLabel = (electionData, climateLabels) =>{
   return averageClimateLabel
 }
 
-
-const mergeGeoPaths = function (data, key1, key2, target) {
-	let features = data.features;
-	let v1 = features.find(f => f.properties.areaName === key1);
-	let v2 = features.find(f => f.properties.areaName === key2);
-	let res = deepCopy(v1);
-	res.properties.areaName = target;
-	//Een erg gebeunde manier van paths mergen, kan vast beter
-	res.geometry.coordinates[0] = res.geometry.coordinates[0].concat(v2.geometry.coordinates[0]);
-	features.splice(features.indexOf(v1),1);
-	features.splice(features.indexOf(v2),1);
-	features.push(res);
+const mergeGeoPaths = function (data, items) {
+  let features = data.features;
+  items.forEach(i => {
+    let geoitems = i.keys.map(k => features.find(f => f.properties.areaName === k));
+    let res = deepCopy(geoitems[0]);
+    res.geometry.type = "Polygon";
+    res.geometry.coordinates = [];
+    res.geometry.coordinates[0] = [].concat(... geoitems.map(g => {
+      //Een erg gebeunde manier van paths mergen, kan vast beter
+      let arr = [].concat(g.geometry.coordinates[0]);
+      if(g.geometry.type === "MultiPolygon") {
+        arr = [].concat(...g.geometry.coordinates[0]);
+      }
+      return arr;
+    }));
+    res.properties.areaName = i.target;
+    geoitems.forEach(g => {
+      features.splice(features.indexOf(g),1);
+    });
+    if(i.target === "Waadhoeke") {
+      console.log(res);
+    }
+    features.push(res);
+  })
 };
 
 const getCO2PerSectorPerInhabitant = function (data, mun) {

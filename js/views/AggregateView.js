@@ -9,10 +9,6 @@ class AggregateView extends View {
     const labelX = 'climate'
     const labelY = 'election'
     this.averagePoliticalClimateLabel = calculateAveragePoliticalClimateLabel(this.electionData, this.climateLabels)
-
-    this.state = {
-      selectedMunicipalities: []
-    }
   }
 
   init() {
@@ -23,7 +19,7 @@ class AggregateView extends View {
   }
 
   isSelected = (munName) => {
-    return this.state.selectedMunicipalities.includes(munName)
+    return state.selectedMunicipality === munName
   }
 
   getMunName = (d) => {
@@ -31,19 +27,12 @@ class AggregateView extends View {
   }
 
   onClick = (d) => {
-    const munName = this.getMunName(d)
-    const muns = this.state.selectedMunicipalities
-    if (this.isSelected(munName)) {
-      muns.splice(muns.indexOf(munName), 1)
-    } else {
-      this.state.selectedMunicipalities.push(munName)
-    }
-    this.map.update();
-    this.scatterPlot.update()
+    state.setNewMunicipality(this.getMunName(d))
+    state.update()
   }
 
   highlight = (d) => {
-    return this.state.selectedMunicipalities.includes(d.municipality) ? 3 : 0
+    return state.selectedMunicipality === d.municipality ? 3 : 0
   }
 
   fill(d) {
@@ -57,5 +46,7 @@ class AggregateView extends View {
       this.init();
       this.isInitialized = true;
     }
+    this.map.update();
+    this.scatterPlot.update()
   }
 }

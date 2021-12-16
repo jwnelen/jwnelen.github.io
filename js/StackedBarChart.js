@@ -1,5 +1,5 @@
 class StackedBarChart {
-	constructor(id, data, keyX, keyYs, onclick = () => {}) {
+	constructor(id, data, keyX, keyYs, onclick = () => {}, colorScheme = d3.schemeSet1) {
 		this.margin = {top: 30, right: 30, bottom: 70, left: 60};
 		this.widthBar = document.getElementById(id).clientWidth - this.margin.left - this.margin.right;
 		this.heightBar = document.getElementById(id).clientHeight - this.margin.top - this.margin.bottom;
@@ -10,6 +10,8 @@ class StackedBarChart {
 		this.windowSize = 20;
 		this.middlePoint = null;
 		this.onclick = onclick;
+		this.colorScheme = colorScheme;
+		this.sortOn="Total";
 		let self = this;
 		$(`#${id}-window`).attr("max", data.length);
 		$(`#${id}-window`).val(data.length);
@@ -21,6 +23,13 @@ class StackedBarChart {
 		}
 		$(`#${id}-window`).on('mousemove', changeWindow);
 		$(`#${id}-window`).on('change', changeWindow);
+		$(`#${id}-sort`).html(keyYs.concat("Total").map(k => {
+			return `<option value="${k}" ${k===this.sortOn?'selected':''}>${k}</option>`
+		}).join("\n"));
+		$(`#${id}-sort`).on('change', e => {
+			this.sortOn = e.currentTarget.value;
+			self.update(self.data, self.middlePoint);
+		});
 
 		$(`#${id}-window-display`).html(data.length);
 		this.draw();
@@ -37,10 +46,19 @@ class StackedBarChart {
 	draw() {
 		d3.select("#" + this.id + "svg").remove();
 		let data = this.data.sort((a, b) => {
-			let sumA = this.keyYs.reduce((sum, k) => sum + a[k], 0);
-			let sumB = this.keyYs.reduce((sum, k) => sum + b[k], 0);
-			return sumB - sumA;
+			if(this.sortOn === "Total") {
+				let sumA = this.keyYs.reduce((sum, k) => sum + a[k], 0);
+				let sumB = this.keyYs.reduce((sum, k) => sum + b[k], 0);
+				return sumB - sumA;
+			} else {
+				return b[this.sortOn] - a[this.sortOn];
+			}
 		});
+		if(this.sortOn !== "Total") {
+			let index = this.keyYs.indexOf(this.sortOn);
+			this.colorScheme = [this.colorScheme[index]].concat(this.colorScheme.filter((v, i) => i !== index));
+			this.keyYs = [this.sortOn].concat(this.keyYs.filter(k => k!== this.sortOn));
+		}
 		if (this.middlePoint) {
 			let start = Math.max(data.indexOf(this.middlePoint) - Math.round(this.windowSize / 2), 0);
 			let end = start + this.windowSize;
@@ -82,7 +100,7 @@ class StackedBarChart {
 		// color palette = one color per subgroup
 		let color = d3.scaleOrdinal()
 			.domain(this.keyYs)
-			.range(d3.schemeSet1);
+			.range(this.colorScheme);
 
 		//stack the data? --> stack per subgroup
 		let stackedData = d3.stack()
