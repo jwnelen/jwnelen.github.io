@@ -31,8 +31,6 @@ class PoliticalView extends View {
 	}
 
 	onMapClicked = (d) => {
-		console.log('updating to ', d)
-		console.log(d.target.attributes)
 		const mun = getMunFromEvent(d)
 		state.setNewMunicipality(mun);
 		state.update()

@@ -42,7 +42,6 @@ class BarChart {
         .attr("transform", "translate(0," + this.heightBar + ")")
         .call(d3.axisBottom(x))
         .selectAll("text")
-        .attr("transform", "translate(-10,0)rotate(-45)")
         .attr("class", "axis")
         .style("font-size", "10px")
         .style("text-anchor", "end");

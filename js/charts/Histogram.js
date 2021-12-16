@@ -76,7 +76,7 @@ class Histogram {
         return -d.index * 2 * d.radius - d.radius
       })
       .style("fill", d => {
-        return d.municipality_name === this.selectedMun ? "red" : "green"
+        return d.municipality_name === this.selectedMun ? "red" : "#49cfc0"
       })
       .attr("municipality_name", d => d.municipality_name)
       .attr("r", d => d.radius)
