@@ -20,7 +20,7 @@ class AggregateView extends View {
     const caller = this;
     this.scatterPlot = new ScatterPlot("aggrChart", this.data, caller, this.averagePoliticalClimateLabel,
         "CO2_per_inhabitant", "CO2 per inhabitant","energy", "Energy");
-    this.map = new GeoMap('map_aggr', this.mapData, this, undefined , this.onClick);
+    this.map = new GeoMap('map_aggr', this.mapData, this, () => {} , this.onClick);
     this.addWeightsHtml();
   }
 
