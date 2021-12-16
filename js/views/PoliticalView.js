@@ -14,13 +14,11 @@ class PoliticalView extends View {
 		let currentMunicipality = state.selectedMunicipality
 		if (currentMunicipality) {
 			let currMunPoliticsData = this.averagePoliticalClimateLabel.filter(entry => entry['municipality'] === currentMunicipality)[0]
-			this.barChart = new BarChart("votes-percentages-chart", currMunPoliticsData.percentages_votes_per_label,
-					"label", "percentage", false, this.colors)
 			this.gauge.set(currMunPoliticsData.climate_label)
-
 			$(".mun-name").html(currentMunicipality);
 			$("#preview-textfield").html(Number.parseFloat(currMunPoliticsData.climate_label).toFixed(2))
 			this.histogram.update(this.averagePoliticalClimateLabel, currMunPoliticsData.climate_label, currentMunicipality);
+			this.map.colorPath(currentMunicipality)
 
 			let climateLabelPercentile = percentileOfDataset(this.averagePoliticalClimateLabel, "climate_label", currMunPoliticsData.climate_label)
 			$("#label-percentile").html(Number.parseFloat(climateLabelPercentile * 100).toFixed(1) + "%")
@@ -40,7 +38,7 @@ class PoliticalView extends View {
 	init() {
 		// Constructing all elements
 		this.histogram = new Histogram("label-hist",this.averagePoliticalClimateLabel,'climate_label')
-		const map = new GeoMap("map_political", this.mapData,  this, () => {}, (e) => this.onMapClicked(e))
+		this.map = new GeoMap("map_political", this.mapData,  this, () => {}, (e) => this.onMapClicked(e))
 
 		this.target = document.getElementById("demo")
 		this.gauge = new Gauge(this.target).setOptions(opts);
@@ -65,6 +63,7 @@ class PoliticalView extends View {
 		let min = getMin(this.averagePoliticalClimateLabel.filter(d => d.climate_label !== -1), "climate_label");
 		let max = getMax(this.averagePoliticalClimateLabel, "climate_label");
 		let areaName = d.properties.areaName;
+
 		let x = this.averagePoliticalClimateLabel.find(element => element.municipality === areaName);
 		if(typeof(x) === "undefined" || x.climate_label === -1){
 			return "#D3D3D3";

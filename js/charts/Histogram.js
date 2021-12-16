@@ -68,8 +68,7 @@ class Histogram {
         .style("fill",d => {return d.name === this.selectedMun ? "red" : "green"})
         .attr("municipality",d => d.name)
         .attr("r",d => d.radius)
-        console.log(this.selectedMun)
-        
+
         binContainerEnter.merge(binContainer).attr("transform", d => `translate(${x(d.x0)}, ${this.height})`)
 
         if (!(this.verticalLineVal === null)){
