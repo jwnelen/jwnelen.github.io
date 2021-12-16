@@ -6,14 +6,20 @@ class CO2View extends View {
 		this.mapData = data["mapData"];
 		this.inhabitantData = data["inhabitantData"];
 		this.co2MapData = data["co2Data"];
+		this.colorScheme = {
+			"Transport": "#377eb8", "Agriculture": "#4daf4a",
+			"Built environment": "#f781bf", "Industry": "#ff7f00"
+		}
 	}
 
 	init() {
-		this.barChart = new BarChart("barchart", getCO2PerSectorPerInhabitant(this.co2PerSector, "Aa en Hunze",this.inhabitantData), "sector", "value", false);
+		this.legend = new Legend("co2-legend", this.colorScheme);
+		this.pieChart = new PieChart("co2piechart", getCO2PerSectorPerInhabitant(this.co2PerSector, "Aa en Hunze"), "sector", "value",
+			(d) => this.colorScheme[d.data.sector]);
 		this.stackedBarchart = new StackedBarChart("co2stackedbar", this.co2PerSector,
 			"municipality",
 			["Transport", "Agriculture", "Built environment", "Industry"],
-			this.onMapClick);
+			this.onMapClick, Object.values(this.colorScheme));
 		this.map = new GeoMap("map_nl", this.mapData, this, () => {
 		}, this.onMapClick);
 		this.map.toolTip.setToolTipText((d) => {
@@ -46,6 +52,8 @@ class CO2View extends View {
 
 	highlightSelected = () => {
 		const mun_name = state.selectedMunicipality;
+		let co2 = getMun(this.co2Data, mun_name).CO2;
+		this.pieChart.update(getCO2PerSectorPerInhabitant(this.co2PerSector, mun));
 		let co2SectorDataMun = getMun(this.co2PerSector, mun_name)
 		let co2Total = co2SectorDataMun.Transport + co2SectorDataMun.Industry + co2SectorDataMun.Agriculture + co2SectorDataMun['Built environment']
 		this.barChart.update(getCO2PerSectorPerInhabitant(this.co2PerSector, mun_name, this.inhabitantData));

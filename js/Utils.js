@@ -83,7 +83,6 @@ const calculateAveragePoliticalClimateLabel = (electionData, climateLabels) =>{
   return averageClimateLabel
 }
 
-
 const mergeGeoPaths = function (data, items) {
   let features = data.features;
   items.forEach(i => {
