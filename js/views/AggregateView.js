@@ -13,9 +13,9 @@ class AggregateView extends View {
 
   init() {
     const caller = this
-    this.scatterPlot = new ScatterPlot("scatterAggregate", this.data, caller, this.averagePoliticalClimateLabel,
+    this.scatterPlot = new ScatterPlot("aggrChart", this.data, caller, this.averagePoliticalClimateLabel,
         "CO2_per_inhabitant", "CO2 per inhabitant","energy", "Energy")
-    this.map = new GeoMap('map_aggr', this.mapData, this, () => {} , this.onClick)
+    this.map = new GeoMap('map_aggr', this.mapData, this, (e) => this.onClick(e))
   }
 
   isSelected = (munName) => {
