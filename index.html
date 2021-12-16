@@ -51,25 +51,25 @@
                     <h2 class='m-1'>Introduction</h2>
                     <br></br>
                     <p>
-                        One of the major challenges of our time and for the Netherlands, is the energy transition. 
-                        With the posed goals of a CO2 reduction of 55% in 2030, and CO2 neutrality in 2050, there is a big need for a collective effort of not only national instances, 
+                        One of the major challenges of our time and for the Netherlands, is the energy transition.
+                        With the posed goals of a CO2 reduction of 55% in 2030, and CO2 neutrality in 2050, there is a big need for a collective effort of not only national instances,
                         but also regional instances.
                     </p>
-                    <p> 
-                        These efforts require therefore also comprehensive overview of the current state of the country concerning CO2 emissions, support for climate policy, 
-                        and usage of sustainable energy sources. To support this endeavour, we have developed a visualisation tool for policymakers on regional and national levels, 
-                        as well as other interested parties to explore the current status of the Netherlands concerning energy transition, and to identify bottlenecks and opportunities. 
+                    <p>
+                        These efforts require therefore also comprehensive overview of the current state of the country concerning CO2 emissions, support for climate policy,
+                        and usage of sustainable energy sources. To support this endeavour, we have developed a visualisation tool for policymakers on regional and national levels,
+                        as well as other interested parties to explore the current status of the Netherlands concerning energy transition, and to identify bottlenecks and opportunities.
                     </p>
                     <ul>
-                        <li> 
-                            In the <strong>CO2</strong> tab you can find an overview of CO2 emissions per inhabitant of different municipalities in the Netherlands. 
+                        <li>
+                            In the <strong>CO2</strong> tab you can find an overview of CO2 emissions per inhabitant of different municipalities in the Netherlands.
                             These CO2 emissions are divided in four categories: emissions by transport, agriculture, built environment and industry.
-                        </li> 
-                        <li> 
+                        </li>
+                        <li>
                             In the <strong>Renewable Energy</strong> tab you can find an overview of the fractions of energy used by municipalities that is produced in a renewable fashion.
                         </li>
                         <li>
-                            In the <strong>Political Parties</strong> tab you can find an overview of support for climate policy based on the results of the Dutch General Elections of 2021. 
+                            In the <strong>Political Parties</strong> tab you can find an overview of support for climate policy based on the results of the Dutch General Elections of 2021.
                             This support is based on the perentages of votes in a municipality on parties assigned to a certain climate label as has been described by the <a href="https://www.klimaatlabelpolitiek.nl/">KlimaatLabel</a>.
                         </li>
                         <li>
@@ -105,7 +105,7 @@
                 </div>
             </div>
             <div id="CO2-container" class="view-container">
-                <div class="map-container">
+                <div class="w-50 d-flex flex-column h-100 p-3">
                     <div id="include-sector" class="includes-selection">
                     </div>
                     <h4 class="m-1">CO2 emissions per inhabitant per municipality</h4>
@@ -139,7 +139,7 @@
                 </div>
             </div>
             <div id="renew-container" class="view-container">
-                <div class=" map-container">
+                <div class="w-50 d-flex flex-column h-100 p-3">
                     <h4 class="m-1">Renewable energy per municipality</h4>
                     <div class="w-100 flex-grow-1" id="map_renew"></div>
                 </div>
@@ -152,6 +152,7 @@
             </div>
             <div id="political-container" class="view-container">
                 <div class="w-50 d-flex flex-column h-100 p-3">
+                    <h4 class="m-1">Political preferences per municipality</h4>
                     <div class="w-100 flex-grow-1" id="map_political"></div>
                 </div>
                 <div class="w-50 d-flex flex-column align-items-stretch p-3">
@@ -172,11 +173,12 @@
                     <h4 class="m-1">Weighted "greenness" score per municipality</h4>
                     <div id="weights" class="includes-selection">
                     </div>
+                    <h4 class="m-1">Aggregate values</h4>
                     <div class="w-100 flex-grow-1" id="map_aggr"></div>
                 </div>
                 <div class="w-50 d-flex flex-column align-items-stretch p-3">
-                    <div class="flex-grow-1" id="aggrChart"></div>
-                    <div>
+                    <div class="h-75 flex-grow-1">
+                        <div class="h-100" id="aggrChart"></div>
                         <button class='btn btn-primary' id="reset-zoom-button">Reset zoom</button>
                     </div>
                 </div>

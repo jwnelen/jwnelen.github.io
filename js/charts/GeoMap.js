@@ -7,11 +7,10 @@ class GeoMap {
    * @param onMove - Function to be called when the mouse moves over the map
    * @param onClick- Function to be alled when the mouse clicks on a municipality
    */
-  constructor(id, mapData, caller, onMove = () => {}, onClick = () => {}) {
+  constructor(id, mapData, caller, onClick = () => {}) {
     this.id = id;
     this.mapData = mapData;
     this.fill = (d) => caller.fill(d)
-    this.onMove = onMove;
     this.onClick = onClick;
 
     this.width = document.getElementById(id).clientWidth;
