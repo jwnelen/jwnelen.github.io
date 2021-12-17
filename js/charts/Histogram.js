@@ -1,6 +1,6 @@
 class Histogram {
   constructor(id, data, key, verticalLineVal = null, onClick = () => {
-  }) {
+  }, xLab = null) {
     this.margin = {top: 30, right: 30, bottom: 70, left: 60};
     this.width = document.getElementById(id).clientWidth - this.margin.left - this.margin.right;
     this.height = document.getElementById(id).clientHeight - this.margin.top - this.margin.bottom;
@@ -9,6 +9,9 @@ class Histogram {
     this.data = data;
     this.key = key;
     this.verticalLineVal = verticalLineVal
+    this.xLab = xLab
+    this.toolTip = new ToolTip(id)
+
     this.draw();
   }
 
@@ -22,6 +25,7 @@ class Histogram {
 
   draw() {
     d3.select("#" + this.id + "svg").remove()
+    const self = this;
     let data = this.data.filter(d => d[this.key] > 0)
 
     const svgHist = d3.select("#" + this.id)
@@ -34,7 +38,7 @@ class Histogram {
     var thisKey = this.key
     var x = d3.scaleLinear()
         .domain([d3.min(data, function (d) {
-          return d[thisKey]
+          return d[thisKey]*.99
         }), d3.max(data, function (d) {
           return +d[thisKey]*1.01
         })])
@@ -42,7 +46,14 @@ class Histogram {
 
     svgHist.append("g")
         .attr("transform", "translate(0," + this.height + ")")
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x))
+        .append("text")
+        .attr("class", "x label")
+        .attr("text-anchor", "middle")
+        .attr("x", 0)
+        .attr("dx", ".75em")
+        .text(this.xLab)
+        .attr("transform", "translate("+ this.width/2 +",30)");
 
     var nbins = data.length / 4
 
@@ -54,6 +65,20 @@ class Histogram {
         .thresholds(x.ticks(nbins));
 
     var bins = histogram(data)
+
+    var y = d3.scaleLinear()
+    .range([this.height, 0])
+    .domain([0,d3.max(bins, d => d.length)]);
+
+    svgHist.append("g")
+    .call(d3.axisLeft(y).ticks(5).tickFormat(d => (d/data.length*100).toFixed(0)+"%"))
+    .append("text")
+    .attr("class", "y label")
+    .attr("text-anchor", "middle")
+    .attr("y", -45)
+    .attr("dy", ".75em")
+    .text("Frequency (%)")
+    .attr("transform", "rotate(-90)");
 
     var binContainer = svgHist.selectAll(".gBin").data(bins)
 
@@ -81,6 +106,16 @@ class Histogram {
       .attr("municipality_name", d => d.municipality_name)
       .attr("r", d => d.radius)
       .on("click", this.onClick)
+      .on("mouseover", function(d){
+        self.toolTip.mouseOver(d, this)
+      })
+      .on("mouseleave",  function(d){
+        self.toolTip.mouseLeave(d, this)
+      })
+      .on("mousemove",  function(d){
+        self.toolTip.mouseMove(d, this);
+      })
+
 
     binContainerEnter.merge(binContainer).attr("transform", d => `translate(${x(d.x0)}, ${this.height})`)
 

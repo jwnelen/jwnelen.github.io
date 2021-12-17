@@ -6,8 +6,7 @@ class RenewableView extends View {
 	}
 
 	init() {
-		this.map = new GeoMap("map_renew", this.mapData, this, () => {
-		}, (e) => this.onMunClicked(e))
+		this.map = new GeoMap("map_renew", this.mapData, this, (e) => this.onMunClicked(e))
 		const munSelected = this.renewable.filter(m => m["municipality"] === state.selectedMunicipality)[0]
 		if (munSelected) {
 			const labels = Object.entries(munSelected).filter(([key, val], index) => key !== 'municipality')
@@ -49,7 +48,6 @@ class RenewableView extends View {
 	fill(d) {
 		const areaName = d.properties.areaName
 		const energy = this.renewable.filter(m => m["municipality"] === areaName)[0]?.energy
-		console.log(energy)
 
 		const maxEnergy = getMax(this.renewable, 'energy')
 		const minEnergy = getMin(this.renewable, 'energy')

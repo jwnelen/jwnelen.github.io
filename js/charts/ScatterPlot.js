@@ -1,7 +1,7 @@
 class ScatterPlot {
   constructor(id, data, caller, additional_data = [], keyX, labelX, keyY, labelY) {
-    this.margin = {top: 10, right: 30, bottom: 30, left: 60},
-    this.width = document.getElementById(id).clientWidth - this.margin.left - this.margin.right,
+    this.margin = {top: 10, right: 30, bottom: 30, left: 60}
+    this.width = document.getElementById(id).clientWidth - this.margin.left - this.margin.right;
     this.height = document.getElementById(id).clientHeight - this.margin.top - this.margin.bottom;
     this.id = id;
     this.data = data;

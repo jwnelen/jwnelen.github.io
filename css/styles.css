@@ -73,8 +73,8 @@ svg text {
     position: relative; /* This is needed when child is absolute */
     flex-direction: column;
     align-items: center;
-    width: 90px;
-    margin-right: 10px
+    width: 130px;
+    margin-right: 20px
 }
 
 /* The navigation line */
@@ -113,12 +113,12 @@ svg text {
 
 .includes-selection {
     position: absolute;
-    top: 4rem;
+    top: 14rem;
     left: 1.5rem;
 }
 
 .selected-stack {
-    stroke: #002752;
+    stroke: red;
     stroke-width: 2px;
 }
 
