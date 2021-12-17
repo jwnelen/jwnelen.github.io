@@ -15,7 +15,6 @@ class CO2View extends View {
 	onMapClick = (d) => {
 		// This will in the end call back the update and then the highlight selected
 		const mun = getMunFromEvent(d)
-		console.log(mun)
 		state.setNewMunicipality(mun);
 		state.update()
 	}

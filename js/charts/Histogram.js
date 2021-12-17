@@ -71,7 +71,6 @@ class Histogram {
     var y = d3.scaleLinear()
     .range([this.height, 0])
     .domain([0,d3.max(bins, d => d.length)]);
-    console.log(y)
 
     svgHist.append("g")
     .call(d3.axisLeft(y).ticks(5).tickFormat(d => (d/data.length*100).toFixed(0)+"%"))
