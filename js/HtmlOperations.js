@@ -5,7 +5,5 @@ function updateView(view) {
 	$(`#nav-${view} .dot`).addClass("active");
 	$(`#${view}-container`).css("display", "flex");
 	state.currView = view;
-	if (!(state.currView === "intro")){
-		state.update();
-	}
+	state.update();
 }

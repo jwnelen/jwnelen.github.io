@@ -7,17 +7,17 @@ class GeoMap {
    * @param onMove - Function to be called when the mouse moves over the map
    * @param onClick- Function to be alled when the mouse clicks on a municipality
    */
-  constructor(id, mapData, caller, onMove = () => {}, onClick = () => {}) {
+  constructor(id, mapData, caller, onClick = () => {}) {
     this.id = id;
     this.mapData = mapData;
     this.fill = (d) => caller.fill(d)
-    this.onMove = onMove;
     this.onClick = onClick;
 
     this.width = document.getElementById(id).clientWidth;
     this.height = document.getElementById(id).clientHeight;
 
-    this.toolTip = new ToolTip();
+    this.toolTip = new ToolTip(id);
+
     this.onClick = onClick;
     this.draw()
   }
@@ -58,7 +58,7 @@ class GeoMap {
         })
         .on("mousemove",  function(d){
           self.toolTip.mouseMove(d, this);
-          self.onMove(d.target.attributes.municipality_name.value);
+          // self.onMove(d.target.attributes.municipality_name.value);
         })
         .on("click", function(d) {
           self.onClick(d);
