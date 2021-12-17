@@ -58,7 +58,6 @@ class GeoMap {
         })
         .on("mousemove",  function(d){
           self.toolTip.mouseMove(d, this);
-          // self.onMove(d.target.attributes.municipality_name.value);
         })
         .on("click", function(d) {
           self.onClick(d);
