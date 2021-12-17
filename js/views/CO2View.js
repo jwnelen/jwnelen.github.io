@@ -15,6 +15,7 @@ class CO2View extends View {
 	onMapClick = (d) => {
 		// This will in the end call back the update and then the highlight selected
 		const mun = getMunFromEvent(d)
+		console.log(mun)
 		state.setNewMunicipality(mun);
 		state.update()
 	}
@@ -28,6 +29,10 @@ class CO2View extends View {
 			["Transport", "Agriculture", "Built environment", "Industry"],
 			this.onMapClick, Object.values(this.colorScheme));
 		this.map = new GeoMap("map_nl", this.mapData, this, (e) => this.onMapClick(e));
+		// this.map.toolTip.setToolTipText((d) => {
+		// 	let mun = this.co2Data.find(c => c.municipality === getMunFromEvent(d));
+		// 	return `${getMunFromEvent(d)} - CO2: ${mun ? new Intl.NumberFormat().format(mun.CO2) : -1}`;
+		// });
 
 		const onChecked = () => {
 			this.setCO2MapData();

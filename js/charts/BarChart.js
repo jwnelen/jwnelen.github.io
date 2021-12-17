@@ -1,11 +1,9 @@
 class BarChart {
-  constructor(id, data, keyX, keyY, filter0 = true, colorScale = d3.scaleOrdinal(),xLab=null,yLab=null) {
+  constructor(id, data, keyX, keyY, filter0 = true, colorScale = (d) => '#49cfc0') {
     this.margin = {top: 30, right: 30, bottom: 70, left: 60};
     this.widthBar = document.getElementById(id).clientWidth - this.margin.left - this.margin.right;
     this.heightBar = document.getElementById(id).clientHeight - this.margin.top - this.margin.bottom;
     this.colorScale = colorScale
-    this.xLab = xLab
-    this.yLab = yLab
     this.id = id;
     this.data = data;
     this.keyX = keyX;
@@ -43,14 +41,10 @@ class BarChart {
     svgBarChart.append("g")
         .attr("transform", "translate(0," + this.heightBar + ")")
         .call(d3.axisBottom(x))
-        .append("text")
-        .attr("class", "x label")
-        .attr("text-anchor", "middle")
-        .attr("x", 0)
-        .attr("dx", ".75em")
-        .text(this.xLab)
-        .attr("transform", "translate("+ this.widthBar/2 +",30)");
-
+        .selectAll("text")
+        .attr("class", "axis")
+        .style("font-size", "10px")
+        .style("text-anchor", "end");
 
 
     const max = Math.max(...data.map( (d) => d[this.keyY]))
@@ -59,16 +53,8 @@ class BarChart {
         .domain([0, max])
         .range([ this.heightBar, 0]);
 
-
     svgBarChart.append("g")
-        .call(d3.axisLeft(y).ticks(3).tickFormat(d => d*100 + "%"))
-        .append("text")
-        .attr("class", "y label")
-        .attr("text-anchor", "middle")
-        .attr("y", -45)
-        .attr("dy", ".75em")
-        .text(this.yLab)
-        .attr("transform", "rotate(-90)");
+        .call(d3.axisLeft(y));
 
     // Bars
     svgBarChart.selectAll("mybar")
