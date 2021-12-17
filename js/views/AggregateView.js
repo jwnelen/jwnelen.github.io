@@ -14,7 +14,7 @@ class AggregateView extends View {
   init() {
     const caller = this
     this.scatterPlot = new ScatterPlot("scatterAggregate", this.data, caller, this.averagePoliticalClimateLabel,
-        "CO2_per_inhabitant", "CO2 per inhabitant","energy", "Energy")
+        "CO2_per_inhabitant", "CO2 per inhabitant (in tons)","energy", "Fraction of energy usage supplied by renewables (in %)")
     this.map = new GeoMap('map_aggr', this.mapData, this, undefined , this.onClick)
   }
 
