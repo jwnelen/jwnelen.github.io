@@ -1,5 +1,5 @@
 class StackedBarChart {
-	constructor(id, data, keyX, keyYs, onclick = () => {}, colorScheme = d3.schemeSet1) {
+	constructor(id, data, keyX, keyYs, onclick = () => {}, colorScheme = d3.schemeSet1, yLab = null) {
 		this.margin = {top: 30, right: 30, bottom: 70, left: 60};
 		this.widthBar = document.getElementById(id).clientWidth - this.margin.left - this.margin.right;
 		this.heightBar = document.getElementById(id).clientHeight - this.margin.top - this.margin.bottom;
@@ -12,6 +12,7 @@ class StackedBarChart {
 		this.onclick = onclick;
 		this.colorScheme = colorScheme;
 		this.sortOn="Total";
+		this.yLab = yLab
 		let self = this;
 		$(`#${id}-window`).attr("max", data.length);
 		$(`#${id}-window`).val(data.length);
@@ -95,7 +96,16 @@ class StackedBarChart {
 			.domain([0, max])
 			.range([this.heightBar, 0]);
 		svgBarChart.append("g")
-			.call(d3.axisLeft(y));
+			.call(d3.axisLeft(y))
+			.append("text")
+			.attr("class", "y label")
+			.attr("text-anchor", "end")
+			.attr("y", -40)
+			.attr("dy", ".75em")
+			.attr("transform", "rotate(-90)")
+			.text(this.yLab);
+			
+
 
 		// color palette = one color per subgroup
 		let color = d3.scaleOrdinal()
