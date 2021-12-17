@@ -1,8 +1,8 @@
 class ScatterPlot {
   constructor(id, data, caller, additional_data = [], keyX, labelX, keyY, labelY) {
     this.margin = {top: 10, right: 30, bottom: 30, left: 60},
-        this.width = 860 - this.margin.left - this.margin.right,
-        this.height = 860 - this.margin.top - this.margin.bottom;
+    this.width = document.getElementById(id).clientWidth - this.margin.left - this.margin.right,
+    this.height = document.getElementById(id).clientHeight - this.margin.top - this.margin.bottom;
     this.id = id;
     this.data = data;
     this.additional_data = additional_data
@@ -28,7 +28,7 @@ class ScatterPlot {
     const self = this;
 
     d3.select("#" + this.id + "svg").remove()
-    const svg = d3.select("#aggrChart")
+    const svg = d3.select(`#${this.id}`)
         .append("svg").attr("id", this.id + "svg")
         .attr("width", this.width + this.margin.left + this.margin.right)
         .attr("height", this.height + this.margin.top + this.margin.bottom)
@@ -96,7 +96,7 @@ class ScatterPlot {
           const l = res.length > 0 ? res[0].climate_label : 0
           return myColor(l)
         })
-        .style("stroke", "yellow")
+        .style("stroke", "#ff00fe")
         .style("stroke-width", (d) => this.isSelected(d.municipality) ? 3 : 0)
         .style('opacity', (d) => this.isSelected(d.municipality) ? 1 : 0.4)
         .style('z-index', (d) => this.isSelected(d.municipality) ? 2 : 1)

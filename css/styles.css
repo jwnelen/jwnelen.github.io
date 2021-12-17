@@ -148,8 +148,12 @@ svg text {
     height: 40%;
 }
 
+#weights p {
+    margin-bottom: 0;
+}
+
 #intro-box {
     margin: auto;
     width: 50%;
     padding: 10px;
-  }
+}
