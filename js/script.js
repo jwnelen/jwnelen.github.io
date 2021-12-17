@@ -54,7 +54,7 @@ function cleanupData(res) {
     {keys: ["Hoogezand-Sappemeer", "Slochteren", "Menterwolde"], target: "Midden-Groningen"},
     {keys: ["Bedum", "Eemsmond", "De Marne", "Winsum"], target: "Het Hogeland"},
     {keys: ["Grootegast", "Leek", "Marum", "Zuidhorn"], target: "Westerkwartier"},
-    {keys: ["Dongeradeel", "Ferwerderadiel", "Kollumerland en Nieuwkruisland"], target: "Noardeast-Fryslân"},
+    {keys: ["Dongeradeel", "Ferwerderadiel", "Kollumerland en Nieuwkruisland"], target: "Noardeast-Fryslan"},
     {keys: ["Binnenmaas", "Strijen", "Cromstrijen", "Korendijk", "Oud-Beijerland"], target: "Hoeksche Waard"},
     {keys: ["Nederlek", "Ouderkerk", "Vlist", "Bergambacht", "Schoonhoven"], target: "Krimpenerwaard"},
     {keys: ["Franekeradeel", "het Bildt", "Menameradiel", "Littenseradiel"], target: "Waadhoeke"},
@@ -109,6 +109,7 @@ function cleanupData(res) {
               {from: /Groesbeek/, to: "Berg en Dal"},
               {from: /Gaasterlan-Sleat/, to: "De Fryske Marren"},
               {from: /Sudwest-Fryslan/, to: "Súdwest-Fryslân"},
+              {from: /Noardeast-Frys/, to: "Noardeast-Fryslan"},
               {from: /\'s-Gravenhage/, to: "Den Haag"}])
       });
   mapData.features.forEach(m => {
