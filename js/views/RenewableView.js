@@ -48,7 +48,6 @@ class RenewableView extends View {
 	fill(d) {
 		const areaName = d.properties.areaName
 		const energy = this.renewable.filter(m => m["municipality"] === areaName)[0]?.energy
-		console.log(energy)
 
 		const maxEnergy = getMax(this.renewable, 'energy')
 		const minEnergy = getMin(this.renewable, 'energy')
