@@ -74,9 +74,13 @@ class AggregateView extends View {
   fill(d) {
     const munName = d.properties.areaName;
     let score = getMun(this.scores, munName);
+    let min = getMin(this.scores.filter(d => d.score > 0), "score");
+    let max = getMax(this.scores, "climate_label");
+
     if(score && !isNaN(score.score)) {
-      let colorScale = d3.scaleLinear().domain([0, 10]);
-      return d3.interpolateRdYlGn(colorScale(score.score));
+      let colorScaleLabelData = d3.scaleLinear().domain([0, 5, 10]).range(["#ff726f", "#fafa00", "#00703c"]);
+      return colorScaleLabelData(score.score);
+      // return d3.interpolateRdYlGn(colorScale(score.score));
     } else {
       return "grey";
     }
