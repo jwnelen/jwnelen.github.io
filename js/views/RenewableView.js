@@ -7,7 +7,8 @@ class RenewableView extends View {
 
 	init() {
 		this.map = new GeoMap("map_renew", this.mapData, this, (e) => this.onMunClicked(e))
-		this.histogram = new Histogram('histogram_renew', this.renewable, 'energy', null, (e) => this.onMunClicked(e))
+		this.histogram = new Histogram('histogram_renew', this.renewable, 'energy', null, (e) => this.onMunClicked(e),
+			'Percentage of renewable energy used')
 	}
 
 	highlightSelected = () => {
