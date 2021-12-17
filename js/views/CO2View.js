@@ -45,6 +45,7 @@ class CO2View extends View {
 		if (!this.isInitialized) {
 			this.init();
 			this.isInitialized = true;
+			this.highlightSelected()
 		} else {
 			this.highlightSelected()
 		}

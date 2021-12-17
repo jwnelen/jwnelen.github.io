@@ -1,5 +1,5 @@
 const state = {
-  currView: AGGREGATE,
+  currView: POLITICAL,
   selectedMunicipality: "",
   setNewMunicipality: () => {},
   update: () => {},
