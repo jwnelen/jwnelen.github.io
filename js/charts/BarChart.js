@@ -1,5 +1,5 @@
 class BarChart {
-  constructor(id, data, keyX, keyY, filter0 = true, colorScale = (d) => '#49cfc0') {
+  constructor(id, data, keyX, keyY, filter0 = true, colorScale = d3.scaleOrdinal()) {
     this.margin = {top: 30, right: 30, bottom: 70, left: 60};
     this.widthBar = document.getElementById(id).clientWidth - this.margin.left - this.margin.right;
     this.heightBar = document.getElementById(id).clientHeight - this.margin.top - this.margin.bottom;
