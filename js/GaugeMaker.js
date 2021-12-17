@@ -1,13 +1,4 @@
 var opts = {
-
-    // color configs
-    // colorStart: "#6fadcf",
-    // colorStop: void 0,
-    // gradientType: 0,
-    // strokeColor: "#e0e0e0",
-    // generateGradient: true,
-    // percentColors: [[0.0, "#a9d70b" ], [0.50, "#f9c802"], [1.0, "#ff0000"]],
-
     // customize pointer
     pointer: {
       length: 0.8,
@@ -37,18 +28,6 @@ var opts = {
       {strokeStyle: "#00d100", min: 4, max: 5},
       {strokeStyle: "#008200", min: 5, max: 6},
     ],
-
-    // render ticks
-    // renderTicks: {
-    //   divisions: 5,
-    //   divWidth: 1.1,
-    //   divLength: 0.7,
-    //   divColor: "#333333",
-    //   subDivisions: 3,
-    //   subLength: 0.5,
-    //   subWidth: 0.6,
-    //   subColor: "#666666"
-    // },
 
     // the span of the gauge arc
     angle: -0.15,

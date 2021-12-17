@@ -20,7 +20,7 @@ class AggregateView extends View {
     const caller = this;
     this.scatterPlot = new ScatterPlot("aggrChart", this.data, caller, this.averagePoliticalClimateLabel,
       "CO2_per_inhabitant", "CO2 per inhabitant (in tons)","energy", "Fraction of energy usage supplied by renewables (in %)")
-    this.map = new GeoMap('map_aggr', this.mapData, this, undefined , this.onClick);
+    this.map = new GeoMap('map_aggr', this.mapData, this, this.onClick);
     this.addWeightsHtml();
   }
 
@@ -74,9 +74,13 @@ class AggregateView extends View {
   fill(d) {
     const munName = d.properties.areaName;
     let score = getMun(this.scores, munName);
+    let min = getMin(this.scores.filter(d => d.score > 0), "score");
+    let max = getMax(this.scores, "climate_label");
+
     if(score && !isNaN(score.score)) {
-      let colorScale = d3.scaleLinear().domain([0, 10]);
-      return d3.interpolateRdYlGn(colorScale(score.score));
+      let colorScaleLabelData = d3.scaleLinear().domain([0, 5, 10]).range(["#ff726f", "#fafa00", "#00703c"]);
+      return colorScaleLabelData(score.score);
+      // return d3.interpolateRdYlGn(colorScale(score.score));
     } else {
       return "grey";
     }

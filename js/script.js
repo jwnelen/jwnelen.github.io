@@ -59,7 +59,6 @@ function cleanupData(res) {
     {keys: ["Nederlek", "Ouderkerk", "Vlist", "Bergambacht", "Schoonhoven"], target: "Krimpenerwaard"},
     {keys: ["Franekeradeel", "het Bildt", "Menameradiel", "Littenseradiel"], target: "Waadhoeke"},
     {keys: ["Nuth", "Schinnen", "Onderbanken"], target: "Beekdaelen"}]);
-  const incomes = res["income"];
   const co2PerSector = res["co2PerSector"];
   const electionData = parseNumbers(res["electionData"],["Votes"])
   const co2Data = parseNumbers(res["co2Data"], ["CO2"]);
@@ -80,9 +79,6 @@ function cleanupData(res) {
     {from:"Gemeente", to:"municipality"},
     {from:"Inwoneraantal",to:"inhabitants"}
   ]);
-  changeKeys(incomes, [
-    {from: 'Gemiddeld inkomen per huishouden|2018', to: "income"},
-    {from: "Gemeenten", to: "municipality"}]);
   changeKeys(co2Data, [
     {from: "Gemeenten", to: "municipality"}]);
   changeKeys(renewData, [
@@ -96,21 +92,21 @@ function cleanupData(res) {
     {from: "CO2-uitstoot Industrie Energie Afval en Water (aardgas en elektr.)|2019", to: "Industry"},
   ]), ["Transport", "Agriculture", "Built environment", "Industry"]);
   Object.values(res).concat([mapData.features])
-      .filter(dataset => Array.isArray(dataset)&&"municipality" in dataset[0])
-      .forEach(dataset => {
-        let unknownMun = dataset.find(d => d.municipality === "Gemeente onbekend");
-        if(unknownMun) {
-          dataset.splice(dataset.indexOf(unknownMun));
-        }
-        changeNames(dataset, "municipality",
-            [{from: /Nuenen/, to: "Nuenen"},
-              {from: /Bergen \(L[.,]\)/, to: "Bergen (L)"},
-              {from: /Bergen \(NH.\)/, to: "Bergen (NH)"},
-              {from: /Groesbeek/, to: "Berg en Dal"},
-              {from: /Gaasterlan-Sleat/, to: "De Fryske Marren"},
-              {from: /Sudwest-Fryslan/, to: "Súdwest-Fryslân"},
-              {from: /\'s-Gravenhage/, to: "Den Haag"}])
-      });
+    .filter(dataset => Array.isArray(dataset)&&"municipality" in dataset[0])
+    .forEach(dataset => {
+      let unknownMun = dataset.find(d => d.municipality === "Gemeente onbekend");
+      if(unknownMun) {
+        dataset.splice(dataset.indexOf(unknownMun));
+      }
+      changeNames(dataset, "municipality",
+        [{from: /Nuenen/, to: "Nuenen"},
+          {from: /Bergen \(L[.,]\)/, to: "Bergen (L)"},
+          {from: /Bergen \(NH.\)/, to: "Bergen (NH)"},
+          {from: /Groesbeek/, to: "Berg en Dal"},
+          {from: /Gaasterlan-Sleat/, to: "De Fryske Marren"},
+          {from: /Sudwest-Fryslan/, to: "Súdwest-Fryslân"},
+          {from: /\'s-Gravenhage/, to: "Den Haag"}])
+    });
   mapData.features.forEach(m => {
     m.properties.areaName = m.municipality;
   });

@@ -106,7 +106,7 @@ svg text {
     width: 50%;
     height: 100%;
     display: flex;
-    position: relative;
+    /*position: relative;*/
     flex-direction: column;
     padding: 1rem;
 }
@@ -118,7 +118,7 @@ svg text {
 }
 
 .selected-stack {
-    stroke: red;
+    stroke: #ff00fe;
     stroke-width: 2px;
 }
 

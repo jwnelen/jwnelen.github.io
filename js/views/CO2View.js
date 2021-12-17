@@ -7,7 +7,7 @@ class CO2View extends View {
 		this.inhabitantData = data["inhabitantData"];
 		this.co2MapData = data["co2Data"];
 		this.colorScheme = {
-			"Transport": "#377eb8", "Agriculture": "#4daf4a",
+			"Transport": "#49cfc0", "Agriculture": "#4daf4a",
 			"Built environment": "#f781bf", "Industry": "#ff7f00"
 		}
 	}
@@ -27,7 +27,7 @@ class CO2View extends View {
 		this.stackedBarchart = new StackedBarChart("co2stackedbar", this.co2PerSector,
 			"municipality",
 			["Transport", "Agriculture", "Built environment", "Industry"],
-			this.onMapClick, Object.values(this.colorScheme));
+			this.onMapClick, Object.values(this.colorScheme), "CO2 emissions (in tons)");
 		this.map = new GeoMap("map_nl", this.mapData, this, (e) => this.onMapClick(e));
 		// this.map.toolTip.setToolTipText((d) => {
 		// 	let mun = this.co2Data.find(c => c.municipality === getMunFromEvent(d));

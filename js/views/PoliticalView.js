@@ -71,7 +71,7 @@ class PoliticalView extends View {
 			return "#D3D3D3";
 		}
 		else{
-			let colorScaleLabelData = d3.scalePow().domain([min, max]).range(["#ff726f","#00703c"]);
+			let colorScaleLabelData = d3.scalePow().domain([min, min + (max - min)/2 ,max]).range(["#ff726f", "#fafa00", "#00703c"]);
 			return colorScaleLabelData(x.climate_label);
 		}
 	}
