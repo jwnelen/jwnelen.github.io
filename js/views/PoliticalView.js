@@ -20,7 +20,7 @@ class PoliticalView extends View {
 			this.histogram.update(this.averagePoliticalClimateLabel, currMunPoliticsData.climate_label, currentMunicipality);
 			this.map.colorPath(currentMunicipality)
 			this.barChart = new BarChart("votes-percentages-chart", currMunPoliticsData.percentages_votes_per_label,
-					"label", "percentage", false, this.colors,"Climate Label", "Votes (in %)")
+					"label", "percentage", false, this.colors)
 			let climateLabelPercentile = percentileOfDataset(this.averagePoliticalClimateLabel, "climate_label", currMunPoliticsData.climate_label)
 			$("#label-percentile").html(Number.parseFloat(climateLabelPercentile * 100).toFixed(1) + "%")
 		} else {
@@ -39,8 +39,9 @@ class PoliticalView extends View {
 	init() {
 		// Constructing all elements
 		this.histogram = new Histogram("label-hist",this.averagePoliticalClimateLabel,'climate_label',
-				null, (e) => this.onMapClicked(e),"Average political climate label value")
-		this.map = new GeoMap("map_political", this.mapData,  this, (e) => this.onMapClicked(e))
+				null, (e) => this.onMapClicked(e))
+		this.map = new GeoMap("map_political", this.mapData,
+			this,(e) => this.onMapClicked(e))
 
 		this.target = document.getElementById("demo")
 		this.gauge = new Gauge(this.target).setOptions(opts);
