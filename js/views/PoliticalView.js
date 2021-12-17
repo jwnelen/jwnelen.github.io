@@ -39,7 +39,7 @@ class PoliticalView extends View {
 	init() {
 		// Constructing all elements
 		this.histogram = new Histogram("label-hist",this.averagePoliticalClimateLabel,'climate_label',
-				null, (e) => this.onMapClicked(e))
+				null, (e) => this.onMapClicked(e),"Average political climate label")
 		this.map = new GeoMap("map_political", this.mapData,  this, () => {}, (e) => this.onMapClicked(e))
 
 		this.target = document.getElementById("demo")

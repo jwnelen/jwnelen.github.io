@@ -1,6 +1,6 @@
 class Histogram {
   constructor(id, data, key, verticalLineVal = null, onClick = () => {
-  }) {
+  }, xLab = null) {
     this.margin = {top: 30, right: 30, bottom: 70, left: 60};
     this.width = document.getElementById(id).clientWidth - this.margin.left - this.margin.right;
     this.height = document.getElementById(id).clientHeight - this.margin.top - this.margin.bottom;
@@ -9,6 +9,7 @@ class Histogram {
     this.data = data;
     this.key = key;
     this.verticalLineVal = verticalLineVal
+    this.xLab = xLab
     this.draw();
   }
 
@@ -48,7 +49,7 @@ class Histogram {
         .attr("text-anchor", "middle")
         .attr("x", 0)
         .attr("dx", ".75em")
-        .text("hallotjes")
+        .text(this.xLab)
         .attr("transform", "translate("+ this.width/2 +",30)");
 ;
 
