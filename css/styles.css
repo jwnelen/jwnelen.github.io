@@ -147,3 +147,7 @@ svg text {
 #piechart-container{
     height: 40%;
 }
+
+#weights p {
+    margin-bottom: 0;
+}

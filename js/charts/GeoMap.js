@@ -69,7 +69,7 @@ class GeoMap {
     let svgs = d3.select(`#${this.id}`).selectAll("path");
     svgs.attr("fill", d => {
       if(d.properties.areaName === mun) {
-        return "red";
+        return "#ff00fe";
       }
       return this.fill(d)
     });
