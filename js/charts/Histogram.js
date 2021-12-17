@@ -42,7 +42,15 @@ class Histogram {
 
     svgHist.append("g")
         .attr("transform", "translate(0," + this.height + ")")
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x))
+        .append("text")
+        .attr("class", "x label")
+        .attr("text-anchor", "middle")
+        .attr("x", 0)
+        .attr("dx", ".75em")
+        .text("hallotjes")
+        .attr("transform", "translate("+ this.width/2 +",30)");
+;
 
     var nbins = data.length / 4
 

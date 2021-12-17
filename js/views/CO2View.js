@@ -19,7 +19,7 @@ class CO2View extends View {
 		this.stackedBarchart = new StackedBarChart("co2stackedbar", this.co2PerSector,
 			"municipality",
 			["Transport", "Agriculture", "Built environment", "Industry"],
-			this.onMapClick, Object.values(this.colorScheme));
+			this.onMapClick, Object.values(this.colorScheme),"CO2 emissions per inhabitants (in tons)");
 		this.map = new GeoMap("map_nl", this.mapData, this, () => {
 		}, this.onMapClick);
 		this.map.toolTip.setToolTipText((d) => {
