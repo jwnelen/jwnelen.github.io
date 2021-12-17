@@ -1,6 +1,6 @@
 class ToolTip {
-  constructor(id) {
-    this.Tooltip = d3.select("#" + id)
+  constructor() {
+    this.Tooltip = d3.select("#map_nl")
         .append("div")
         .attr("class", "tooltip")
         .style("opacity", 0)
@@ -15,6 +15,14 @@ class ToolTip {
   mouseOver = function (d, path) {
     this.Tooltip
         .style("opacity", 1)
+    d3.select(path)
+        .style("stroke", "black")
+        .style("opacity", 1)
+    d3.selectAll(".municipality")
+        .style("opacity", .5)
+    d3.select(path)
+        .style("opacity", 1)
+        .style("stroke", "black")
   }
   mouseMove = function (d, path) {
     let attrs = d.target.attributes;
@@ -27,6 +35,12 @@ class ToolTip {
   mouseLeave = function(d, path) {
     this.Tooltip
         .style("opacity", 0)
-
+    d3.select(path)
+        .style("stroke", "black")
+        .style("opacity", 0.8)
+    d3.selectAll(".municipality")
+        .style("opacity", .8)
+    d3.select(path)
+        .style("stroke", "black")
   }
 }

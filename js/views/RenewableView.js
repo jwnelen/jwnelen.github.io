@@ -6,7 +6,8 @@ class RenewableView extends View {
 	}
 
 	init() {
-		this.map = new GeoMap("map_renew", this.mapData, this, (e) => this.onMunClicked(e))
+		this.map = new GeoMap("map_renew", this.mapData, this, () => {
+		}, (e) => this.onMunClicked(e))
 		const munSelected = this.renewable.filter(m => m["municipality"] === state.selectedMunicipality)[0]
 		if (munSelected) {
 			const labels = Object.entries(munSelected).filter(([key, val], index) => key !== 'municipality')

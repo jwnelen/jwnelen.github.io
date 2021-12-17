@@ -7,17 +7,9 @@ class CO2View extends View {
 		this.inhabitantData = data["inhabitantData"];
 		this.co2MapData = data["co2Data"];
 		this.colorScheme = {
-			"Transport": "#377eb8", "Agriculture": "#4daf4a",
+			"Transport": "#49cfc0", "Agriculture": "#4daf4a",
 			"Built environment": "#f781bf", "Industry": "#ff7f00"
 		}
-	}
-
-	onMapClick = (d) => {
-		// This will in the end call back the update and then the highlight selected
-		const mun = getMunFromEvent(d)
-		console.log(mun)
-		state.setNewMunicipality(mun);
-		state.update()
 	}
 
 	init() {
@@ -28,11 +20,12 @@ class CO2View extends View {
 			"municipality",
 			["Transport", "Agriculture", "Built environment", "Industry"],
 			this.onMapClick, Object.values(this.colorScheme));
-		this.map = new GeoMap("map_nl", this.mapData, this, (e) => this.onMapClick(e));
-		// this.map.toolTip.setToolTipText((d) => {
-		// 	let mun = this.co2Data.find(c => c.municipality === getMunFromEvent(d));
-		// 	return `${getMunFromEvent(d)} - CO2: ${mun ? new Intl.NumberFormat().format(mun.CO2) : -1}`;
-		// });
+		this.map = new GeoMap("map_nl", this.mapData, this, () => {
+		}, this.onMapClick);
+		this.map.toolTip.setToolTipText((d) => {
+			let mun = this.co2Data.find(c => c.municipality === getMunFromEvent(d));
+			return `${getMunFromEvent(d)} - CO2: ${mun ? new Intl.NumberFormat().format(mun.CO2) : -1}`;
+		});
 
 		const onChecked = () => {
 			this.setCO2MapData();
@@ -70,7 +63,12 @@ class CO2View extends View {
 		$(".co2-amount").html(`${new Intl.NumberFormat('en-IN').format(co2Total)} tons`);
 	}
 
+	onMapClick = (d) => {
+		// This will in the end call back the update and then the highlight selected
+		state.setNewMunicipality(getMunFromEvent(d))
+		state.update()
 
+	}
 
 	setCO2MapData() {
 		let checked = $("#include-sector input").map(function () {
