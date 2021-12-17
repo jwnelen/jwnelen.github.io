@@ -35,11 +35,12 @@ class Histogram {
     var thisKey = this.key
     var x = d3.scaleLinear()
         .domain([d3.min(data, function (d) {
-          return d[thisKey]
+          return d[thisKey]*.99
         }), d3.max(data, function (d) {
           return +d[thisKey]*1.01
         })])
         .range([0, this.width]);
+
 
     svgHist.append("g")
         .attr("transform", "translate(0," + this.height + ")")
@@ -51,9 +52,9 @@ class Histogram {
         .attr("dx", ".75em")
         .text(this.xLab)
         .attr("transform", "translate("+ this.width/2 +",30)");
-;
-
+    
     var nbins = data.length / 4
+
 
     var histogram = d3.histogram()
         .value(function (d) {
@@ -63,6 +64,21 @@ class Histogram {
         .thresholds(x.ticks(nbins));
 
     var bins = histogram(data)
+
+    var y = d3.scaleLinear()
+    .range([this.height, 0])
+    .domain([0,d3.max(bins, d => d.length)]);
+    console.log(y)
+
+    svgHist.append("g")
+    .call(d3.axisLeft(y).ticks(5).tickFormat(d => (d/data.length*100).toFixed(0)+"%"))
+    .append("text")
+    .attr("class", "y label")
+    .attr("text-anchor", "middle")
+    .attr("y", -45)
+    .attr("dy", ".75em")
+    .text("Frequency (%)")
+    .attr("transform", "rotate(-90)");
 
     var binContainer = svgHist.selectAll(".gBin").data(bins)
 
