@@ -1,5 +1,5 @@
 const state = {
-  currView: INTRO,
+  currView: CO2,
   selectedMunicipality: "",
   setNewMunicipality: () => {},
   update: () => {},

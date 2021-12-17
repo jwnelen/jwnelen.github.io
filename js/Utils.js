@@ -147,25 +147,3 @@ const percentileOfDataset = function(dataset,key,value){
   }
   return worseDataPoints/dataset.length
 }
-
-const calculateFinalScore = function(data, keys) {
-  keys.forEach(k => {
-    k.max = getMax(data, k.key);
-    k.min = getMin(data, k.key);
-    });
-  let sumWeights = keys.reduce((sum, k) => k.weight + sum, 0);
-  let res = data.map(d => {
-    let score = keys.reduce((sum, k) => {
-      let subScore = d3.scaleLinear().domain([k.min, k.max])(d[k.key]);
-      if(k.invert) {
-        subScore = 1 - subScore;
-      }
-      return sum + k.weight*subScore;
-    }, 0)/sumWeights*10;
-    return {
-      municipality: d.municipality,
-      score: score
-    }
-  });
-  return res;
-};
