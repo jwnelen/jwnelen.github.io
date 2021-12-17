@@ -13,4 +13,4 @@ const CO2 = "CO2"
 const RENEWABLE = "renew"
 const POLITICAL = "political"
 const AGGREGATE = "aggr"
-const INTRO = 'INTRO'
+const INTRO = 'intro'

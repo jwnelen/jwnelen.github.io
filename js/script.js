@@ -1,11 +1,47 @@
+let loader = new DataLoader(FILES);
+
+loader.getData(res => {
+
+  cleanupData(res);
+
+  let co2View = new CO2View(res);
+  let renewableView = new RenewableView(res);
+  let politicalView = new PoliticalView(res);
+  let aggregateView = new AggregateView(res);
+
+  state.getCurrentView = () => {
+    switch (state.currView) {
+      case CO2: return co2View;
+      case RENEWABLE: return renewableView;
+      case POLITICAL: return politicalView;
+      case AGGREGATE: return aggregateView;
+    }
+  }
+
+  addSelectionOptions(res) //this will trigger an update
+});
+
+const addSelectionOptions = (res) => {
+  const munNames = res['co2Data'].map(x => x["municipality"])
+
+  const option = (name) => {
+    return `<option value='${name}'>${name}</option>`
+  }
+
+  const munSelectionBox = '#mun-selection'
+  $(munSelectionBox).change((e) => {
+    console.log(e)
+    state.newMunSelected(e)
+    state.update()
+  })
+  munNames.map( name => $(munSelectionBox).append(option(name)))
+  state.setNewMunicipality(munNames[0])
+  updateView(state.currView)
+  // state.update()
+}
+
 function cleanupData(res) {
   const mapData = res["mapData"];
-  const co2PerSector = res["co2PerSector"];
-  const electionData = parseNumbers(res["electionData"],["Votes"])
-  const co2Data = parseNumbers(res["co2Data"], ["CO2"]);
-  const renewData = parseNumbers(res["renewData"], ["energy", "electricity", "warmth", "transport"]);
-  const inhabitantData = parseNumbers(res["inhabitantData"],["Inwoneraantal"])
-
   mergeGeoPaths(mapData, [{keys: ["Molenwaard", "Giessenlanden"], target: "Molenlanden"},
     {keys: ["Spijkenisse", "Bernisse"], target: "Nissewaard"},
     {keys: ["Bellingwedde", "Vlagtwedde"], target: "Westerwolde"},
@@ -23,6 +59,13 @@ function cleanupData(res) {
     {keys: ["Nederlek", "Ouderkerk", "Vlist", "Bergambacht", "Schoonhoven"], target: "Krimpenerwaard"},
     {keys: ["Franekeradeel", "het Bildt", "Menameradiel", "Littenseradiel"], target: "Waadhoeke"},
     {keys: ["Nuth", "Schinnen", "Onderbanken"], target: "Beekdaelen"}]);
+  const co2PerSector = res["co2PerSector"];
+  const electionData = parseNumbers(res["electionData"],["Votes"])
+  const co2Data = parseNumbers(res["co2Data"], ["CO2"]);
+  const renewData = parseNumbers(res["renewData"], ["energy", "electricity", "warmth", "transport"]);
+  const inhabitantData = parseNumbers(res["inhabitantData"],["Inwoneraantal"])
+  const uniquePartyList = res['uniquePartyList']
+  const climateLabels = res["climateLabels"]
 
   mapData.features.forEach(m => {
     m.municipality = m.properties.areaName
