@@ -96,7 +96,7 @@ class ScatterPlot {
           const l = res.length > 0 ? res[0].climate_label : 0
           return myColor(l)
         })
-        .style("stroke", "yellow")
+        .style("stroke", "#ff00fe")
         .style("stroke-width", (d) => this.isSelected(d.municipality) ? 3 : 0)
         .style('opacity', (d) => this.isSelected(d.municipality) ? 1 : 0.4)
         .style('z-index', (d) => this.isSelected(d.municipality) ? 2 : 1)
