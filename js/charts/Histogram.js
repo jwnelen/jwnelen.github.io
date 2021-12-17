@@ -9,6 +9,8 @@ class Histogram {
     this.data = data;
     this.key = key;
     this.verticalLineVal = verticalLineVal
+    this.toolTip = new ToolTip(id)
+
     this.draw();
   }
 
@@ -22,6 +24,7 @@ class Histogram {
 
   draw() {
     d3.select("#" + this.id + "svg").remove()
+    const self = this;
     let data = this.data.filter(d => d[this.key] > 0)
 
     const svgHist = d3.select("#" + this.id)
@@ -81,6 +84,16 @@ class Histogram {
       .attr("municipality_name", d => d.municipality_name)
       .attr("r", d => d.radius)
       .on("click", this.onClick)
+      .on("mouseover", function(d){
+        self.toolTip.mouseOver(d, this)
+      })
+      .on("mouseleave",  function(d){
+        self.toolTip.mouseLeave(d, this)
+      })
+      .on("mousemove",  function(d){
+        self.toolTip.mouseMove(d, this);
+      })
+
 
     binContainerEnter.merge(binContainer).attr("transform", d => `translate(${x(d.x0)}, ${this.height})`)
 
