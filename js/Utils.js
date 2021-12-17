@@ -34,8 +34,8 @@ const calculateCO2PerInhabitant = (co2Data, inhabitantData) =>{
 
 const calculateCO2PerSectorPerInhabitant = (co2PerSector, inhabitantData) =>{
   for(entry of co2PerSector){
-    var thisMun = entry.municipality
-    var thisInhab = inhabitantData.filter(d => d.municipality === thisMun)[0].inhabitants
+    let thisMun = entry.municipality
+    let thisInhab = inhabitantData.filter(d => d.municipality === thisMun)[0].inhabitants
     entry['municipality'] = thisMun
     entry['Transport'] = entry.Transport > 0 ? entry.Transport/thisInhab: 0
     entry['Agriculture'] = entry.Agriculture > 0 ? entry.Agriculture/thisInhab : 0
@@ -44,35 +44,37 @@ const calculateCO2PerSectorPerInhabitant = (co2PerSector, inhabitantData) =>{
   }
 }
 
-const reduceByKeyVal = (array,key,val) =>{
-  var res = []
-  var allKeys = Array.from(new Set(array.map(entry => entry[key]))).sort()
-  for(thisKey of allKeys){
-    let reducedValue = array.filter(entry => entry[key] == thisKey).reduce( (pv, cv) => {return pv + cv[val]}, 0)
+const reduceByKeyVal = (array, key, val) => {
+  let res = []
+  let allKeys = Array.from(new Set(array.map(entry => entry[key]))).sort()
+  for (thisKey of allKeys) {
+    let reducedValue = array.filter(entry => entry[key] === thisKey).reduce((pv, cv) => {
+      return pv + cv[val]
+    }, 0)
     res.push({[key]: thisKey, [val]: reducedValue})
   }
   return res
 }
 
 const calculateAveragePoliticalClimateLabel = (electionData, climateLabels) =>{
-  var scores = {"A": 5, "B": 4, "C": 3, "D": 2, "E": 1, "F": 0}
-  var invScores = {5: "A", 4: "B", 3: "C", 2: "D", 1: "E", 0: "F"}
+  let scores = {"A": 5, "B": 4, "C": 3, "D": 2, "E": 1, "F": 0}
+  let invScores = {5: "A", 4: "B", 3: "C", 2: "D", 1: "E", 0: "F"}
   let partiesWithLabel = climateLabels.map(entry => entry["party_name"])
   for(entry of climateLabels){
     entry['climate_score'] = scores[entry["climate_label"]]
   }
-  let electionDataForRelevantParties = electionData.filter(entry => partiesWithLabel.includes(entry["party_name"]) && entry["municipality"] != "Nederland")
+  let electionDataForRelevantParties = electionData.filter(entry => partiesWithLabel.includes(entry["party_name"]) && entry["municipality"] !== "Nederland")
   let municipalityList = [... new Set(electionDataForRelevantParties.map(entry => entry["municipality"]))]
   let averageClimateLabel = []
   for(let i = 0; i < municipalityList.length; i++){
     let weightedClimateScore = 0
     let thisMunicipality = municipalityList[i]
-    let totalVotesInThisMunicipality = electionDataForRelevantParties.filter(entry =>  entry['municipality'] == thisMunicipality).reduce((acc,curr) => {return acc + curr['votes']},0)
-    let votesForPartiesInThisMunicipality = electionDataForRelevantParties.filter(entry => entry['municipality'] == thisMunicipality)
+    let totalVotesInThisMunicipality = electionDataForRelevantParties.filter(entry =>  entry['municipality'] === thisMunicipality).reduce((acc, curr) => {return acc + curr['votes']},0)
+    let votesForPartiesInThisMunicipality = electionDataForRelevantParties.filter(entry => entry['municipality'] === thisMunicipality)
     let percentageList = []
     for (let j = 0; j < votesForPartiesInThisMunicipality.length; j++){
       let thisMunicipPartyEntry = votesForPartiesInThisMunicipality[j]
-      let thisLabel = climateLabels.filter(entry => thisMunicipPartyEntry["party_name"] == entry["party_name"])[0].climate_score
+      let thisLabel = climateLabels.filter(entry => thisMunicipPartyEntry["party_name"] === entry["party_name"])[0].climate_score
       let thisLabelLetter = invScores[thisLabel]
 
       percentageList.push({"label": thisLabelLetter, "percentage": thisMunicipPartyEntry["votes"]/totalVotesInThisMunicipality })
@@ -91,7 +93,6 @@ const mergeGeoPaths = function (data, items) {
     res.geometry.type = "Polygon";
     res.geometry.coordinates = [];
     res.geometry.coordinates[0] = [].concat(... geoitems.map(g => {
-      //Een erg gebeunde manier van paths mergen, kan vast beter
       let arr = [].concat(g.geometry.coordinates[0]);
       if(g.geometry.type === "MultiPolygon") {
         arr = [].concat(...g.geometry.coordinates[0]);
@@ -102,9 +103,7 @@ const mergeGeoPaths = function (data, items) {
     geoitems.forEach(g => {
       features.splice(features.indexOf(g),1);
     });
-    if(i.target === "Waadhoeke") {
-      console.log(res);
-    }
+
     features.push(res);
   })
 };
@@ -135,11 +134,10 @@ const getMunFromEvent = function(d) {
 
 const getMun = function (data, mun) {
   return data.find(d => d.municipality === mun);
-
 }
 
 const percentileOfDataset = function(dataset,key,value){
-  var worseDataPoints = 0
+  let worseDataPoints = 0
   for (dataEntry of dataset){
     if(dataEntry[key] <= value){
       worseDataPoints += 1
